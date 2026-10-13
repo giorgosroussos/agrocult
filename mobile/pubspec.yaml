@@ -1,0 +1,40 @@
+name: agrocult
+description: "Agrocult: what to do today for your plants, based on the weather at your garden."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
+
+# Runtime dependencies: only the approved list in design/model/architecture.yaml.
+# A new runtime dependency needs a change request.
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: ^3.0.0
+  drift: ^2.28.0
+  dio: ^5.9.0
+  intl: ^0.20.0
+  # flutter_map and vector_map_tiles are used only inside GardenLocationMap (CMP-AppGardens).
+  flutter_map: ^8.0.0
+  # Pre-release pin (ARCH-005); move to ^9.0.0 before the first store release if stable.
+  vector_map_tiles: 9.0.0-beta.13
+  firebase_messaging: ^16.0.0
+  image_picker: ^1.2.0
+  flutter_image_compress: ^2.4.0
+  geolocator: ^14.0.0
+  flutter_secure_storage: ^9.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.0
+  drift_dev: ^2.28.0
+
+flutter:
+  uses-material-design: true
+  generate: true
