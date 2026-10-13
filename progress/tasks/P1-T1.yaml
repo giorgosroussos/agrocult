@@ -1,0 +1,9 @@
+id: P1-T1
+status: ready_to_merge
+commit: e08a194f6caf4ac605f2609432a2d60d3fc070f4
+handoff: |
+  backend/: Laravel 13.8 + Sail (backend/compose.yaml: app, pgsql 18, queue, scheduler); run checks via sail (README).
+  Modules in backend/app/Modules/<Module>/ extend App\Support\Modules\ModuleServiceProvider (routes/api.php -> /api/v1, Database/Migrations).
+  API errors: App\Support\Http\ProblemDetails (RFC 9457) wired in bootstrap/app.php; health check at /up.
+  Quality: pint.json, phpstan.neon (level 6), deptrac.yaml (may_depend_on); tests in backend/tests (Pest, pgsql).
+  All approved backend deps installed incl. kreait/laravel-firebase ^7.0; no config/firebase.php published yet.
