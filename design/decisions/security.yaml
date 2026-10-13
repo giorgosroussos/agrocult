@@ -1,0 +1,60 @@
+decisions:
+  - id: SEC-001
+    area: security
+    topic: authentication
+    title: Authentication of the mobile app and the admin panel
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "οκ"
+    decision: "Mobile app: email and password, Laravel Sanctum API token per device without automatic expiry, revoked on sign-out and on password change. The owner is the only admin in the MVP: manages curator and user accounts but has no access to users' gardens through the panel. Admin panel: session login on the web with TOTP MFA required for curators and admins."
+    constraints:
+      - "MUST hash passwords with argon2id"
+      - "MUST issue one API token per device and revoke it on sign-out"
+      - "MUST revoke all API tokens of a user when the password changes"
+      - "MUST require TOTP MFA for every admin panel account"
+      - "MUST rate-limit sign-in to 5 attempts per minute per email and IP"
+      - "MUST NOT allow gardener accounts to sign in to the admin panel"
+    affects: [ROLE-Gardener, ROLE-Curator]
+
+  - id: SEC-002
+    area: security
+    topic: compliance
+    title: GDPR scope
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "οκ"
+    decision: "Personal data: email, approximate garden locations (~1 km), notes, care log photos, push tokens. Lawful basis: contract (providing the service). Export and erasure through UC-014. Privacy policy before release (EXT-007). Hosting in the EU (area 8)."
+    constraints:
+      - "MUST NOT write emails, coordinates, notes or tokens to logs"
+      - "MUST NOT send personal data to Pl@ntNet or Open-Meteo beyond the photo and rounded coordinates"
+      - "MUST store user photos in private storage, served only through authorised, expiring URLs"
+    global: true
+
+  - id: SEC-003
+    area: security
+    title: Security baseline
+    status: decided
+    source: default
+    confirmed: true
+    user_statement: "οκ"
+    decision: "OWASP Top 10 baseline, TLS everywhere, security headers on the admin panel, dependency vulnerability scanning in CI, secrets only in environment variables, no personal data in logs, uploaded images validated by type and size and stripped of EXIF metadata."
+    constraints:
+      - "MUST strip EXIF metadata (including GPS) from every uploaded photo"
+      - "MUST reject uploads that are not JPEG, PNG or WebP or are larger than 5 MB"
+      - "MUST read secrets only from environment variables"
+    global: true
+
+  - id: SEC-004
+    area: security
+    topic: minimum_age
+    title: Minimum age 15
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "ναι είμαστε οκ με την περιοχή 6 καθώς και με τα ηλικιακά όρια"
+    decision: "Accounts require a minimum age of 15 (GDPR art. 8 as set by Greek law); sign-up asks the user to confirm it."
+    constraints:
+      - "MUST require the user to confirm they are at least 15 years old at sign-up"
+    affects: [UC-012]

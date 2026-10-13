@@ -1,0 +1,43 @@
+decisions:
+  - id: ARCH-001
+    area: architecture
+    topic: backend
+    title: Backend platform and language
+    status: decided
+    source: user
+    user_statement: "Ας δούμε κάτι σε php Laravel."
+    decision: "Own backend in PHP Laravel (API + scheduled worker). Versions and supporting services are fixed in area 6."
+    rationale: "Single developer; chosen by the engineer's preference and skills."
+    alternatives_rejected: ["Supabase + worker", "FastAPI", "NestJS", "Dart server"]
+
+  - id: ARCH-002
+    area: architecture
+    title: Single repository
+    status: decided
+    source: user
+    user_statement: "1 με ένα repo"
+    decision: "Backend and mobile app live in one repository (backend/, mobile/) next to the design."
+
+  - id: ARCH-003
+    area: architecture
+    topic: catalogue_sync
+    title: Catalogue shipped to devices as a SQLite snapshot
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "4 α"
+    decision: "On every publish the server builds a versioned SQLite snapshot of the published catalogue (with search keys). The app bundles an initial snapshot, checks the current version on start and downloads the whole snapshot when it changed."
+    constraints:
+      - "MUST include only published plants and tips in the catalogue snapshot"
+      - "MUST bundle a catalogue snapshot in the app so that search works offline on first launch"
+      - "MUST replace the local catalogue atomically; a failed download keeps the previous one"
+    affects: [UC-003, UC-004, UC-010]
+
+  - id: ARCH-004
+    area: architecture
+    title: Riverpod for state management
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "2 πάμε με την δική σου επιλογή"
+    decision: "The Flutter app uses Riverpod."

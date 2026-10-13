@@ -1,0 +1,57 @@
+decisions:
+  - id: OPS-001
+    area: operations
+    topic: app_distribution
+    title: App store distribution
+    status: decided
+    source: inferred
+    confirmed: true
+    decision: "Android app distributed through Google Play (one-time developer fee); iOS through the App Store later (DEC-005). Both need a privacy policy and data-safety / privacy labels declaring location, photos and email."
+    constraints:
+      - "MUST publish a privacy policy before the first store release"
+      - "MUST declare approximate location, photos and email in the store data-safety forms"
+
+  - id: OPS-002
+    area: operations
+    topic: hosting
+    title: Production hosting
+    status: deferred
+    source: inferred
+    confirmed: true
+    user_statement: "συμφωνώ με τις προτάσεις σου"
+    deferred_to: "before first production deploy"
+    trigger: "MVP feature-complete in development"
+    rationale: "Candidates at decision time: Oracle Cloud Always Free (EU region) or a small Hetzner VPS."
+    requirements:
+      - "EU region (SEC-002)"
+      - "Free or near-free (ORG-001)"
+      - "PHP 8.3, PostgreSQL 18, a long-running queue worker and cron (scheduler)"
+      - "~1 vCPU / 2 GB RAM at launch; ~10 GB database and ~20 GB photo storage in the first year"
+      - "Public HTTPS endpoint with certificate"
+    prepare_now:
+      - "MUST read all configuration from environment variables"
+      - "MUST store files only through the Laravel filesystem so that local and S3-compatible storage are interchangeable"
+      - "MUST log to stdout or a single log channel in structured format"
+      - "MUST NOT depend on provider-specific services in application code"
+
+  - id: OPS-003
+    area: operations
+    title: Code on GitHub, CI with GitHub Actions
+    status: decided
+    source: user
+    user_statement: "ο κώδικας θα ζεί σε GitHub"
+    decision: "The repository is hosted on GitHub; CI runs on GitHub Actions on every push and pull request."
+    constraints:
+      - "MUST pass every CI stage before a branch is merged"
+
+  - id: OPS-004
+    area: operations
+    topic: dev_environment
+    title: Docker development environment
+    status: decided
+    source: user
+    user_statement: "Για το περιβάλλον development θα προτιμούσα docker"
+    decision: "Development runs in Docker via Laravel Sail: PHP 8.3, PostgreSQL 18 and the queue worker and scheduler as services. The Flutter app runs on the host against the Sail API."
+    constraints:
+      - "MUST run backend commands (artisan, composer, tests) inside the Sail containers"
+      - "MUST keep the Docker setup in backend/compose.yaml"

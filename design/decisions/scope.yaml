@@ -1,0 +1,122 @@
+decisions:
+  - id: SCOPE-001
+    area: scope
+    topic: commercial_use
+    title: Personal project, possibly commercial later
+    status: decided
+    source: user
+    user_statement: "Είναι προσωπικό project, ίσως αργότερα και εμπορικό."
+    decision: "Built as a personal project; the design keeps a later commercial release possible."
+    rationale: "Permapeople is CC BY-SA (share-alike), the Perenual free tier is non-commercial only, and Pl@ntNet commercial terms must be confirmed before any commercial release. Keeping provenance per fact lets incompatible content be removed later."
+    constraints:
+      - "MUST record the source and licence of every imported catalogue fact"
+      - "SHOULD NOT import content from sources whose licence forbids commercial use"
+    affects: [UC-005, UC-010]
+
+  - id: SCOPE-002
+    area: scope
+    topic: account_required
+    title: Catalogue without sign-in, everything else with an account
+    status: decided
+    source: user
+    user_statement: "Θα άφηνα χωρίς κάποια σύνδεση την αναζήτηση φυτών κ.λπ από το περιεχόμενο της εφαμοργής. Όλες οι υπόλοιπες δραστηριότητες απαιτούν σύνδεση καθώς απαιτούν ένα είδος συσχέτησης."
+    decision: "Catalogue search and plant cards work without an account. Gardens, garden plants, care log, notifications and settings stored on the server require a signed-in account."
+    constraints:
+      - "MUST allow catalogue search and plant cards without sign-in"
+      - "MUST require an authenticated account for every endpoint that reads or writes gardens, garden plants, care log or notifications"
+    global: true
+    affects: [UC-003, UC-004, UC-012]
+
+  - id: SCOPE-003
+    area: scope
+    title: Location belongs to the garden, not the user
+    status: decided
+    source: user
+    user_statement: "Η τοποθεσία ανήκει στον κήπο, όχι στον χρήστη: ο καιρός που μετράει είναι του κήπου, όχι του κινητού."
+    decision: "Each garden has its own location; weather, climate zone and notifications are computed per garden. A user can have many gardens."
+    constraints:
+      - "MUST compute weather, climate zone and notifications from the garden's location, never from the device's current position"
+    global: true
+
+  - id: SCOPE-004
+    area: scope
+    title: App works without a location
+    status: decided
+    source: user
+    user_statement: "Χωρίς τοποθεσία η εφαρμογή λειτουργεί ως κατάλογος και ημερολόγιο, χωρίς ειδοποιήσεις καιρού."
+    decision: "A garden without a location still supports catalogue, calendar and care log; only weather notifications are disabled."
+    constraints:
+      - "MUST keep catalogue, calendar and care log usable for gardens without a location"
+
+  - id: SCOPE-005
+    area: scope
+    title: Few, timely notifications
+    status: decided
+    source: user
+    user_statement: "Λίγες και επίκαιρες: το πολύ μία σύνοψη τη μέρα ανά κήπο, εκτός από επείγοντα (παγετός, καύσωνας)."
+    decision: "At most one summary push per garden per day, sent in the morning local time; frost and heatwave alerts may be sent in addition."
+    constraints:
+      - "MUST NOT send more than one summary notification per garden per day"
+      - "MUST write every notification in the user's stored language"
+
+  - id: SCOPE-006
+    area: scope
+    title: Quality over quantity in the catalogue
+    status: decided
+    source: user
+    user_statement: "Στόχος MVP: 30–50 φυτά, άριστα ελεγμένα, όχι 1.000 μέτρια."
+    decision: "The MVP catalogue contains 30-50 plants, each reviewed by a human before publication."
+
+  - id: SCOPE-007
+    area: scope
+    title: Post-MVP ideas the data model must support
+    status: deferred
+    source: user
+    user_statement: "Δεν είναι για το MVP, αλλά αξίζει να σχεδιαστεί η βάση ώστε να τις σηκώνει."
+    deferred_to: "after MVP"
+    trigger: "MVP released and in use"
+    requirements:
+      - "Beds and crop rotation (what was planted where, per year)"
+      - "Vacation mode with a pre-departure checklist from the forecast"
+      - "Spraying alerts (wind/rain in the next hours)"
+      - "Harvest log (kg/pieces per plant and season)"
+      - "Shared garden with invited members"
+      - "Seed exchange by area"
+      - "Home-screen widget"
+      - "Disease diagnosis (possible premium)"
+      - "Freemium: free with one garden; subscription for many gardens, diagnosis, season log"
+    prepare_now:
+      - "MUST model garden membership so that a garden can later have more than one user"
+      - "MUST keep the care log append-only and dated so that seasons can be compared"
+      - "SHOULD allow a garden plant to reference an optional bed"
+
+  - id: SCOPE-008
+    area: scope
+    title: Settings - English docs, development environment only
+    status: decided
+    source: user
+    user_statement: "Ας κρατήσουμε την γλώσσα στα έγγραφα, αγγλικά με ένα μόνο περιβάλλον development για τώρα"
+    decision: "Design files and generated docs in English. Only a development environment for now; staging/production are added by amendment before the first release."
+
+  - id: SCOPE-009
+    area: scope
+    topic: social_login
+    title: Sign-in with external providers
+    status: deferred
+    source: user
+    user_statement: "δεν θα πρόσθετα ακόμα (οχι για το MVP) σύνδεση με εξωτερικούς παρόχους"
+    decision: "MVP uses email and password only."
+    deferred_to: "after MVP"
+    trigger: "Sign-up friction observed, or commercial release"
+    requirements: ["Google sign-in", "Sign in with Apple (required by the App Store when any third-party login exists)"]
+    prepare_now:
+      - "MUST keep user identity separate from login credentials so that external identities can be linked to an existing account later"
+
+  - id: SCOPE-010
+    area: scope
+    title: Catalogue curation through a Laravel admin panel
+    status: decided
+    source: user
+    user_statement: "Την επιμέλεια του καταλόγου θα γίνεται από κάποιο panel διαχειριστικό στο Laravel"
+    decision: "Curators edit, review and publish catalogue content in an admin panel inside the Laravel backend. The panel package is chosen in area 6."
+    affects: [UC-010]

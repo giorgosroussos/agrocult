@@ -1,0 +1,45 @@
+id: PHASE-2
+goal: Offline catalogue - curators publish plants in the panel, the app searches them offline in Greek, English and Greeklish
+depends_on: [PHASE-1]
+use_cases: [UC-003, UC-004, UC-010]
+entities: [ENT-Plant, ENT-PlantCategory, ENT-PlantTranslation, ENT-PlantAlias, ENT-ClimateZone, ENT-PlantCalendar, ENT-Companion, ENT-CareInterval, ENT-PlantPhoto, ENT-FactSource, ENT-Tip, ENT-Settlement]
+components: [CMP-Catalogue, CMP-AppCatalogue]
+decisions: [SCOPE-001, SCOPE-006, SCOPE-010, DATA-002, DATA-003, DATA-004, DEC-006, ARCH-003]
+environment: development
+acceptance_criteria:
+  - "Given 3 published plants and 1 draft, When the snapshot is built, Then it contains exactly the 3 published plants"
+tasks:
+  - id: P2-T1
+    title: Catalogue model
+    description: "Migrations and models for all catalogue entities, plant status transitions, audit trail on plants"
+    touches: {writes: [CMP-Catalogue], migrations: true}
+  - id: P2-T2
+    title: Curation in the admin panel
+    description: "Filament resources for plants (all sections), categories, aliases, calendars per zone, companions, care intervals, photos with credit and licence, tips, climate zones; review and publish with required-field checks"
+    depends_on: [P2-T1]
+    use_cases: [UC-010]
+    touches: {writes: [CMP-Catalogue], reads: [CMP-Identity]}
+  - id: P2-T3
+    title: Import commands
+    description: "Artisan commands that import facts from OpenFarm, Wikidata, GBIF and Trefle as draft plants with FactSource rows; settlement list import from OpenStreetMap"
+    depends_on: [P2-T2]
+    use_cases: [UC-010]
+    touches: {writes: [CMP-Catalogue]}
+  - id: P2-T4
+    title: Catalogue snapshot and sync API
+    description: "Build a versioned SQLite snapshot on publish with normalised search keys (no accents, lower case, Greeklish); version and download endpoints"
+    depends_on: [P2-T3]
+    use_cases: [UC-003]
+    touches: {writes: [CMP-Catalogue]}
+  - id: P2-T5
+    title: Local catalogue in the app
+    description: "drift schema matching the snapshot, bundled initial snapshot, version check on start, atomic replacement"
+    depends_on: [P2-T4]
+    touches: {writes: [CMP-AppCatalogue], reads: [CMP-Catalogue], hotspots: [mobile/pubspec.yaml]}
+  - id: P2-T6
+    title: Search and plant card
+    description: "FTS search across languages with Greeklish and aliases, category and 'in season now' filters, plant card with all sections and language fallback, no sign-in needed"
+    depends_on: [P2-T5]
+    use_cases: [UC-003, UC-004]
+    touches: {writes: [CMP-AppCatalogue], hotspots: [mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
+out_of_scope: ["Entering the 42 plants' content (curation work by the owner, not a task)", "Photo identification (PHASE-5)", "Gardens (PHASE-3)"]

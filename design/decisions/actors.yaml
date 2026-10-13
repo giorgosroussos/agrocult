@@ -1,0 +1,38 @@
+decisions:
+  - id: DEC-002
+    area: actors
+    title: Photo identification needs an account, 10 per day
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "1 ναι 10"
+    decision: "Photo identification requires sign-in and is limited to 10 identifications per gardener per day."
+    rationale: "Keeps usage within the Pl@ntNet free quota of 500/day and makes the per-user limit enforceable."
+    constraints:
+      - "MUST require an authenticated account for photo identification"
+      - "MUST limit photo identification to 10 per gardener per day, configurable"
+    affects: [UC-005]
+  - id: DEC-003
+    area: actors
+    title: Urgent alerts immediately, outside quiet hours
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "2 β"
+    decision: "Frost and heatwave alerts are sent as soon as detected; during 22:00-07:00 Europe/Athens they wait until 07:00. Summaries go at 07:30 Europe/Athens."
+    constraints:
+      - "MUST NOT send any push notification between 22:00 and 07:00 Europe/Athens"
+    affects: [UC-008]
+  - id: DEC-004
+    area: actors
+    title: Use case defaults confirmed
+    status: decided
+    source: default
+    confirmed: true
+    user_statement: "προεπιλογές ok"
+    decision: "Summary at 07:30 Europe/Athens; no empty summaries; cached forecast usable up to 12 h; weather thresholds in configuration; care reminders from per-plant per-action intervals in the catalogue; email verification and non-revealing auth errors; first-launch language from device (Greek, else English); add-plant form defaults; immediate hard delete of garden or account after confirmation; no future dates in the care log."
+    constraints:
+      - "MUST read weather rule thresholds from configuration"
+      - "MUST NOT use a cached forecast older than 12 hours for weather rules"
+      - "MUST NOT reveal in any auth response whether an email is registered"
+    affects: [UC-002, UC-007, UC-008, UC-012, UC-013, UC-014]

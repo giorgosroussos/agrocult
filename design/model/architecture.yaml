@@ -1,0 +1,117 @@
+stack:
+  style: modular-monolith
+  database: postgresql
+  items:
+    - {role: backend, name: Laravel, version: "13.8", why: "Engineer's choice and skills (ARCH-001); one codebase for API, worker and admin panel", source: user}
+    - {role: backend, name: PHP, version: "8.3", why: "Installed on the engineer's machine; minimum for Laravel 13; security support until end of 2027", source: user}
+    - {role: database, name: PostgreSQL, version: "18", why: "JSONB for forecasts and candidates, partial unique indexes (one summary per garden per day); from the draft", source: user}
+    - {role: queue, name: Laravel queue (database driver), version: "13.8", why: "No extra service to pay for (ORG-001); switch to Redis when load requires it", source: inferred, confirmed: true}
+    - {role: worker, name: Laravel scheduler + queue worker, version: "13.8", why: "Runs the notification worker every few hours and the morning summaries (UC-008)", source: inferred, confirmed: true}
+    - {role: other, name: Filament, version: "5.7", why: "Admin panel for catalogue curation inside Laravel (SCOPE-010) with built-in MFA (SEC-001)", source: inferred, confirmed: true}
+    - {role: frontend, name: Riverpod, version: "3.0", why: "State management for the Flutter app; widely used and testable (ARCH-004)", source: inferred, confirmed: true}
+    - {role: frontend, name: Flutter, version: "3.47", why: "Mobile app for Android now and iOS later from one codebase (DEC-005); from the draft", source: user}
+    - {role: storage, name: Laravel filesystem (local in development, S3-compatible later), version: "13.8", why: "Private photo storage with temporary URLs (SEC-002)", source: inferred, confirmed: true}
+
+components:
+  - id: CMP-Identity
+    responsibility: "Accounts, sign-up, sign-in, password reset, API tokens, language and notification preferences, push tokens"
+    owns: [ENT-User, ENT-PushToken]
+    implements: [UC-009, UC-012, UC-013]
+    may_depend_on: []
+  - id: CMP-Catalogue
+    responsibility: "Plants, categories, texts, aliases, calendars, companions, care intervals, photos, sources, tips, climate zone definitions, settlements; catalogue snapshot for devices; Filament resources for curation"
+    owns: [ENT-Plant, ENT-PlantCategory, ENT-PlantTranslation, ENT-PlantAlias, ENT-PlantCalendar, ENT-Companion, ENT-CareInterval, ENT-PlantPhoto, ENT-FactSource, ENT-Tip, ENT-ClimateZone, ENT-Settlement]
+    implements: [UC-003, UC-004, UC-010]
+    may_depend_on: [CMP-Identity]
+  - id: CMP-Weather
+    responsibility: "Weather cells, forecasts through WeatherProvider, daily history, cell climate metrics and zone assignment"
+    owns: [ENT-WeatherCell, ENT-WeatherForecast, ENT-WeatherDaily]
+    implements: []
+    may_depend_on: [CMP-Catalogue]
+  - id: CMP-Gardens
+    responsibility: "Gardens, membership, garden plants, care log, next action per plant"
+    owns: [ENT-Garden, ENT-GardenMember, ENT-GardenPlant, ENT-CareLog]
+    implements: [UC-001, UC-002, UC-007, UC-011, UC-015]
+    may_depend_on: [CMP-Identity, CMP-Catalogue, CMP-Weather]
+  - id: CMP-Identification
+    responsibility: "Photo identification through PlantIdentifier, daily limit, matching candidates to the catalogue"
+    owns: [ENT-Identification]
+    implements: [UC-005]
+    may_depend_on: [CMP-Identity, CMP-Catalogue, CMP-Gardens]
+  - id: CMP-Notifications
+    responsibility: "Weather x plant rules, summaries and urgent alerts, quiet hours, push through PushSender, the 'today' feed for the home screen"
+    owns: [ENT-Notification]
+    implements: [UC-006, UC-008]
+    may_depend_on: [CMP-Identity, CMP-Catalogue, CMP-Weather, CMP-Gardens]
+  - id: CMP-Privacy
+    responsibility: "Export of all user data and account deletion across modules"
+    owns: []
+    implements: [UC-014]
+    may_depend_on: [CMP-Identity, CMP-Gardens, CMP-Identification, CMP-Notifications]
+  # Mobile app (Flutter) features: no entities or use cases of their own; they let tasks declare what they touch
+  - id: CMP-AppCore
+    responsibility: "Flutter app shell: router, theme, l10n, API client and token storage, auth screens, local database setup"
+    owns: []
+    implements: []
+    may_depend_on: []
+  - id: CMP-AppCatalogue
+    responsibility: "Local catalogue sync, search, plant card, photo identification screens"
+    owns: []
+    implements: []
+    may_depend_on: [CMP-AppCore]
+  - id: CMP-AppGardens
+    responsibility: "Gardens with location (settlement search, map), add/edit/remove plants, care log, journal"
+    owns: []
+    implements: []
+    may_depend_on: [CMP-AppCore, CMP-AppCatalogue]
+  - id: CMP-AppHome
+    responsibility: "Home 'today' screen, notification list and push handling, settings, account export and deletion screens"
+    owns: []
+    implements: []
+    may_depend_on: [CMP-AppCore, CMP-AppCatalogue, CMP-AppGardens]
+
+approved_dependencies:
+  # Backend (versions are major lines; exact patch pinned in the foundation phase lock files)
+  - {name: laravel/framework, version: "^13.8", scope: runtime, provider_specific: false}
+  - {name: laravel/sanctum, version: "^4.0", scope: runtime, provider_specific: false}
+  - {name: filament/filament, version: "^5.7", scope: runtime, provider_specific: false}
+  - {name: kreait/laravel-firebase, version: "^6.0", scope: runtime, provider_specific: false}
+  - {name: intervention/image, version: "^3.0", scope: runtime, provider_specific: false}
+  - {name: pestphp/pest, version: "^4.0", scope: dev, provider_specific: false}
+  - {name: laravel/pint, version: "^1.0", scope: dev, provider_specific: false}
+  - {name: larastan/larastan, version: "^3.0", scope: dev, provider_specific: false}
+  - {name: deptrac/deptrac, version: "^3.0", scope: dev, provider_specific: false}
+  # Mobile
+  - {name: flutter_riverpod, version: "^3.0.0", scope: runtime, provider_specific: false}
+  - {name: drift, version: "^2.28.0", scope: runtime, provider_specific: false}
+  - {name: dio, version: "^5.9.0", scope: runtime, provider_specific: false}
+  - {name: intl, version: "^0.20.0", scope: runtime, provider_specific: false}
+  - {name: flutter_map, version: "^8.0.0", scope: runtime, provider_specific: false}
+  - {name: vector_map_tiles, version: "^9.0.0", scope: runtime, provider_specific: false}
+  - {name: firebase_messaging, version: "^16.0.0", scope: runtime, provider_specific: false}
+  - {name: image_picker, version: "^1.2.0", scope: runtime, provider_specific: false}
+  - {name: flutter_image_compress, version: "^2.4.0", scope: runtime, provider_specific: false}
+  - {name: geolocator, version: "^14.0.0", scope: runtime, provider_specific: false}
+  - {name: flutter_secure_storage, version: "^9.2.0", scope: runtime, provider_specific: false}
+  - {name: flutter_lints, version: "^6.0.0", scope: dev, provider_specific: false}
+
+conventions:
+  - "One repository: backend/ (Laravel) and mobile/ (Flutter); design/, build/, progress/, tools/ at the root"
+  - "Backend modules live in backend/app/Modules/<Module>/ and register their own routes, providers, migrations and Filament resources"
+  - "A module uses another module only through its public service classes or events, never its models directly"
+  - "REST JSON API under /api/v1; errors as RFC 9457 problem details; list endpoints are paginated"
+  - "Backend tests with Pest; Pint formatting; Larastan level 6; deptrac enforces may_depend_on"
+  - "Mobile: feature-first folders in mobile/lib/features/<feature>/; Riverpod for state; drift for the local catalogue with FTS5 search"
+  - "Search keys (accent-free, lower-case, Greeklish transliteration) are computed on the server when the catalogue snapshot is built"
+  - "UI strings in ARB files with intl; Greek and English"
+  - "External services only behind interfaces: WeatherProvider, PlantIdentifier, PushSender; tests always use fakes"
+  - "All dependencies are installed in the foundation phase; a new runtime dependency needs a change request"
+
+hotspots:
+  - backend/composer.json
+  - backend/bootstrap/providers.php
+  - backend/routes/console.php
+  - mobile/pubspec.yaml
+  - mobile/lib/l10n/app_el.arb
+  - mobile/lib/l10n/app_en.arb
+  - mobile/lib/app/router.dart

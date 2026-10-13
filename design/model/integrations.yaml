@@ -1,0 +1,155 @@
+integrations:
+  - id: INT-001
+    external: EXT-001
+    component: CMP-Identification
+    mechanism: "Laravel HTTP client in a Pl@ntNet adapter behind PlantIdentifier; called synchronously from the identification request after resizing and EXIF stripping"
+    interface:
+      name: PlantIdentifier
+      operations:
+        - "identify(image, lang, lat?, lon?) -> Candidate[] (scientific_name, gbif_id, confidence)"
+    failure:
+      timeout: 15s
+      retries: "1, after 1s"
+      when_unavailable: "The app shows 'identification is temporarily unavailable' (UC-005); the photo is discarded; the failed attempt does not count against the 10/day limit"
+    source: inferred
+    confirmed: true
+
+  - id: INT-002
+    external: EXT-002
+    component: CMP-Weather
+    mechanism: "Laravel HTTP client in an Open-Meteo adapter behind WeatherProvider; called from queued jobs, one per weather cell"
+    interface:
+      name: WeatherProvider
+      operations:
+        - "forecast(lat, lon, days) -> DailyForecast[] (date, rain_mm, temp_min_c, temp_max_c)"
+        - "history(lat, lon, from, to) -> DailyWeather[]"
+        - "elevation(lat, lon) -> integer"
+    failure:
+      timeout: 10s
+      retries: "3, exponential backoff via queue (30s, 2m, 10m)"
+      when_unavailable: "The last forecast of the cell is used if it is less than 12 hours old; otherwise weather rules are skipped for that run and the home screen shows 'weather currently unavailable' while care and season messages still work (UC-006, UC-008)"
+    source: inferred
+    confirmed: true
+
+  - id: INT-003
+    external: EXT-003
+    component: CMP-Notifications
+    mechanism: "kreait/laravel-firebase behind PushSender; sent from queued jobs"
+    interface:
+      name: PushSender
+      operations:
+        - "send(token, title, body, data) -> SendResult (sent | invalid_token | failed)"
+    failure:
+      timeout: 10s
+      retries: "3, exponential backoff via queue"
+      when_unavailable: "Notifications stay in the app's notification list; pushes are retried; a summary push not sent by 10:00 Europe/Athens is dropped and stays in-app only; an urgent alert that cannot be sent before 22:00 waits for 07:00"
+    source: inferred
+    confirmed: true
+
+  - id: INT-004
+    external: EXT-004
+    component: CMP-Identity
+    mechanism: "Laravel Mail over SMTP, queued; Mailtrap sandbox in development"
+    interface:
+      name: Laravel Mail
+      operations: ["sendVerification(user_id)", "sendPasswordReset(user_id)"]
+    failure:
+      timeout: 15s
+      retries: "5, exponential backoff via queue"
+      when_unavailable: "Emails stay queued and are retried; the user can request a new verification or reset email from the app"
+    source: inferred
+    confirmed: true
+
+  - id: INT-005
+    external: EXT-005
+    component: CMP-Gardens
+    mechanism: "The mobile app loads vector tiles directly from MAP_TILE_URL; the settlement list is in the bundled catalogue snapshot"
+    interface:
+      name: Map tiles
+      operations: ["GET {MAP_TILE_URL}/{z}/{x}/{y}"]
+    failure:
+      timeout: 10s
+      retries: "none (the map library retries tiles)"
+      when_unavailable: "The map shows an offline message; area search from the settlement list still works"
+    source: inferred
+    confirmed: true
+
+  - id: INT-006
+    external: EXT-006
+    component: CMP-Catalogue
+    mechanism: "Artisan import commands run by the owner; results land as draft plants with FactSource rows"
+    interface:
+      name: PlantSourceImporter
+      operations: ["import(source, scientific_name) -> DraftFacts"]
+    failure:
+      timeout: 30s
+      retries: "manual re-run"
+      when_unavailable: "The import stops with a message; nothing is published"
+    source: inferred
+    confirmed: true
+
+flows:
+  - id: FLOW-001
+    title: Worker run and morning summary
+    kind: sequence
+    participants: [ACT-Worker, CMP-Weather, EXT-002, CMP-Notifications, CMP-Gardens, EXT-003, ACT-Gardener]
+    mermaid: |
+      sequenceDiagram
+        participant W as Worker (scheduler)
+        participant WE as CMP-Weather
+        participant OM as Open-Meteo
+        participant N as CMP-Notifications
+        participant G as CMP-Gardens
+        participant F as FCM
+        actor U as Gardener
+        W->>WE: every few hours: refresh active cells
+        loop each cell with at least one garden
+          WE->>OM: forecast(cell lat, lon)
+          OM-->>WE: daily forecast
+        end
+        W->>N: evaluate rules
+        N->>G: gardens and active plants per cell
+        N->>N: rain / heat / frost / care / season messages
+        alt frost or heatwave, outside 22:00-07:00
+          N->>F: urgent alert
+        end
+        W->>N: 07:30 Europe/Athens: send summaries
+        N->>F: one summary per garden with messages
+        F-->>U: push
+        F-->>N: invalid token -> remove
+
+  - id: FLOW-002
+    title: Photo identification
+    kind: sequence
+    participants: [ACT-Gardener, CMP-Identification, EXT-001, CMP-Catalogue, CMP-Gardens]
+    mermaid: |
+      sequenceDiagram
+        actor U as Gardener
+        participant I as CMP-Identification
+        participant P as Pl@ntNet
+        participant C as CMP-Catalogue
+        participant G as CMP-Gardens
+        U->>I: photo (<=1024 px), garden?
+        I->>I: check 10/day limit, strip EXIF
+        I->>P: identify(image, lang)
+        P-->>I: candidates
+        I->>C: match by GBIF id / scientific name
+        I->>G: gardener's plants in this garden
+        I-->>U: top 3, own plants first, attribution
+        U->>I: confirm candidate
+
+  - id: FLOW-003
+    title: Catalogue publish and device sync
+    kind: sequence
+    participants: [ACT-Curator, CMP-Catalogue, ACT-Gardener]
+    mermaid: |
+      sequenceDiagram
+        actor Cu as Curator
+        participant C as CMP-Catalogue
+        actor U as App (any user)
+        Cu->>C: publish plant (Filament)
+        C->>C: build SQLite snapshot vN with search keys
+        U->>C: GET /api/v1/catalogue/version
+        C-->>U: vN
+        U->>C: download snapshot vN
+        U->>U: swap local catalogue atomically

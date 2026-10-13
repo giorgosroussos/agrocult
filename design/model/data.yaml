@@ -1,0 +1,345 @@
+entities:
+  # ---------------------------------------------------------------- catalogue
+  # Shared, changes rarely, synced to the device for offline use.
+  - id: ENT-Plant
+    description: Catalogue plant with structured fields used by filters and notification rules
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: scientific_name, type: string, required: true, unique: true}
+      - {name: gbif_id, type: integer, unique: true}
+      - {name: category_id, type: uuid, ref: ENT-PlantCategory, required: true}
+      - {name: temp_min_c, type: decimal}
+      - {name: temp_opt_c, type: decimal}
+      - {name: temp_max_c, type: decimal}
+      - {name: water_need, type: integer, description: "1-5"}
+      - {name: sun, type: enum, values: [full_sun, partial_shade, shade]}
+      - {name: soil_types, type: json, description: "list of soil types"}
+      - {name: ph_min, type: decimal}
+      - {name: ph_max, type: decimal}
+      - {name: frost_hardiness, type: enum, values: [tender, half_hardy, hardy], description: "tender plants trigger frost alerts"}
+      - {name: propagation, type: json, description: "list: seed, seedling, clove, cutting, graft"}
+      - {name: sow_depth_cm, type: decimal}
+      - {name: spacing_cm, type: integer}
+      - {name: row_spacing_cm, type: integer}
+      - {name: days_to_harvest, type: integer}
+      - {name: status, type: enum, required: true}
+      - {name: reviewed_by, type: uuid, ref: ENT-User}
+      - {name: reviewed_at, type: timestamp}
+      - {name: published_at, type: timestamp}
+      - {name: updated_at, type: timestamp}
+    relations:
+      - {to: ENT-PlantTranslation, type: one-to-many, on_delete: cascade, label: "has texts"}
+      - {to: ENT-PlantAlias, type: one-to-many, on_delete: cascade, label: "has aliases"}
+      - {to: ENT-PlantCalendar, type: one-to-many, on_delete: cascade, label: "has calendar"}
+      - {to: ENT-Companion, type: one-to-many, on_delete: cascade, label: "has companions"}
+      - {to: ENT-CareInterval, type: one-to-many, on_delete: cascade, label: "has care intervals"}
+      - {to: ENT-PlantPhoto, type: one-to-many, on_delete: cascade, label: "has photos"}
+      - {to: ENT-FactSource, type: one-to-many, on_delete: cascade, label: "facts from"}
+    states:
+      initial: draft
+      transitions: ["draft -> in_review", "in_review -> draft", "in_review -> published", "published -> draft", "published -> archived"]
+    audit: true
+    expected_volume: "30-50 at MVP, a few hundred later"
+    used_by: [UC-003, UC-004, UC-010]
+
+  - id: ENT-PlantCategory
+    description: Curator-managed plant category with an optional parent (DATA-004)
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: code, type: string, required: true, unique: true}
+      - {name: name_el, type: string, required: true}
+      - {name: name_en, type: string, required: true}
+      - {name: parent_id, type: uuid, ref: ENT-PlantCategory}
+      - {name: sort_order, type: integer}
+    relations:
+      - {to: ENT-Plant, type: one-to-many, on_delete: restrict, label: groups}
+    expected_volume: "~10-20"
+    used_by: [UC-003, UC-010]
+
+  - id: ENT-PlantTranslation
+    description: Texts of a plant in one language (one row per language, so a third language needs no schema change)
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: plant_id, type: uuid, ref: ENT-Plant, required: true}
+      - {name: lang, type: enum, required: true, values: [el, en]}
+      - {name: name, type: string, required: true}
+      - {name: description, type: text}
+      - {name: planting, type: text}
+      - {name: care, type: text, description: "watering, fertilising, pruning, weeding, pests and diseases"}
+      - {name: seed_saving, type: text}
+      - {name: tips, type: text}
+    used_by: [UC-003, UC-004, UC-010]
+
+  - id: ENT-PlantAlias
+    description: Synonyms, local names and Greeklish spellings used by search
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: plant_id, type: uuid, ref: ENT-Plant, required: true}
+      - {name: lang, type: enum, values: [el, en]}
+      - {name: alias, type: string, required: true}
+      - {name: kind, type: enum, values: [synonym, local_name, greeklish]}
+    used_by: [UC-003, UC-010]
+
+  - id: ENT-ClimateZone
+    description: One of 4-5 named climate zones of Greece; drives the sowing calendar and season notifications (DATA-001)
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: code, type: string, required: true, unique: true}
+      - {name: name_el, type: string, required: true}
+      - {name: name_en, type: string, required: true}
+      - {name: description, type: text}
+      - {name: rules, type: json, required: true, description: "thresholds on cell climate metrics (DATA-001)"}
+    used_by: [UC-001, UC-003, UC-004, UC-008]
+
+  - id: ENT-PlantCalendar
+    description: Month ranges for sowing, transplanting and harvest per climate zone
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: plant_id, type: uuid, ref: ENT-Plant, required: true}
+      - {name: climate_zone_id, type: uuid, ref: ENT-ClimateZone, required: true}
+      - {name: activity, type: enum, required: true, values: [sow_indoors, sow_outdoors, transplant, harvest]}
+      - {name: month_from, type: integer, required: true, description: "1-12"}
+      - {name: month_to, type: integer, required: true, description: "1-12; may wrap past December"}
+    used_by: [UC-003, UC-004, UC-008]
+
+  - id: ENT-Companion
+    description: Good or bad neighbour relation between two plants
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: plant_id, type: uuid, ref: ENT-Plant, required: true}
+      - {name: other_plant_id, type: uuid, ref: ENT-Plant, required: true}
+      - {name: relation, type: enum, required: true, values: [good, bad]}
+    used_by: [UC-004]
+
+  - id: ENT-CareInterval
+    description: How often a care action is due for a plant, optionally only in some months (DEC-004)
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: plant_id, type: uuid, ref: ENT-Plant, required: true}
+      - {name: action, type: enum, required: true, values: [water, fertilise, prune, weed, spray, other]}
+      - {name: interval_days, type: integer, required: true}
+      - {name: month_from, type: integer}
+      - {name: month_to, type: integer}
+    used_by: [UC-007, UC-008]
+
+  - id: ENT-PlantPhoto
+    description: Catalogue photo with credit and licence
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: plant_id, type: uuid, ref: ENT-Plant, required: true}
+      - {name: file_path, type: string, required: true}
+      - {name: credit, type: string, required: true}
+      - {name: licence, type: string, required: true}
+      - {name: source_url, type: url}
+    used_by: [UC-004, UC-010]
+
+  - id: ENT-FactSource
+    description: Provenance of imported catalogue facts (SCOPE-001)
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: plant_id, type: uuid, ref: ENT-Plant, required: true}
+      - {name: field, type: string, required: true, description: "attribute or section the fact belongs to"}
+      - {name: source_name, type: string, required: true}
+      - {name: source_url, type: url}
+      - {name: licence, type: string, required: true}
+      - {name: imported_at, type: timestamp}
+    used_by: [UC-010]
+
+  - id: ENT-Tip
+    description: Short tip or fact for the home screen, optionally tied to months, a climate zone or a plant
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: text_el, type: text, required: true}
+      - {name: text_en, type: text, required: true}
+      - {name: month_from, type: integer}
+      - {name: month_to, type: integer}
+      - {name: climate_zone_id, type: uuid, ref: ENT-ClimateZone}
+      - {name: plant_id, type: uuid, ref: ENT-Plant}
+      - {name: status, type: enum, values: [draft, published]}
+    used_by: [UC-006, UC-010]
+    source: inferred
+    confirmed: true
+
+  - id: ENT-Settlement
+    description: Greek settlement for area search, derived from OpenStreetMap and bundled in the app
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: name_el, type: string, required: true}
+      - {name: name_en, type: string}
+      - {name: region, type: string}
+      - {name: lat, type: decimal, required: true}
+      - {name: lon, type: decimal, required: true}
+    expected_volume: "~10,000-15,000"
+    used_by: [UC-001]
+
+  # ---------------------------------------------------------------- user data
+  - id: ENT-User
+    description: Account of a gardener or curator
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: email, type: email, required: true, unique: true, sensitivity: personal}
+      - {name: password_hash, type: string, required: true, sensitivity: sensitive}
+      - {name: email_verified_at, type: timestamp}
+      - {name: role, type: enum, required: true, values: [gardener, curator, admin]}
+      - {name: language, type: enum, required: true, values: [el, en]}
+      - {name: notification_prefs, type: json, description: "on/off per notification type"}
+      - {name: created_at, type: timestamp}
+    relations:
+      - {to: ENT-GardenMember, type: one-to-many, on_delete: cascade, label: "member of"}
+      - {to: ENT-PushToken, type: one-to-many, on_delete: cascade, label: "has devices"}
+      - {to: ENT-Notification, type: one-to-many, on_delete: cascade, label: receives}
+      - {to: ENT-Identification, type: one-to-many, on_delete: cascade, label: requests}
+    retention: "Until account deletion (immediate hard delete, DEC-004)"
+    expected_volume: "tens of thousands"
+    used_by: [UC-009, UC-012, UC-013, UC-014]
+
+  - id: ENT-Garden
+    description: A garden with its own approximate location, climate zone and weather cell
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: name, type: string, required: true}
+      - {name: lat, type: decimal, sensitivity: personal, description: "rounded to 2 decimals (~1 km)"}
+      - {name: lon, type: decimal, sensitivity: personal, description: "rounded to 2 decimals (~1 km)"}
+      - {name: climate_zone_id, type: uuid, ref: ENT-ClimateZone}
+      - {name: weather_cell_id, type: uuid, ref: ENT-WeatherCell}
+      - {name: created_at, type: timestamp}
+    relations:
+      - {to: ENT-GardenMember, type: one-to-many, on_delete: cascade, label: "has members"}
+      - {to: ENT-GardenPlant, type: one-to-many, on_delete: cascade, label: contains}
+    retention: "Until the garden or the account is deleted (immediate hard delete)"
+    expected_volume: "~1-3 per user"
+    used_by: [UC-001, UC-002, UC-006, UC-008]
+
+  - id: ENT-GardenMember
+    description: Link between a user and a garden; MVP has exactly one owner per garden, shared gardens later (SCOPE-007)
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: garden_id, type: uuid, ref: ENT-Garden, required: true}
+      - {name: user_id, type: uuid, ref: ENT-User, required: true}
+      - {name: role, type: enum, required: true, values: [owner, member]}
+    retention: "Deleted with the garden or the user"
+    used_by: [UC-001]
+
+  - id: ENT-GardenPlant
+    description: A plant, seed or tree in a garden
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: garden_id, type: uuid, ref: ENT-Garden, required: true}
+      - {name: plant_id, type: uuid, ref: ENT-Plant, required: true}
+      - {name: kind, type: enum, required: true, values: [plant, seed, tree]}
+      - {name: quantity, type: quantity, required: true}
+      - {name: planted_on, type: date, required: true}
+      - {name: container, type: enum, required: true, values: [pot, ground]}
+      - {name: pot_liters, type: decimal}
+      - {name: sun_exposure, type: enum, values: [full_sun, partial_shade, shade]}
+      - {name: notes, type: text, sensitivity: personal}
+      - {name: archived_at, type: timestamp}
+    relations:
+      - {to: ENT-CareLog, type: one-to-many, on_delete: cascade, label: "care history"}
+    retention: "Until the garden or the account is deleted"
+    expected_volume: "~10 per user"
+    used_by: [UC-002, UC-004, UC-006, UC-007, UC-008, UC-011, UC-015]
+
+  - id: ENT-CareLog
+    description: A dated care action; also the garden journal from which next actions and season comparisons come
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: garden_plant_id, type: uuid, ref: ENT-GardenPlant, required: true}
+      - {name: action, type: enum, required: true, values: [water, fertilise, prune, weed, spray, harvest, other]}
+      - {name: done_on, type: date, required: true}
+      - {name: harvest_qty, type: decimal, description: "optional, harvest only (DATA-007)"}
+      - {name: harvest_unit, type: enum, values: [kg, pieces]}
+      - {name: note, type: text, sensitivity: personal}
+      - {name: photo_path, type: string, sensitivity: personal}
+      - {name: created_at, type: timestamp}
+    retention: "Until the garden or the account is deleted"
+    expected_volume: "a few per user per week"
+    used_by: [UC-007, UC-015]
+
+  - id: ENT-Identification
+    description: A photo identification request; used for the 10/day limit and result caching
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: user_id, type: uuid, ref: ENT-User, required: true}
+      - {name: garden_id, type: uuid, ref: ENT-Garden}
+      - {name: candidates, type: json, description: "scientific name, GBIF id, confidence"}
+      - {name: chosen_plant_id, type: uuid, ref: ENT-Plant}
+      - {name: created_at, type: timestamp, required: true}
+    retention: "30 days; the photo itself is not stored after the provider call"
+    used_by: [UC-005]
+    source: inferred
+    confirmed: true
+
+  - id: ENT-PushToken
+    description: Device push token of a user
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: user_id, type: uuid, ref: ENT-User, required: true}
+      - {name: token, type: string, required: true, unique: true, sensitivity: personal}
+      - {name: platform, type: enum, values: [android, ios]}
+      - {name: last_seen_at, type: timestamp}
+    retention: "Until sign-out, invalidation by FCM, or account deletion"
+    used_by: [UC-008, UC-012]
+
+  - id: ENT-Notification
+    description: A notification produced by the rules, shown in the app and pushed to devices
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: user_id, type: uuid, ref: ENT-User, required: true}
+      - {name: garden_id, type: uuid, ref: ENT-Garden}
+      - {name: type, type: enum, required: true, values: [summary, frost, heatwave]}
+      - {name: for_date, type: date, required: true, description: "unique with garden_id for summaries: one per garden per day"}
+      - {name: payload, type: json, description: "messages: rain, heat, frost, care, season"}
+      - {name: scheduled_for, type: timestamp}
+      - {name: sent_at, type: timestamp}
+      - {name: read_at, type: timestamp}
+    states:
+      initial: scheduled
+      transitions: ["scheduled -> sent", "scheduled -> skipped", "sent -> read"]
+    retention: "90 days, and deleted with the account"
+    expected_volume: "~1 per garden per day"
+    used_by: [UC-006, UC-008]
+
+  # ---------------------------------------------------------------- system
+  - id: ENT-WeatherCell
+    description: Grid cell of about 10 km; one forecast per cell serves all its gardens
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: lat, type: decimal, required: true, description: "cell centre"}
+      - {name: lon, type: decimal, required: true, description: "cell centre"}
+      - {name: elevation_m, type: integer}
+      - {name: winter_min_mean_c, type: decimal, description: "historical mean of the coldest month minimum"}
+      - {name: last_frost_doy, type: integer, description: "mean day of year of the last spring frost"}
+      - {name: first_frost_doy, type: integer, description: "mean day of year of the first autumn frost"}
+      - {name: climate_zone_id, type: uuid, ref: ENT-ClimateZone}
+    relations:
+      - {to: ENT-WeatherForecast, type: one-to-many, on_delete: cascade, label: "has forecasts"}
+      - {to: ENT-WeatherDaily, type: one-to-many, on_delete: cascade, label: "has daily history"}
+    expected_volume: "up to ~1,500 for Greece"
+    used_by: [UC-001, UC-008]
+
+  - id: ENT-WeatherForecast
+    description: Cached forecast of one weather cell
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: weather_cell_id, type: uuid, ref: ENT-WeatherCell, required: true}
+      - {name: fetched_at, type: timestamp, required: true}
+      - {name: forecast, type: json, required: true}
+    retention: "7 days"
+    expected_volume: "~6 per active cell per day"
+    used_by: [UC-006, UC-008]
+
+  - id: ENT-WeatherDaily
+    description: Permanent daily weather summary per cell, for season insights (DATA-007)
+    attributes:
+      - {name: id, type: uuid, key: primary}
+      - {name: weather_cell_id, type: uuid, ref: ENT-WeatherCell, required: true}
+      - {name: day, type: date, required: true, description: "unique with weather_cell_id"}
+      - {name: rain_mm, type: decimal}
+      - {name: temp_min_c, type: decimal}
+      - {name: temp_max_c, type: decimal}
+    retention: "Permanent (not personal data)"
+    expected_volume: "~1 per active cell per day"
+    used_by: [UC-008]
+    source: inferred
+    confirmed: true

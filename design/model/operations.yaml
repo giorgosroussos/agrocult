@@ -1,0 +1,14 @@
+operations:
+  rpo: 24h
+  rto: 48h
+  availability: "best effort (~99%)"
+  alerts_to: "Owner's email"
+  release: "backend: manual deploy with a short maintenance window; mobile: Google Play internal testing -> closed testing -> production"
+  backups: {frequency: 24h, retention: 14 days, restore_test: quarterly, offsite: "S3-compatible free tier bucket"}
+  monitoring: ["Health endpoint /up", "Scheduler heartbeat to a free cron monitor (alerts when the worker stops)", "Uptime check on the API"]
+  ci:
+    platform: "GitHub Actions"
+    stages: [lint (Pint, flutter analyze), backend tests (Pest), mobile tests (flutter test), architecture tests (deptrac), design check (tools/design/ci_check.py), dependency audit (composer audit), build Android app bundle]
+  source: inferred
+  confirmed: true
+  user_statement: "συμφωνώ με τις προτάσεις σου"

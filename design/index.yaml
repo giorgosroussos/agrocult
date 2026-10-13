@@ -1,0 +1,36 @@
+schema_version: 1
+design_version: 1.0.0
+baseline: {version: 1.0.0, date: '2026-10-13'}
+
+project:
+  name: "Agrocult"
+  summary: "Mobile app (Android/iOS) that tells amateur gardeners in Greece what to do today for their own plants, based on the local weather at each of their gardens. It combines a plant catalogue with practical growing instructions for the Mediterranean climate and a personal garden with smart, weather-driven notifications."
+  problem: "Existing apps (Planta, PictureThis, Greg) target indoor plants or the climate of North America and Northern Europe. Encyclopedic plant information is everywhere; nothing adapts it to my plants, my area and today's weather, in Greek."
+  category: public-app
+  goals:
+    - "Tell the user what to do today for each of their plants, from the forecast at the garden's location"
+    - "Add a plant to a garden (search, choose garden, quantity/date/position) in a few taps"
+    - "At most one summary notification per garden per day, except urgent alerts (frost, heatwave)"
+    - "Catalogue search works offline and instantly, accent- and case-insensitive, with Greeklish and synonyms, across all languages"
+    - "MVP catalogue of 30-50 plants, all expert-reviewed"
+    - "Greek and English from the first release"
+  non_goals:
+    - "Disease diagnosis from photos (later, possibly premium)"
+    - "Community features and seed exchange"
+    - "Moisture sensors and smart irrigation devices"
+    - "A third language"
+    - "Web version"
+    - "Background location tracking"
+  scale: {users: "tens of thousands (future target, not for launch)", concurrent: "~500 at morning notification peak", data_volume: "~50 catalogue plants; ~10 plants and a few care-log entries per week per user"}
+  constraints:
+    - "Single developer (the owner)"
+    - "No deadline"
+    - "Budget: free tiers wherever possible"
+    - "Personal project first; may become commercial later"
+
+# Defaults below are confirmed together in the area-1 batch confirmation.
+language: {human_docs: en, agent_files: en}
+environments: [development]
+parallelism: {max_parallel: 3, timestamped_migrations: true}
+budgets: {pack_tokens: 8000, brief_tokens: 4000}
+settings_confirmed: true

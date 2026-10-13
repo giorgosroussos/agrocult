@@ -1,0 +1,16 @@
+roles:
+  - {id: ROLE-Visitor, from_actor: ACT-Visitor, permissions: [UC-003, UC-004, UC-006, UC-012], source: inferred, confirmed: true}
+  - {id: ROLE-Gardener, from_actor: ACT-Gardener, permissions: [UC-001, UC-002, UC-003, UC-004, UC-005, UC-006, UC-007, UC-008, UC-009, UC-011, UC-012, UC-013, UC-014, UC-015], mfa: none, source: inferred, confirmed: true}
+  - {id: ROLE-Curator, from_actor: ACT-Curator, permissions: [UC-010, UC-012, UC-013], mfa: required, source: inferred, confirmed: true}
+  - {id: ROLE-Worker, from_actor: ACT-Worker, permissions: [UC-008], source: inferred, confirmed: true}
+
+ownership:
+  - {id: OWN-001, entity: ENT-Garden, rule: "A gardener reads and changes only gardens where they have a GardenMember row", applies_to: [ROLE-Gardener], source: inferred, confirmed: true}
+  - {id: OWN-002, entity: ENT-GardenPlant, rule: "A gardener reads and changes only plants of gardens they are a member of", applies_to: [ROLE-Gardener], source: inferred, confirmed: true}
+  - {id: OWN-003, entity: ENT-CareLog, rule: "A gardener reads and changes only care log entries of plants in gardens they are a member of", applies_to: [ROLE-Gardener], source: inferred, confirmed: true}
+  - {id: OWN-004, entity: ENT-Notification, rule: "A gardener reads only notifications where user_id is their own id", applies_to: [ROLE-Gardener], source: inferred, confirmed: true}
+  - {id: OWN-005, entity: ENT-PushToken, rule: "A gardener registers and removes only their own push tokens", applies_to: [ROLE-Gardener], source: inferred, confirmed: true}
+  - {id: OWN-006, entity: ENT-Identification, rule: "A gardener reads only their own identification requests", applies_to: [ROLE-Gardener], source: inferred, confirmed: true}
+  - {id: OWN-007, entity: ENT-User, rule: "A gardener reads, changes, exports and deletes only their own account", applies_to: [ROLE-Gardener], source: inferred, confirmed: true}
+  - {id: OWN-008, entity: ENT-GardenMember, rule: "A gardener sees only memberships of gardens they are a member of", applies_to: [ROLE-Gardener], source: inferred, confirmed: true}
+  - {id: OWN-009, entity: ENT-Garden, rule: "A curator has no access to gardens, garden plants, care log or notifications of users", applies_to: [ROLE-Curator], source: inferred, confirmed: true}

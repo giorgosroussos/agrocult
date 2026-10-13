@@ -1,0 +1,21 @@
+id: PHASE-5
+goal: Photo identification through our server
+depends_on: [PHASE-3]
+use_cases: [UC-005]
+entities: [ENT-Identification]
+components: [CMP-Identification, CMP-AppCatalogue]
+decisions: [DEC-002, DEC-007, SEC-003]
+environment: development
+tasks:
+  - id: P5-T1
+    title: Identification API
+    description: "PlantIdentifier with Pl@ntNet adapter and fake; 10/day limit counting only provider results; EXIF stripping and upload checks; matching by GBIF id and scientific name; gardener's own plants first; 30-day retention"
+    use_cases: [UC-005]
+    touches: {writes: [CMP-Identification], reads: [CMP-Catalogue, CMP-Gardens, CMP-Identity], migrations: true}
+  - id: P5-T2
+    title: Identification screens
+    description: "Take or pick a photo, resize to 1024 px, show up to 3 candidates with confidence and Pl@ntNet attribution, confirm to open the card or add to a garden"
+    depends_on: [P5-T1]
+    use_cases: [UC-005]
+    touches: {writes: [CMP-AppCatalogue], reads: [CMP-Identification, CMP-AppGardens], hotspots: [mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
+out_of_scope: ["Disease diagnosis (non-goal)"]

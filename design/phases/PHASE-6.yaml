@@ -1,0 +1,28 @@
+id: PHASE-6
+goal: Privacy and release readiness for Google Play
+depends_on: [PHASE-4, PHASE-5]
+use_cases: [UC-014]
+entities: []
+components: [CMP-Privacy, CMP-AppHome]
+decisions: [SEC-002, OPS-001, OPS-002, DATA-008]
+environment: development
+acceptance_criteria:
+  - "The app has a credits screen with OpenStreetMap, Open-Meteo and Pl@ntNet attributions"
+  - "A privacy policy is reachable from the app and the store listing"
+  - "Given the scheduler stops for more than 6 hours, Then the owner receives an email alert"
+tasks:
+  - id: P6-T1
+    title: Export and account deletion API
+    description: "Export of all user data as one file; immediate hard deletion across all modules including photos and tokens"
+    use_cases: [UC-014]
+    touches: {writes: [CMP-Privacy], reads: [CMP-Identity, CMP-Gardens, CMP-Identification, CMP-Notifications]}
+  - id: P6-T2
+    title: Export and deletion screens
+    depends_on: [P6-T1]
+    use_cases: [UC-014]
+    touches: {writes: [CMP-AppHome], reads: [CMP-Privacy], hotspots: [mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
+  - id: P6-T3
+    title: Release readiness
+    description: "Credits screen, privacy policy page, Play data-safety answers, scheduler heartbeat and uptime monitoring, daily offsite backup script with a restore test, signed Android app bundle"
+    touches: {writes: [CMP-AppCore], hotspots: [mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
+out_of_scope: ["Choosing and setting up production hosting (OPS-002, before first production deploy)", "iOS release (DEC-005)"]

@@ -1,0 +1,46 @@
+id: PHASE-1
+goal: Walking skeleton - backend and app run, CI enforces every check, accounts and admin panel work
+depends_on: []
+use_cases: [UC-012, UC-013]
+entities: [ENT-User, ENT-PushToken]
+components: [CMP-Identity, CMP-AppCore]
+decisions: [SCOPE-002, SCOPE-009, SEC-001, SEC-002, SEC-003, SEC-004, ARCH-001, ARCH-002, ARCH-004, OPS-003, OPS-004, DATA-006, DEC-004]
+environment: development
+acceptance_criteria:
+  - "Given a fresh clone, When the engineer runs Sail up, Then the API, PostgreSQL 18, the queue worker and the scheduler start"
+  - "GET /up returns 200"
+  - "CI on GitHub Actions runs Pint, Larastan, Pest, deptrac, flutter analyze, flutter test, composer audit and tools/design/ci_check.py on every push"
+  - "Given an unknown API route, Then the response is an RFC 9457 problem details document"
+  - "Given the app on a Greek device, Then the sign-in screen is in Greek"
+tasks:
+  - id: P1-T1
+    title: Backend skeleton in Docker
+    description: "Laravel 13 in backend/ with Sail (PHP 8.3, PostgreSQL 18, queue worker, scheduler), module folders for every backend component, Pint, Larastan level 6, Pest, deptrac rules from may_depend_on, RFC 9457 error handler, /up, all approved backend dependencies installed"
+    touches: {writes: [], hotspots: [backend/composer.json, backend/bootstrap/providers.php, backend/routes/console.php]}
+  - id: P1-T2
+    title: Mobile app skeleton
+    description: "Flutter app in mobile/ with Riverpod, router, el/en ARB files, dio API client with secure token storage, drift setup, flutter_lints, all approved mobile dependencies installed"
+    touches: {writes: [CMP-AppCore], hotspots: [mobile/pubspec.yaml, mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
+  - id: P1-T3
+    title: CI pipeline
+    description: "GitHub Actions workflow running every check of both apps plus the design check"
+    depends_on: [P1-T1, P1-T2]
+    touches: {writes: []}
+  - id: P1-T4
+    title: Accounts API
+    description: "Users, sign-up with age confirmation, email verification through Mailtrap, sign-in with per-device Sanctum tokens and rate limiting, sign-out, password reset, language and notification preferences, push token registration"
+    depends_on: [P1-T1]
+    use_cases: [UC-012, UC-013]
+    touches: {writes: [CMP-Identity], migrations: true}
+  - id: P1-T5
+    title: Admin panel with MFA
+    description: "Filament panel for admin and curator roles with required TOTP; gardener accounts denied"
+    depends_on: [P1-T4]
+    touches: {writes: [CMP-Identity], hotspots: [backend/bootstrap/providers.php]}
+  - id: P1-T6
+    title: Auth screens in the app
+    description: "Sign-up (with age confirmation), verify email notice, sign-in, password reset, sign-out"
+    depends_on: [P1-T2, P1-T4]
+    use_cases: [UC-012, UC-013]
+    touches: {writes: [CMP-AppCore], reads: [CMP-Identity], hotspots: [mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
+out_of_scope: ["Catalogue (PHASE-2)", "Social login (SCOPE-009)", "Production hosting (OPS-002)", "iOS build (DEC-005)"]

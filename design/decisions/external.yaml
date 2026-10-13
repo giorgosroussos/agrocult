@@ -1,0 +1,41 @@
+decisions:
+  - id: DEC-001
+    area: external
+    topic: weather_provider
+    title: Weather provider
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "1 α"
+    decision: "Open-Meteo free API while the project is personal; switch to its paid plan or MET Norway before any commercial release."
+    rationale: "No key, ECMWF/ICON models suit Greece, historical archive for frost dates, generous free limit."
+    alternatives_rejected: ["MET Norway (no historical archive)", "OpenWeatherMap (lower free limit)"]
+    affects: [EXT-002]
+
+  - id: DEC-005
+    area: external
+    topic: platforms
+    title: Android first, iOS later
+    status: deferred
+    source: inferred
+    confirmed: true
+    user_statement: "2 α"
+    decision: "The MVP is released on Android only; iOS follows later."
+    deferred_to: "after Android MVP release"
+    trigger: "Apple Developer account and a Mac for builds are available"
+    requirements: ["Apple Developer account", "APNs key in Firebase", "Mac or cloud macOS build"]
+    prepare_now:
+      - "MUST NOT use Android-only plugins or APIs in the Flutter app without an iOS-compatible equivalent"
+      - "MUST keep iOS platform permissions text (location, camera, photos) up to date in the project"
+
+  - id: DEC-006
+    area: external
+    title: No Permapeople data
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "4 συμφωνώ"
+    decision: "Permapeople is not used as a data source; companion data comes from OpenFarm (CC0)."
+    constraints:
+      - "MUST NOT import plant catalogue data from Permapeople or any other share-alike or non-commercial source"
+    affects: [EXT-006, UC-010]

@@ -1,0 +1,37 @@
+id: PHASE-4
+goal: What to do today - forecasts, weather x plant rules, morning summaries, urgent alerts and the home screen
+depends_on: [PHASE-3]
+use_cases: [UC-006, UC-008, UC-009]
+entities: [ENT-WeatherForecast, ENT-WeatherDaily, ENT-Notification]
+components: [CMP-Weather, CMP-Notifications, CMP-AppHome]
+decisions: [SCOPE-005, DEC-003, DEC-004, DEC-007]
+environment: development
+tasks:
+  - id: P4-T1
+    title: Forecast refresh
+    description: "Scheduled jobs every few hours for cells with gardens, forecast cache with 12 h validity and 7-day retention, permanent daily summary"
+    touches: {writes: [CMP-Weather], migrations: true, hotspots: [backend/routes/console.php]}
+  - id: P4-T2
+    title: Notification rules
+    description: "Rain, heatwave, frost, care and season rules with thresholds from configuration; messages in the user's language; one summary per garden per day at 07:30; urgent alerts with quiet hours; 10:00 cutoff; 90-day retention"
+    use_cases: [UC-008]
+    touches: {writes: [CMP-Notifications], reads: [CMP-Weather, CMP-Gardens, CMP-Catalogue, CMP-Identity], migrations: true, hotspots: [backend/routes/console.php]}
+  - id: P4-T3
+    title: Push delivery
+    description: "PushSender with FCM adapter and fake with failure simulation; invalid token removal"
+    depends_on: [P4-T2]
+    use_cases: [UC-008]
+    touches: {writes: [CMP-Notifications], reads: [CMP-Identity]}
+  - id: P4-T4
+    title: Today feed API
+    description: "Home endpoint: weather per garden, today's notifications, next actions, seasonal ideas and a tip; visitor variant without weather"
+    depends_on: [P4-T2]
+    use_cases: [UC-006]
+    touches: {writes: [CMP-Notifications], reads: [CMP-Weather, CMP-Gardens, CMP-Catalogue]}
+  - id: P4-T5
+    title: Home, notifications and settings screens
+    description: "Home screen with offline fallback, notification list, push handling into the garden, settings for language, notification types and gardens"
+    depends_on: [P4-T3, P4-T4]
+    use_cases: [UC-006, UC-009]
+    touches: {writes: [CMP-AppHome], reads: [CMP-Notifications, CMP-Identity], hotspots: [mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
+out_of_scope: ["Spraying alerts and vacation mode (SCOPE-007)", "Home-screen widget (SCOPE-007)"]

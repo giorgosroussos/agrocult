@@ -1,0 +1,15 @@
+decisions:
+  - id: DEC-007
+    area: integrations
+    title: Failure behaviour of identification and summaries
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "ok"
+    decision: "Only identifications that returned a provider result count against the 10/day limit. A morning summary not pushed by 10:00 Europe/Athens is not pushed and stays visible in the app. Calls to third parties are logged with duration and outcome, never personal data. Mocks simulate timeouts and errors."
+    constraints:
+      - "MUST NOT count failed identification attempts against the daily limit"
+      - "MUST NOT push a summary after 10:00 Europe/Athens"
+      - "MUST log third-party calls with duration and outcome and without personal data"
+      - "MUST make every external-service fake able to simulate a timeout and an error"
+    affects: [INT-001, INT-003, UC-005, UC-008]

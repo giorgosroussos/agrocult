@@ -1,0 +1,117 @@
+external_systems:
+  - id: EXT-001
+    name: Pl@ntNet identification API
+    purpose: Identify plant species from a photo
+    direction: outbound
+    owner: third-party
+    status: decided
+    vendor: "Pl@ntNet"
+    user_statement: "Η κλήση γίνεται μέσω του server: κρυφό API key, caching, όριο ανά χρήστη, αλλαγή παρόχου χωρίς νέα έκδοση."
+    imposed:
+      - "Free tier: 500 identifications per day"
+      - "Attribution is mandatory wherever results are shown"
+      - "Commercial-use terms must be confirmed with the Pl@ntNet team before a commercial release"
+      - "API key must stay on the server"
+    prepare_now:
+      - "MUST call plant identification only through a PlantIdentifier interface on the server"
+      - "MUST NOT expose provider-specific types outside the identification adapter"
+    bindings:
+      development: {mode: live, tool: "Pl@ntNet free key", config: "PLANTNET_API_KEY"}
+    used_by: [UC-005]
+    source: user
+
+  - id: EXT-002
+    name: Weather forecast provider (Open-Meteo)
+    purpose: Forecast per weather cell (rain mm, min/max temperature) for notification rules and home screen; historical data for frost dates
+    direction: outbound
+    owner: third-party
+    status: decided
+    vendor: "Open-Meteo"
+    user_statement: "για τον καιρό βάλε Open-Meteo"
+    imposed:
+      - "Free tier is for non-commercial use only; a commercial release needs the paid plan or another provider (e.g. MET Norway)"
+      - "Free tier daily call limit (~10,000/day at the time of design; verify)"
+      - "Attribution required (CC BY 4.0 data)"
+    prepare_now:
+      - "MUST access weather only through a WeatherProvider interface"
+      - "MUST cache forecasts per weather cell and never call the provider per garden"
+    bindings:
+      development: {mode: live, tool: "Open-Meteo free API (no key)", config: "OPEN_METEO_BASE_URL"}
+    used_by: [UC-006, UC-008]
+    source: user
+
+  - id: EXT-003
+    name: Push notifications (FCM, APNs through FCM)
+    purpose: Deliver summaries and urgent alerts to devices
+    direction: outbound
+    owner: third-party
+    status: decided
+    vendor: "Firebase Cloud Messaging"
+    imposed:
+      - "iOS delivery requires an Apple Developer account and an APNs key uploaded to Firebase"
+      - "Invalid tokens are reported back and must be removed"
+    prepare_now:
+      - "MUST send push only through a PushSender interface"
+    bindings:
+      development: {mode: live, tool: "Firebase dev project", config: "FIREBASE_CREDENTIALS"}
+    used_by: [UC-008]
+    source: user
+
+  - id: EXT-004
+    name: Transactional email
+    purpose: Email verification and password reset
+    direction: outbound
+    owner: third-party
+    status: deferred
+    vendor: null
+    user_statement: "πάμε με mailtrap"
+    requirements: ["Free tier of at least ~100 emails/day", "EU delivery", "SMTP or Laravel mail driver"]
+    deferred_to: "before first production deploy"
+    prepare_now:
+      - "MUST send email only through Laravel Mail"
+    bindings:
+      development: {mode: catcher, tool: "Mailtrap Email Sandbox (free plan)", config: "MAIL_*"}
+    used_by: [UC-012, UC-013]
+    source: inferred
+    confirmed: true
+
+  - id: EXT-005
+    name: Place search and map
+    purpose: Find an area by name from a bundled list of Greek settlements; pick a point on a map
+    direction: outbound
+    owner: third-party
+    status: decided
+    vendor: "Bundled Greek settlements list derived from OpenStreetMap (ODbL); OpenFreeMap vector tiles"
+    user_statement: "3 γ"
+    imposed:
+      - "OpenStreetMap attribution must be shown on the map and in the app's credits (ODbL)"
+      - "Settlement list is bundled in the app and works offline; the map needs network"
+    prepare_now:
+      - "MUST load map tiles through a configurable tile URL so that the tile provider can change without a code change"
+    bindings:
+      development: {mode: live, tool: "OpenFreeMap public tiles", config: "MAP_TILE_URL"}
+    used_by: [UC-001]
+    source: inferred
+    confirmed: true
+
+  - id: EXT-006
+    name: Open plant data sources
+    purpose: One-off and occasional import of plant facts by curators (OpenFarm crops rescue CC0, Wikidata/Wikipedia, GBIF ids, Trefle taxonomy)
+    direction: inbound
+    owner: third-party
+    status: decided
+    vendor: "OpenFarm (CC0), Wikidata, GBIF, Trefle"
+    user_statement: "σχήμα πεδίων πρώτα → εισαγωγή από τις πηγές (crawler/LLM μόνο για εξαγωγή γεγονότων, όχι αντιγραφή κειμένων) → διασταύρωση → ανθρώπινος έλεγχος."
+    imposed:
+      - "Facts only; source texts are never copied"
+      - "Source and licence recorded per imported fact (SCOPE-001)"
+      - "Perenual excluded: free tier is non-commercial only"
+      - "Permapeople excluded: CC BY-SA share-alike would bind the catalogue to the same licence"
+    bindings:
+      development: {mode: live, config: "TREFLE_TOKEN"}
+    used_by: [UC-010]
+    source: user
+
+# EXT-007 (app stores) moved to OPS-001: distribution, not a runtime integration. Id not reused.
+org_constraints:
+  - {id: ORG-001, text: "Budget: free tiers wherever possible", constraint: "SHOULD use only services with a free tier sufficient for development and the first users"}

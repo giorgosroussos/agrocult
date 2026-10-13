@@ -1,0 +1,103 @@
+decisions:
+  - id: DATA-001
+    area: data
+    topic: climate_zones
+    title: Climate zones computed per weather cell from historical data
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "1 β"
+    decision: "Each weather cell gets climate metrics from the Open-Meteo historical archive (mean winter minimum temperature, mean last spring frost and first autumn frost dates, elevation). The metrics map the cell to one of 4-5 named climate zones; gardens take the zone of their cell. Zone thresholds and names are curator-managed data."
+    rationale: "Distinguishes Crete from Florina and two villages of the same prefecture at different altitudes, while curators fill calendars for only 4-5 zones."
+    alternatives_rejected: ["fixed zones by region and altitude: too coarse"]
+    constraints:
+      - "MUST derive a garden's climate zone from its weather cell, never from user input"
+      - "MUST store zone thresholds as data, not in code"
+      - "MUST compute cell climate metrics once per cell and reuse them"
+    affects: [ENT-ClimateZone, ENT-WeatherCell, ENT-Garden]
+
+  - id: DATA-002
+    area: data
+    topic: initial_catalogue
+    title: Plants in the first catalogue
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "Η λίστα είναι οκ"
+    decision: "42 plants in 10 categories (list in rationale)."
+    rationale: "Fruit vegetables: tomato, pepper, aubergine, okra. Cucurbits: courgette, cucumber, watermelon, melon. Leafy and brassicas: lettuce, spinach, cabbage, broccoli, chard, rocket. Roots and bulbs: potato, carrot, beetroot, onion, garlic, leek. Legumes: green beans, broad beans, peas. Aromatic herbs: basil, mint, oregano, thyme, rosemary, parsley, dill, lavender. Citrus: lemon, orange, mandarin. Fruit trees: olive, fig, pomegranate, almond, apricot. Vines: grapevine. Flowers: geranium, marigold (Tagetes)."
+
+  - id: DATA-003
+    area: data
+    topic: content_review
+    title: The owner reviews content in the MVP
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "3 α"
+    decision: "The owner reviews and publishes catalogue content in the MVP; an agronomist joins as curator when available. Weather thresholds remain initial values until an agronomist checks them."
+    affects: [UC-010]
+
+  - id: DATA-004
+    area: data
+    title: Plant categories as curator-managed data
+    status: decided
+    source: user
+    user_statement: "θα ήθελα επίσης τα φυτά να κατηγοριοποιούνται (π.χ. αρρωματικά, εσπεριδοειδή, καρποφόρα, κ.λπ)"
+    decision: "Categories are a catalogue table with Greek and English names and an optional parent, so curators can add or regroup them. Each plant has one primary category; search filters by category."
+    constraints:
+      - "MUST NOT hard-code plant categories in the app or the backend"
+
+  - id: DATA-005
+    area: data
+    title: Removing a garden plant archives it
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "4 α"
+    decision: "Removing a plant from a garden sets archived_at; it disappears from the garden and produces no notifications, its care log stays for season comparison. Deleting a garden or an account still hard-deletes everything."
+    constraints:
+      - "MUST exclude archived garden plants from garden lists and from notification rules"
+    affects: [UC-011, ENT-GardenPlant]
+
+  - id: DATA-006
+    area: data
+    title: Data model defaults
+    status: decided
+    source: default
+    confirmed: true
+    user_statement: "Για της προεπιλογές είμαι εντάξει."
+    decision: "UUID keys; UTC timestamps; ISO language codes; identification photos not stored, results kept 30 days; forecasts kept 7 days, notifications 90 days; user data until account deletion; owners may edit or delete their care log entries; tips in Greek and English; audit trail on catalogue plant changes."
+    constraints:
+      - "MUST NOT store identification photos after the provider call"
+      - "MUST use UUID primary keys"
+    global: true
+
+  - id: DATA-007
+    area: data
+    title: Personal season insights
+    status: deferred
+    source: inferred
+    confirmed: true
+    user_statement: "Θα μπορούσαμε εφόσον κρατάμε δεδομένα για κάθε λογαριασμό να τα χρησιμοποιούμε για να προσφέρουμε στον χρήστη κάποιες πληροφορίες σχετικά με την δραστηριότητα του μέσα στο χρόνο/σεζόν ;"
+    decision: "A 'My season' view with the user's own statistics (planting dates year over year, care actions per month and plant, watering vs rain, harvest per plant and season) comes after the MVP; the MVP stores what it needs."
+    deferred_to: "after MVP"
+    trigger: "Users have at least one full season of data"
+    requirements: ["Only the user's own data", "Comparison across seasons", "Watering compared with actual rain"]
+    prepare_now:
+      - "MUST allow an optional harvest quantity and unit on care log entries"
+      - "MUST keep a permanent daily weather summary (rain mm, min and max temperature) per weather cell"
+    affects: [ENT-CareLog, ENT-WeatherDaily]
+
+  - id: DATA-008
+    area: data
+    title: Anonymous regional insights from all users
+    status: deferred
+    source: user
+    user_statement: "2 ναι"
+    decision: "Aggregated, anonymised activity by area (e.g. 'gardeners near you are sowing garlic now') is a post-MVP idea."
+    deferred_to: "after MVP"
+    trigger: "Enough users per area"
+    requirements: ["Anonymisation", "Minimum number of users per area before showing any figure", "Disclosure in the privacy policy"]
+    prepare_now:
+      - "MUST NOT show or export any data of one user to another user"

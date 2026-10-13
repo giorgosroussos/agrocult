@@ -1,0 +1,38 @@
+id: PHASE-3
+goal: My gardens - gardens with location and climate zone, plants in them, care log and next action
+depends_on: [PHASE-2]
+use_cases: [UC-001, UC-002, UC-007, UC-011, UC-015]
+entities: [ENT-WeatherCell, ENT-Garden, ENT-GardenMember, ENT-GardenPlant, ENT-CareLog]
+components: [CMP-Weather, CMP-Gardens, CMP-AppGardens]
+decisions: [SCOPE-003, SCOPE-004, SCOPE-007, DATA-001, DATA-005, DATA-007, DEC-001]
+environment: development
+tasks:
+  - id: P3-T1
+    title: Weather cells and climate zones
+    description: "WeatherProvider interface, Open-Meteo adapter and fake with failure simulation (elevation, history, forecast), ~10 km grid, cell climate metrics computed once, zone assignment from zone rules"
+    touches: {writes: [CMP-Weather], reads: [CMP-Catalogue], migrations: true}
+  - id: P3-T2
+    title: Gardens API
+    description: "Gardens with rounded location, weather cell and zone; membership with one owner; garden plants with archive; care log with optional harvest quantity; next action from care intervals; journal"
+    depends_on: [P3-T1]
+    use_cases: [UC-001, UC-002, UC-007, UC-011, UC-015]
+    touches: {writes: [CMP-Gardens], reads: [CMP-Weather, CMP-Catalogue, CMP-Identity], migrations: true}
+  - id: P3-T3
+    title: Gardens screens
+    description: "Garden list, create and edit with settlement search, map point (OpenFreeMap) or current position, delete with confirmation"
+    depends_on: [P3-T2]
+    use_cases: [UC-001]
+    touches: {writes: [CMP-AppGardens], reads: [CMP-Gardens], hotspots: [mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
+  - id: P3-T4
+    title: Add, edit and remove garden plants
+    description: "Add-plant flow from search or card in a few taps, edit and archive"
+    depends_on: [P3-T3]
+    use_cases: [UC-002, UC-011]
+    touches: {writes: [CMP-AppGardens], reads: [CMP-AppCatalogue, CMP-Gardens]}
+  - id: P3-T5
+    title: Care log and journal screens
+    description: "Log an action with date, note, photo and harvest quantity; next action per plant; journal per garden and plant"
+    depends_on: [P3-T4]
+    use_cases: [UC-007, UC-015]
+    touches: {writes: [CMP-AppGardens], reads: [CMP-Gardens]}
+out_of_scope: ["Forecasts and notifications (PHASE-4)", "Shared gardens (SCOPE-007)", "Season insights (DATA-007)"]
