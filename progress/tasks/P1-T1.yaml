@@ -1,6 +1,6 @@
 id: P1-T1
 status: blocked
-commit: null
+commit: caf81df
 blocked_by: CR-P1-T1-1
 handoff: |
   backend/: Laravel 13 + Sail (compose.yaml: laravel.test, queue, scheduler, pgsql 18); /up; RFC 9457 errors in app/Support/Http/ProblemDetails.php.
