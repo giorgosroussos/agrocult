@@ -9,7 +9,7 @@ stack:
     - {role: worker, name: Laravel scheduler + queue worker, version: "13.8", why: "Runs the notification worker every few hours and the morning summaries (UC-008)", source: inferred, confirmed: true}
     - {role: other, name: Filament, version: "5.7", why: "Admin panel for catalogue curation inside Laravel (SCOPE-010) with built-in MFA (SEC-001)", source: inferred, confirmed: true}
     - {role: frontend, name: Riverpod, version: "3.0", why: "State management for the Flutter app; widely used and testable (ARCH-004)", source: inferred, confirmed: true}
-    - {role: frontend, name: Flutter, version: "3.47", why: "Mobile app for Android now and iOS later from one codebase (DEC-005); from the draft", source: user}
+    - {role: frontend, name: Flutter, version: "3.44", why: "Mobile app for Android now and iOS later from one codebase (DEC-005); from the draft. 3.44 is the newest verified available (ARCH-005)", source: user}
     - {role: storage, name: Laravel filesystem (local in development, S3-compatible later), version: "13.8", why: "Private photo storage with temporary URLs (SEC-002)", source: inferred, confirmed: true}
 
 components:
@@ -75,7 +75,7 @@ approved_dependencies:
   - {name: laravel/framework, version: "^13.8", scope: runtime, provider_specific: false}
   - {name: laravel/sanctum, version: "^4.0", scope: runtime, provider_specific: false}
   - {name: filament/filament, version: "^5.7", scope: runtime, provider_specific: false}
-  - {name: kreait/laravel-firebase, version: "^6.0", scope: runtime, provider_specific: false}
+  - {name: kreait/laravel-firebase, version: "^7.0", scope: runtime, provider_specific: false}
   - {name: intervention/image, version: "^3.0", scope: runtime, provider_specific: false}
   - {name: pestphp/pest, version: "^4.0", scope: dev, provider_specific: false}
   - {name: laravel/pint, version: "^1.0", scope: dev, provider_specific: false}
@@ -87,7 +87,7 @@ approved_dependencies:
   - {name: dio, version: "^5.9.0", scope: runtime, provider_specific: false}
   - {name: intl, version: "^0.20.0", scope: runtime, provider_specific: false}
   - {name: flutter_map, version: "^8.0.0", scope: runtime, provider_specific: false}
-  - {name: vector_map_tiles, version: "^9.0.0", scope: runtime, provider_specific: false}
+  - {name: vector_map_tiles, version: "9.0.0-beta.13", scope: runtime, provider_specific: false}
   - {name: firebase_messaging, version: "^16.0.0", scope: runtime, provider_specific: false}
   - {name: image_picker, version: "^1.2.0", scope: runtime, provider_specific: false}
   - {name: flutter_image_compress, version: "^2.4.0", scope: runtime, provider_specific: false}
@@ -106,6 +106,7 @@ conventions:
   - "UI strings in ARB files with intl; Greek and English"
   - "External services only behind interfaces: WeatherProvider, PlantIdentifier, PushSender; tests always use fakes"
   - "All dependencies are installed in the foundation phase; a new runtime dependency needs a change request"
+  - "The map is used only through one app widget (GardenLocationMap) in CMP-AppGardens; no other code imports flutter_map or vector_map_tiles"
 
 hotspots:
   - backend/composer.json

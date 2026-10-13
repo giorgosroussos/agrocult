@@ -41,3 +41,18 @@ decisions:
     confirmed: true
     user_statement: "2 πάμε με την δική σου επιλογή"
     decision: "The Flutter app uses Riverpod."
+
+  - id: ARCH-005
+    area: architecture
+    title: Dependency versions corrected after foundation work
+    status: decided
+    source: user
+    user_statement: "^7.0 εγκρίνεται, A για τον χάρτη, α για Flutter"
+    decision: "kreait/laravel-firebase ^7.0 (6.x does not support Laravel 13). vector_map_tiles pinned to 9.0.0-beta.13 (no stable 9.x; 8.x needs flutter_map 7). Flutter 3.44, the newest version verified available."
+    rationale: "Versions in the baseline were proposed without verification; the foundation tasks found them unresolvable (CR-P1-T1-1, CR-P1-T2-1). The beta map library only serves the garden location picker, and area search covers the same need if the map fails."
+    alternatives_rejected: ["raster tiles with flutter_map only: OpenFreeMap serves only vector tiles; OSM tile policy forbids app use; keyed providers have limits", "flutter_map 7 with vector_map_tiles 8: outdated, a second migration later"]
+    constraints:
+      - "MUST use flutter_map and vector_map_tiles only inside the GardenLocationMap widget"
+      - "MUST move vector_map_tiles to a stable release (^9.0.0) before the first store release, if one exists"
+    affects: [CMP-AppGardens, CMP-Notifications, EXT-003, EXT-005]
+    since: 1.0.1

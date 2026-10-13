@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Integrations
 
-_Generated document · design v1.0.0 · source e80104843be7_
+_Generated document · design v1.0.1 · source 684d51011856_
 
 
 #### PlantIdentifier (INT-001: CMP-Identification ↔ EXT-001)

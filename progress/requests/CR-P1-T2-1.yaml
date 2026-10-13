@@ -1,0 +1,31 @@
+id: CR-P1-T2-1
+raised_by: implementation-agent
+task: P1-T2
+problem: >
+  The approved dependency vector_map_tiles@^9.0.0 (design/model/architecture.yaml,
+  approved_dependencies) cannot be resolved. pub.dev has no stable 9.x release:
+  the latest stable is 8.0.0, which requires flutter_map ^7.0.2 and so conflicts
+  with the approved flutter_map@^8.0.0. The 9.x line exists only as pre-releases
+  (9.0.0-beta.1 .. 9.0.0-beta.13, the latest from 2026-09-01, requiring flutter_map ^8.1.1),
+  and a caret constraint ^9.0.0 does not match pre-releases. `flutter pub add` fails with
+  "vector_map_tiles ^9.0.0 which doesn't match any versions". All other approved mobile
+  dependencies resolve (flutter_riverpod 3.x, drift 2.x with sqlite3 3.x, dio 5.9, intl 0.20,
+  flutter_map 8.x, firebase_messaging 16.x, image_picker 1.2, flutter_image_compress 2.4,
+  geolocator 14.x, flutter_secure_storage 9.2). A dry run confirms 9.0.0-beta.13 resolves
+  together with them.
+  Side note (no decision needed unless you want one): the newest Flutter available in the
+  cirruslabs Docker image is 3.44.0 (Dart 3.12); the stack names Flutter 3.47.
+affects:
+  - design/model/architecture.yaml (approved_dependencies: vector_map_tiles)
+  - P1-T2 (all approved mobile dependencies installed), later map screens in CMP-AppGardens
+  - EXT map tiles (OpenFreeMap vector tiles via MAP_TILE_URL, design/model/external.yaml)
+proposal: >
+  Option A (recommended): approve vector_map_tiles pinned to the pre-release
+  "9.0.0-beta.13" (exact pin, compatible with flutter_map ^8), to be moved to ^9.0.0
+  once a stable 9.0.0 is published.
+  Option B: drop vector_map_tiles and render raster tiles with flutter_map alone,
+  changing the tile provider/MAP_TILE_URL to a raster tile source.
+  Option C: downgrade to flutter_map ^7 + vector_map_tiles ^8.0.0 (older, last release 2024).
+status: accepted
+resolution: >
+  Accepted in design v1.0.1 (ARCH-005): option A, vector_map_tiles pinned to 9.0.0-beta.13, used only inside the GardenLocationMap widget; move to ^9.0.0 before the first store release if stable. Flutter set to 3.44 (the side note).

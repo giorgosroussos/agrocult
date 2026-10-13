@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Agrocult — overview
 
-_Generated document · design v1.0.0 · source e80104843be7_
+_Generated document · design v1.0.1 · source 684d51011856_
 
 
 Mobile app (Android/iOS) that tells amateur gardeners in Greece what to do today for their own plants, based on the local weather at each of their gardens. It combines a plant catalogue with practical growing instructions for the Mediterranean climate and a personal garden with smart, weather-driven notifications.

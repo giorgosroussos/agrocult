@@ -1,0 +1,22 @@
+id: CR-P1-T1-1
+raised_by: implementation-agent
+task: P1-T1
+problem: >
+  The approved dependency kreait/laravel-firebase@^6.0 cannot be installed with the
+  approved laravel/framework@^13.8. Every 6.x release (6.0.0-6.2.0) requires
+  illuminate/notifications ^11.0 || ^12.0, so composer cannot resolve it on Laravel 13.
+  Laravel 13 support starts with kreait/laravel-firebase 7.0 (latest 7.2.1 requires
+  illuminate/* ^11 || ^12 || ^13, PHP ~8.3, kreait/firebase-php ^8.0).
+  All other approved backend dependencies are installed; only this one is missing.
+affects:
+  - design/model/architecture.yaml (approved_dependencies: kreait/laravel-firebase)
+  - P1-T1 (all approved backend dependencies installed)
+  - PushSender implementation (FCM) in later phases
+proposal: >
+  Change the approved version of kreait/laravel-firebase from ^6.0 to ^7.0
+  (runtime, not provider-specific in application code: used only behind PushSender).
+  After the design change, P1-T1 adds it with composer require and the
+  dependency architecture test is updated accordingly.
+status: accepted
+resolution: >
+  Accepted in design v1.0.1 (ARCH-005): kreait/laravel-firebase ^7.0.

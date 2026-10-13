@@ -53,3 +53,6 @@ mobile/ios/Runner/GoogleService-Info.plist
 
 # app-design-implement local state
 .impl/
+
+# agent worktrees created by Claude Code
+.claude/worktrees/

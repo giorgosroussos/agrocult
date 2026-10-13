@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Architecture and stack
 
-_Generated document · design v1.0.0 · source e80104843be7_
+_Generated document · design v1.0.1 · source 684d51011856_
 
 
 **Style:** modular-monolith · **database:** postgresql
@@ -20,7 +20,7 @@ flowchart LR
     queue["queue<br/>Laravel queue (database driver) 13.8"]
     worker["worker<br/>Laravel scheduler + queue worker 13.8"]
     frontend["frontend<br/>Riverpod 3.0"]
-    frontend["frontend<br/>Flutter 3.47"]
+    frontend["frontend<br/>Flutter 3.44"]
     storage["storage<br/>Laravel filesystem (local in development 13.8"]
   end
   ACT_Visitor --> frontend
@@ -55,7 +55,7 @@ flowchart LR
 | worker | Laravel scheduler + queue worker | 13.8 | Runs the notification worker every few hours and the morning summaries (UC-008) |
 | other | Filament | 5.7 | Admin panel for catalogue curation inside Laravel (SCOPE-010) with built-in MFA (SEC-001) |
 | frontend | Riverpod | 3.0 | State management for the Flutter app; widely used and testable (ARCH-004) |
-| frontend | Flutter | 3.47 | Mobile app for Android now and iOS later from one codebase (DEC-005); from the draft |
+| frontend | Flutter | 3.44 | Mobile app for Android now and iOS later from one codebase (DEC-005); from the draft. 3.44 is the newest verified available (ARCH-005) |
 | storage | Laravel filesystem (local in development | 13.8 | Private photo storage with temporary URLs (SEC-002) |
 
 ## Components
@@ -130,7 +130,7 @@ flowchart TB
 | laravel/framework | ^13.8 | runtime | False |
 | laravel/sanctum | ^4.0 | runtime | False |
 | filament/filament | ^5.7 | runtime | False |
-| kreait/laravel-firebase | ^6.0 | runtime | False |
+| kreait/laravel-firebase | ^7.0 | runtime | False |
 | intervention/image | ^3.0 | runtime | False |
 | pestphp/pest | ^4.0 | dev | False |
 | laravel/pint | ^1.0 | dev | False |
@@ -141,7 +141,7 @@ flowchart TB
 | dio | ^5.9.0 | runtime | False |
 | intl | ^0.20.0 | runtime | False |
 | flutter_map | ^8.0.0 | runtime | False |
-| vector_map_tiles | ^9.0.0 | runtime | False |
+| vector_map_tiles | 9.0.0-beta.13 | runtime | False |
 | firebase_messaging | ^16.0.0 | runtime | False |
 | image_picker | ^1.2.0 | runtime | False |
 | flutter_image_compress | ^2.4.0 | runtime | False |
@@ -161,6 +161,7 @@ flowchart TB
 - UI strings in ARB files with intl; Greek and English
 - External services only behind interfaces: WeatherProvider, PlantIdentifier, PushSender; tests always use fakes
 - All dependencies are installed in the foundation phase; a new runtime dependency needs a change request
+- The map is used only through one app widget (GardenLocationMap) in CMP-AppGardens; no other code imports flutter_map or vector_map_tiles
 
 ## Hotspots (shared files)
 
@@ -180,3 +181,4 @@ flowchart TB
 | ARCH-002 | Single repository | decided | Backend and mobile app live in one repository (backend/, mobile/) next to the design. |
 | ARCH-003 | Catalogue shipped to devices as a SQLite snapshot | decided (inferred) | On every publish the server builds a versioned SQLite snapshot of the published catalogue (with search keys). The app bundles an initial snapshot, checks the current version on start and downloads the whole snapshot when it changed. |
 | ARCH-004 | Riverpod for state management | decided (inferred) | The Flutter app uses Riverpod. |
+| ARCH-005 | Dependency versions corrected after foundation work | decided | kreait/laravel-firebase ^7.0 (6.x does not support Laravel 13). vector_map_tiles pinned to 9.0.0-beta.13 (no stable 9.x; 8.x needs flutter_map 7). Flutter 3.44, the newest version verified available. |
