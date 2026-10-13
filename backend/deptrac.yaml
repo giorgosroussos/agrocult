@@ -1,0 +1,48 @@
+# Module boundaries from design/model/architecture.yaml (may_depend_on).
+# Every module may also use the shared code in App\ outside App\Modules
+# (App\Support, App\Http, App\Providers); shared code may not use modules.
+deptrac:
+    paths:
+        - ./app
+    layers:
+        - name: Shared
+          collectors:
+              - type: classLike
+                value: '^App\\(?!Modules\\).*'
+        - name: Identity
+          collectors:
+              - type: classLike
+                value: '^App\\Modules\\Identity\\.*'
+        - name: Catalogue
+          collectors:
+              - type: classLike
+                value: '^App\\Modules\\Catalogue\\.*'
+        - name: Weather
+          collectors:
+              - type: classLike
+                value: '^App\\Modules\\Weather\\.*'
+        - name: Gardens
+          collectors:
+              - type: classLike
+                value: '^App\\Modules\\Gardens\\.*'
+        - name: Identification
+          collectors:
+              - type: classLike
+                value: '^App\\Modules\\Identification\\.*'
+        - name: Notifications
+          collectors:
+              - type: classLike
+                value: '^App\\Modules\\Notifications\\.*'
+        - name: Privacy
+          collectors:
+              - type: classLike
+                value: '^App\\Modules\\Privacy\\.*'
+    ruleset:
+        Shared: ~
+        Identity: [Shared]
+        Catalogue: [Shared, Identity]
+        Weather: [Shared, Catalogue]
+        Gardens: [Shared, Identity, Catalogue, Weather]
+        Identification: [Shared, Identity, Catalogue, Gardens]
+        Notifications: [Shared, Identity, Catalogue, Weather, Gardens]
+        Privacy: [Shared, Identity, Gardens, Identification, Notifications]
