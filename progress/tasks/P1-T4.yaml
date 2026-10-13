@@ -1,0 +1,9 @@
+id: P1-T4
+status: ready_to_merge
+commit: c80e03adcd678d8b74239994a5dd2177526abc66
+handoff: |
+  Identity module (backend/app/Modules/Identity): User (uuid, argon2id password_hash, role, language, notification_prefs), PushToken, uuid Sanctum PersonalAccessToken; migration creates users, password_reset_tokens, personal_access_tokens, push_tokens.
+  API /api/v1/auth: sign-up (202, age_confirmed, non-revealing), email/verify/{user}/{hash} (signed), email/verification-notification, sign-in (device_id -> one token per device, 5/min per email+IP, 403 code=email_not_verified), sign-out (optional push_token), password/forgot, password/reset (revokes all tokens).
+  API /api/v1/me (GET/PATCH language, notification_prefs summary/frost/heatwave) and /me/push-tokens (GET paginated, POST, DELETE {id}); policies UserPolicy/PushTokenPolicy.
+  Emails: queued Mailables (5 tries, backoff 15/60/240/960 s, SMTP timeout 15 s) in el/en via AccountMailer; config in config/identity.php (IDENTITY_PASSWORD_RESET_URL = app link base, default agrocult://reset-password).
+  bootstrap/app.php: API guests get 401 problem details instead of a login redirect; tests in backend/tests/Feature/Identity.
