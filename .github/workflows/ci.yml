@@ -86,14 +86,20 @@ jobs:
         run: ./vendor/bin/sail down --volumes || true
 
   mobile:
-    name: mobile (flutter analyze, flutter test)
+    name: mobile (flutter analyze, flutter test, Android app bundle)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     defaults:
       run:
         working-directory: mobile
     steps:
       - uses: actions/checkout@v6
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
 
       - uses: subosito/flutter-action@v2
         with:
@@ -112,6 +118,12 @@ jobs:
       - name: flutter test
         if: ${{ !cancelled() && steps.pub.outcome == 'success' }}
         run: flutter test
+
+      # Build stage: Android app bundle (no iOS build, DEC-005). Release signing
+      # still uses the project's debug key; endpoints come from the example config.
+      - name: flutter build appbundle
+        if: ${{ !cancelled() && steps.pub.outcome == 'success' }}
+        run: flutter build appbundle --release --dart-define-from-file=config/development.example.json
 
   design:
     name: design (tools/design/ci_check.py)
