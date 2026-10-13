@@ -6,7 +6,7 @@ Mobile app (Android/iOS) that tells amateur gardeners in Greece what to do today
 ## How you work in this repository
 1. You work on one task id at a time. Get your brief with `python tools/design/build.py brief <TASK-ID>` and read `build/briefs/<TASK-ID>.md`. It contains everything the task needs. Do not read design/ wholesale; open a single design item only when the brief references it and you need detail.
 2. design/, build/ (except build/briefs/), tools/design/ and this file are the source of truth. Never edit them; edits are blocked.
-3. If the spec is unclear, contradictory or missing something, STOP. Do not improvise. Set your task to `blocked` and write `progress/requests/CR-<next>.yaml` (id, raised_by: implementation-agent, task, problem, affects, proposal, status: open).
+3. If the spec is unclear, contradictory or missing something, STOP. Do not improvise. Set your task to `blocked` and write `progress/requests/CR-<TASK-ID>-<n>.yaml` (e.g. CR-P1-T1-1, so parallel tasks never collide) (id, raised_by: implementation-agent, task, problem, affects, proposal, status: open).
 4. Record progress only in `progress/tasks/<TASK-ID>.yaml`: status (in_progress | blocked | ready_to_merge), commit, and handoff (max 5 lines: what now exists and where). No narrative logs; history lives in git.
 5. A task is finished when every acceptance criterion in the brief has a passing test (including the negative ones), lint and architecture checks pass, and `python tools/design/validate.py` passes. Then set status `ready_to_merge` and stop.
 6. Never merge, rebase, cherry-pick, pull or resolve conflicts. The engineer integrates.

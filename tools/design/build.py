@@ -492,7 +492,7 @@ def claude_rules(c: Ctx):
         "2. design/, build/ (except build/briefs/), tools/design/ and this file are the source of "
         "truth. Never edit them; edits are blocked.",
         "3. If the spec is unclear, contradictory or missing something, STOP. Do not improvise. "
-        "Set your task to `blocked` and write `progress/requests/CR-<next>.yaml` "
+        "Set your task to `blocked` and write `progress/requests/CR-<TASK-ID>-<n>.yaml` (e.g. CR-P1-T1-1, so parallel tasks never collide) "
         "(id, raised_by: implementation-agent, task, problem, affects, proposal, status: open).",
         "4. Record progress only in `progress/tasks/<TASK-ID>.yaml`: status "
         "(in_progress | blocked | ready_to_merge), commit, and handoff (max 5 lines: what now "

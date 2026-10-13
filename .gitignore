@@ -50,3 +50,6 @@ mobile/android/app/google-services.json
 mobile/ios/Pods/
 mobile/ios/Runner/GoogleService-Info.plist
 *.keystore
+
+# app-design-implement local state
+.impl/
