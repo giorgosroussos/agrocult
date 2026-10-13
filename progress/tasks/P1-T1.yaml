@@ -1,0 +1,9 @@
+id: P1-T1
+status: blocked
+commit: null
+blocked_by: CR-P1-T1-1
+handoff: |
+  backend/: Laravel 13 + Sail (compose.yaml: laravel.test, queue, scheduler, pgsql 18); /up; RFC 9457 errors in app/Support/Http/ProblemDetails.php.
+  Modules app/Modules/<Module>/ with <Module>ServiceProvider (extends App\Support\Modules\ModuleServiceProvider: routes/api.php -> /api/v1, Database/Migrations).
+  Pint (pint.json), Larastan 6 (phpstan.neon), deptrac (deptrac.yaml from may_depend_on), Pest (tests/Feature, tests/Architecture) on pgsql db "testing".
+  Installed: laravel/framework, sanctum, filament, intervention/image. Missing: kreait/laravel-firebase (^6 incompatible with Laravel 13, see CR-P1-T1-1).
