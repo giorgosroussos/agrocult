@@ -1,0 +1,9 @@
+id: P1-T3
+status: ready_to_merge
+commit: 6b0f7c9
+handoff: |
+  .github/workflows/ci.yml runs on every push and pull request with three jobs: backend, mobile, design.
+  backend: composer install in laravelsail/php83-composer, then Sail (backend/compose.yaml) up + migrate + GET /up, then Pint, Larastan, deptrac, Pest, composer audit inside Sail.
+  mobile: Flutter 3.44.9 (subosito/flutter-action), pub get --enforce-lockfile, flutter analyze, flutter test.
+  design: tools/design/ci_check.py (same check as the existing .github/workflows/design.yml, left unchanged).
+  Merge gating (OPS-003) needs the backend, mobile and design jobs marked required in GitHub branch protection.
