@@ -1,0 +1,6 @@
+id: P1-T2
+status: blocked
+commit: null
+handoff: |
+  Blocked on progress/requests/CR-P1-T2-1.yaml: approved vector_map_tiles@^9.0.0 has no stable release on pub.dev.
+  No mobile/ code committed yet; all other approved mobile dependencies were verified to resolve.
