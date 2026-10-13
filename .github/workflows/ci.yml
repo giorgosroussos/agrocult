@@ -1,0 +1,138 @@
+# CI (OPS-003): every check of the backend, the mobile app and the design runs on
+# every push and pull request. Every stage must pass before a branch is merged.
+# Backend commands run inside the Sail containers from backend/compose.yaml (OPS-004).
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: backend (Sail · Pint, Larastan, deptrac, Pest, composer audit)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      COMPOSE_PROJECT_NAME: agrocult-ci
+      APP_PORT: 8080
+      FORWARD_DB_PORT: 5432
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/composer
+          key: composer-${{ runner.os }}-${{ hashFiles('backend/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      # Sail itself is a Composer package, so the first install runs in the Sail
+      # Composer container (same command as the backend README).
+      - name: Install Composer dependencies
+        run: |
+          mkdir -p "$HOME/.cache/composer"
+          docker run --rm -u "$(id -u):$(id -g)" \
+            -v "$(pwd):/var/www/html" -w /var/www/html \
+            -v "$HOME/.cache/composer:/tmp/composer-cache" -e COMPOSER_CACHE_DIR=/tmp/composer-cache \
+            laravelsail/php83-composer:latest \
+            composer install --no-interaction --no-progress --prefer-dist --ignore-platform-reqs
+
+      - name: Start Sail (app + PostgreSQL 18)
+        id: sail
+        run: |
+          cp .env.example .env
+          ./vendor/bin/sail up -d --wait laravel.test
+          ./vendor/bin/sail artisan key:generate --no-interaction
+          ./vendor/bin/sail artisan migrate --force --no-interaction
+          curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-all-errors \
+            "http://localhost:${APP_PORT}/up" > /dev/null
+
+      - name: Pint
+        if: ${{ !cancelled() && steps.sail.outcome == 'success' }}
+        run: ./vendor/bin/sail bin pint --test
+
+      - name: Larastan
+        if: ${{ !cancelled() && steps.sail.outcome == 'success' }}
+        run: ./vendor/bin/sail bin phpstan analyse --no-progress --memory-limit=1G
+
+      - name: deptrac
+        if: ${{ !cancelled() && steps.sail.outcome == 'success' }}
+        run: ./vendor/bin/sail bin deptrac analyse --no-progress
+
+      - name: Pest
+        if: ${{ !cancelled() && steps.sail.outcome == 'success' }}
+        run: ./vendor/bin/sail bin pest
+
+      - name: composer audit
+        if: ${{ !cancelled() && steps.sail.outcome == 'success' }}
+        run: ./vendor/bin/sail composer audit --no-interaction
+
+      - name: Sail logs on failure
+        if: ${{ failure() }}
+        run: ./vendor/bin/sail logs --no-color || true
+
+      - name: Stop Sail
+        if: ${{ always() }}
+        run: ./vendor/bin/sail down --volumes || true
+
+  mobile:
+    name: mobile (flutter analyze, flutter test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.44.9
+          cache: true
+
+      - name: flutter pub get
+        id: pub
+        run: flutter pub get --enforce-lockfile
+
+      - name: flutter analyze
+        if: ${{ !cancelled() && steps.pub.outcome == 'success' }}
+        run: flutter analyze
+
+      - name: flutter test
+        if: ${{ !cancelled() && steps.pub.outcome == 'success' }}
+        run: flutter test
+
+  design:
+    name: design (tools/design/ci_check.py)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - run: pip install pyyaml==6.0.2
+
+      - name: Check design
+        run: |
+          BASE="${{ github.event.pull_request.base.sha || github.event.before }}"
+          if git cat-file -e "$BASE" 2>/dev/null; then
+            python tools/design/ci_check.py --base "$BASE"
+          else
+            python tools/design/ci_check.py
+          fi
