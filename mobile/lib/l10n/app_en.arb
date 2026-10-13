@@ -1,0 +1,9 @@
+{
+  "@@locale": "en",
+  "appTitle": "Agrocult",
+  "@appTitle": {"description": "App name shown in the title bar and task switcher"},
+  "welcome": "Welcome",
+  "@welcome": {"description": "Greeting on the start screen of the app skeleton"},
+  "pageNotFound": "Page not found",
+  "@pageNotFound": {"description": "Shown when the app is asked to open a screen that does not exist"}
+}

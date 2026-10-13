@@ -1,0 +1,9 @@
+id: P1-T2
+status: ready_to_merge
+commit: ddf53f0
+handoff: |
+  Flutter app in mobile/ (Android + iOS projects, app id gr.agrocult.agrocult); all approved mobile deps in pubspec.yaml (vector_map_tiles 9.0.0-beta.13).
+  lib/app/: AgrocultApp, router.dart (AppRoutes + onGenerateRoute, no router package), theme, locale (Greek device -> el, else en).
+  lib/core/: AppConfig (API_BASE_URL, MAP_TILE_URL via --dart-define), ApiClient (dio, /api/v1, bearer token, 401 clears token, ApiProblem RFC 9457), SecureTokenStorage, AppDatabase (drift, FTS5) + Riverpod providers in providers.dart.
+  DB file dir comes from method channel gr.agrocult/app_paths (MainActivity.kt, AppDelegate.swift); l10n ARB in lib/l10n, generated code committed.
+  test/architecture_test.dart enforces approved deps, map-import rule and AppCore independence; checks: flutter analyze, flutter test.
