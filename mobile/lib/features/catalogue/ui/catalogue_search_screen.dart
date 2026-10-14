@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/routes.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../catalogue_providers.dart';
 import '../catalogue_routes.dart';
@@ -148,16 +147,11 @@ class _CatalogueSearchScreenState extends ConsumerState<CatalogueSearchScreen> {
         key: const Key('catalogue.noResults'),
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                l10n.catalogueNoResults,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(l10n.catalogueNoResultsHint, textAlign: TextAlign.center),
-            ],
+          // The suggestion of photo identification (UC-003) is open until
+          // that feature exists (CR-P2-T6-1).
+          child: Text(
+            l10n.catalogueNoResults,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
       );
@@ -190,7 +184,7 @@ class _CatalogueSearchScreenState extends ConsumerState<CatalogueSearchScreen> {
           trailing: const Icon(Icons.chevron_right),
           onTap: () => Navigator.of(
             context,
-          ).pushNamed(AppRoutes.plant, arguments: PlantCardArgs(item.id)),
+          ).pushNamed(CatalogueRoutes.plant, arguments: PlantCardArgs(item.id)),
         );
       },
     );

@@ -227,7 +227,6 @@ void main() {
         {for (final c in card.companions) c.name.text: c.isGood},
         {'Basil': true, 'Garlic': false},
       );
-      expect(card.sources.single.licence, 'CC0');
       expect(remote.calls, 0);
     });
 

@@ -16,7 +16,7 @@ class CatalogueRepository {
   final CatalogueDatabase _db;
 
   /// Calendar activities that make a plant 'in season now': its sowing
-  /// months include the current month.
+  /// months include the current month (provisional, CR-P2-T6-1).
   static const sowingActivities = ['sow_indoors', 'sow_outdoors'];
 
   /// The languages a catalogue text can have, in fallback order.
@@ -195,7 +195,6 @@ class CatalogueRepository {
       careIntervals: await _careIntervals(id),
       plantTips: await _plantTips(id, lang),
       companions: await _companions(id, lang),
-      sources: await _sources(id),
     );
   }
 
@@ -298,28 +297,6 @@ class CatalogueRepository {
           ),
     ]..sort((a, b) => a.name.text.compareTo(b.name.text));
     return items;
-  }
-
-  Future<List<SourceItem>> _sources(String plantId) async {
-    final facts =
-        await (_db.select(_db.factSources)
-              ..where((f) => f.plantId.equals(plantId))
-              ..orderBy([(f) => OrderingTerm(expression: f.field)]))
-            .get();
-    final photos = await (_db.select(
-      _db.plantPhotos,
-    )..where((p) => p.plantId.equals(plantId))).get();
-    return [
-      for (final row in facts)
-        SourceItem(
-          name: row.sourceName,
-          licence: row.licence,
-          field: row.field,
-          url: row.sourceUrl,
-        ),
-      for (final row in photos)
-        SourceItem(name: row.credit, licence: row.licence, url: row.sourceUrl),
-    ];
   }
 
   /// Name of each plant in [lang], or in another language as a fallback.

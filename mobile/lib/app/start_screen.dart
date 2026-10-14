@@ -25,15 +25,6 @@ class StartScreen extends ConsumerWidget {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 24),
-            // The catalogue needs no account (SCOPE-002).
-            FilledButton.tonalIcon(
-              key: const Key('start.catalogue'),
-              icon: const Icon(Icons.search),
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(AppRoutes.catalogue),
-              label: Text(l10n.catalogueTitle),
-            ),
-            const SizedBox(height: 16),
             if (signedIn == true)
               OutlinedButton(
                 key: const Key('start.signOut'),

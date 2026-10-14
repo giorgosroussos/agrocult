@@ -14,12 +14,4 @@ abstract final class AppRoutes {
 
   /// Opened from the reset email as `/reset-password?token=...&email=...`.
   static const resetPassword = '/reset-password';
-
-  /// Catalogue search (UC-003); no account needed.
-  static const catalogue = '/catalogue';
-
-  /// Plant card (UC-004); no account needed. Argument: the plant id (String)
-  /// or the catalogue feature's `PlantCardArgs` (plant id and the climate
-  /// zone of the garden it was opened from).
-  static const plant = '/plant';
 }

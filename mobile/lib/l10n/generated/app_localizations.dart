@@ -392,12 +392,6 @@ abstract class AppLocalizations {
   /// **'No plants found'**
   String get catalogueNoResults;
 
-  /// Suggestion under an empty search result (UC-003: suggests photo identification)
-  ///
-  /// In en, this message translates to:
-  /// **'Try another spelling. Identifying a plant from a photo is coming soon.'**
-  String get catalogueNoResultsHint;
-
   /// Shown when the local catalogue cannot be read
   ///
   /// In en, this message translates to:
@@ -475,12 +469,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Companions'**
   String get plantSectionCompanions;
-
-  /// Plant card section heading: sources and licences of the facts
-  ///
-  /// In en, this message translates to:
-  /// **'Sources'**
-  String get plantSectionSources;
 
   /// Plant card: growing condition label
   ///
@@ -691,12 +679,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bad neighbours'**
   String get companionsBad;
-
-  /// Plant card: licence of a source
-  ///
-  /// In en, this message translates to:
-  /// **'Licence: {licence}'**
-  String sourceLicence(String licence);
 
   /// Plant card: a section without content
   ///

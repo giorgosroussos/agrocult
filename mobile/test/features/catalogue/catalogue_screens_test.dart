@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:agrocult/app/app.dart';
+import 'package:agrocult/app/locale.dart';
 import 'package:agrocult/app/router.dart';
 import 'package:agrocult/core/api/api_client.dart';
 import 'package:agrocult/core/config/app_config.dart';
@@ -11,6 +12,7 @@ import 'package:agrocult/core/providers.dart';
 import 'package:agrocult/features/catalogue/catalogue_providers.dart';
 import 'package:agrocult/features/catalogue/catalogue_routes.dart';
 import 'package:agrocult/features/catalogue/data/catalogue_database.dart';
+import 'package:agrocult/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -57,9 +59,15 @@ Future<void> _pumpApp(
         if (gardenZones != null)
           seasonClimateZonesProvider.overrideWithValue(gardenZones),
       ],
-      child: AgrocultApp(
+      // The app shell with the catalogue's routes added. How AgrocultApp
+      // registers them is open (CR-P2-T6-1).
+      child: MaterialApp(
         locale: locale,
-        featureRoutes: const [catalogueRoutes],
+        supportedLocales: supportedAppLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        initialRoute: AppRouter.initialRoute,
+        onGenerateRoute: (settings) =>
+            AppRouter.onGenerateRoute(settings, features: [catalogueRoutes]),
       ),
     ),
   );
@@ -111,7 +119,7 @@ void main() {
       await _pumpApp(tester);
       expect(find.byKey(const Key('start.signIn')), findsOneWidget);
 
-      await _tap(tester, 'start.catalogue');
+      await _open(tester, CatalogueRoutes.search);
       expect(_results(tester), hasLength(6));
 
       await _search(tester, 'ntomata');
@@ -134,7 +142,7 @@ void main() {
     testWidgets("Given the device is offline, When the user searches 'σκόρδο', "
         'Then results appear without any network request', (tester) async {
       await _pumpApp(tester);
-      await _open(tester, AppRoutes.catalogue);
+      await _open(tester, CatalogueRoutes.search);
 
       await _search(tester, 'σκόρδο');
 
@@ -145,7 +153,7 @@ void main() {
     testWidgets('Greek, Greeklish, aliases and English names all find the '
         'plant', (tester) async {
       await _pumpApp(tester);
-      await _open(tester, AppRoutes.catalogue);
+      await _open(tester, CatalogueRoutes.search);
 
       for (final (query, plant) in [
         ('τοματα', 'Ντομάτα'),
@@ -162,7 +170,7 @@ void main() {
         "include the current month, When the user filters 'in season now', "
         'Then garlic is listed', (tester) async {
       await _pumpApp(tester, gardenZones: {coastalZoneId});
-      await _open(tester, AppRoutes.catalogue);
+      await _open(tester, CatalogueRoutes.search);
 
       await _tap(tester, 'catalogue.inSeason');
 
@@ -173,21 +181,20 @@ void main() {
       tester,
     ) async {
       await _pumpApp(tester, gardenZones: {mountainZoneId});
-      await _open(tester, AppRoutes.catalogue);
+      await _open(tester, CatalogueRoutes.search);
 
       await _tap(tester, 'catalogue.inSeason');
 
       expect(find.byKey(const Key('catalogue.noResults')), findsOneWidget);
     });
 
-    testWidgets('no results suggest photo identification', (tester) async {
+    testWidgets('no results say so', (tester) async {
       await _pumpApp(tester, locale: const Locale('en'));
-      await _open(tester, AppRoutes.catalogue);
+      await _open(tester, CatalogueRoutes.search);
 
       await _search(tester, 'banana');
 
       expect(find.text('No plants found'), findsOneWidget);
-      expect(find.textContaining('from a photo'), findsOneWidget);
     });
   });
 
@@ -196,7 +203,7 @@ void main() {
         'open a plant card, Then all text sections are shown from the local '
         'catalogue', (tester) async {
       await _pumpApp(tester);
-      await _open(tester, AppRoutes.catalogue);
+      await _open(tester, CatalogueRoutes.search);
       await _search(tester, 'ντομάτα');
       await _tap(tester, 'catalogue.plant.$tomatoId');
 
@@ -251,7 +258,7 @@ void main() {
 
       await _open(
         tester,
-        AppRoutes.plant,
+        CatalogueRoutes.plant,
         args: PlantCardArgs(tomatoId, climateZoneId: mountainZoneId),
       );
 
@@ -282,7 +289,7 @@ void main() {
       tester,
     ) async {
       await _pumpApp(tester, locale: const Locale('en'));
-      await _open(tester, AppRoutes.plant, args: oreganoId);
+      await _open(tester, CatalogueRoutes.plant, args: oreganoId);
 
       expect(find.text('Ρίγανη'), findsWidgets);
       for (final text in [
@@ -300,7 +307,7 @@ void main() {
 
     testWidgets('a translated plant in English has no label', (tester) async {
       await _pumpApp(tester, locale: const Locale('en'));
-      await _open(tester, AppRoutes.plant, args: basilId);
+      await _open(tester, CatalogueRoutes.plant, args: basilId);
 
       expect(find.text('The basil of the yard.'), findsOneWidget);
       expect(find.text('Not translated'), findsNothing);
@@ -310,7 +317,7 @@ void main() {
       tester,
     ) async {
       await _pumpApp(tester, locale: const Locale('en'));
-      await _open(tester, AppRoutes.catalogue);
+      await _open(tester, CatalogueRoutes.search);
       await _search(tester, 'rigani');
 
       expect(_results(tester), ['Ρίγανη']);
@@ -319,7 +326,7 @@ void main() {
 
     testWidgets('a companion opens its own card', (tester) async {
       await _pumpApp(tester, locale: const Locale('en'));
-      await _open(tester, AppRoutes.plant, args: tomatoId);
+      await _open(tester, CatalogueRoutes.plant, args: tomatoId);
 
       await _tap(tester, 'plantCard.companion.$basilId');
 
@@ -334,7 +341,7 @@ void main() {
       // Built by the backend: published Ντομάτα and Σκόρδο, draft Δυόσμος.
       db = openFixtureCopy(snapshotA.path);
       await _pumpApp(tester);
-      await _open(tester, AppRoutes.catalogue);
+      await _open(tester, CatalogueRoutes.search);
 
       await _search(tester, 'δυόσμος');
       expect(find.byKey(const Key('catalogue.noResults')), findsOneWidget);
@@ -342,7 +349,7 @@ void main() {
       expect(_results(tester), ['Ντομάτα', 'Σκόρδο']);
 
       // Even a direct link to a plant that is not on the device opens no card.
-      await _open(tester, AppRoutes.plant, args: mintId);
+      await _open(tester, CatalogueRoutes.plant, args: mintId);
       expect(
         find.text('Αυτό το φυτό δεν υπάρχει στον κατάλογο.'),
         findsOneWidget,
@@ -355,13 +362,13 @@ void main() {
       RouteSettings to(String name, [Object? args]) =>
           RouteSettings(name: name, arguments: args);
 
-      expect(catalogueRoutes(to(AppRoutes.catalogue)), isNotNull);
-      expect(catalogueRoutes(to(AppRoutes.plant, 'id')), isNotNull);
+      expect(catalogueRoutes(to(CatalogueRoutes.search)), isNotNull);
+      expect(catalogueRoutes(to(CatalogueRoutes.plant, 'id')), isNotNull);
       expect(
-        catalogueRoutes(to(AppRoutes.plant, const PlantCardArgs('id'))),
+        catalogueRoutes(to(CatalogueRoutes.plant, const PlantCardArgs('id'))),
         isNotNull,
       );
-      expect(catalogueRoutes(to(AppRoutes.plant)), isNull);
+      expect(catalogueRoutes(to(CatalogueRoutes.plant)), isNull);
       expect(catalogueRoutes(to(AppRoutes.signIn)), isNull);
     });
 
@@ -375,7 +382,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await _open(tester, AppRoutes.catalogue);
+      await _open(tester, CatalogueRoutes.search);
 
       expect(find.byType(NotFoundScreen), findsOneWidget);
     });

@@ -170,10 +170,6 @@ class AppLocalizationsEl extends AppLocalizations {
   String get catalogueNoResults => 'Δεν βρέθηκαν φυτά';
 
   @override
-  String get catalogueNoResultsHint =>
-      'Δοκιμάστε άλλη γραφή. Η αναγνώριση φυτού από φωτογραφία έρχεται σύντομα.';
-
-  @override
   String get catalogueLoadError => 'Ο κατάλογος φυτών δεν άνοιξε.';
 
   @override
@@ -211,9 +207,6 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get plantSectionCompanions => 'Συγκαλλιέργεια';
-
-  @override
-  String get plantSectionSources => 'Πηγές';
 
   @override
   String get plantTempMin => 'Ελάχιστη θερμοκρασία';
@@ -329,11 +322,6 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get companionsBad => 'Κακοί γείτονες';
-
-  @override
-  String sourceLicence(String licence) {
-    return 'Άδεια: $licence';
-  }
 
   @override
   String get plantNoInformation => 'Δεν υπάρχουν ακόμη πληροφορίες.';

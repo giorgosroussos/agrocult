@@ -201,10 +201,6 @@
   "@catalogueNoResults": {
     "description": "Shown when a catalogue search has no results"
   },
-  "catalogueNoResultsHint": "Try another spelling. Identifying a plant from a photo is coming soon.",
-  "@catalogueNoResultsHint": {
-    "description": "Suggestion under an empty search result (UC-003: suggests photo identification)"
-  },
   "catalogueLoadError": "The plant catalogue could not be opened.",
   "@catalogueLoadError": {
     "description": "Shown when the local catalogue cannot be read"
@@ -256,10 +252,6 @@
   "plantSectionCompanions": "Companions",
   "@plantSectionCompanions": {
     "description": "Plant card section heading: good and bad neighbours"
-  },
-  "plantSectionSources": "Sources",
-  "@plantSectionSources": {
-    "description": "Plant card section heading: sources and licences of the facts"
   },
   "plantTempMin": "Minimum temperature",
   "@plantTempMin": {
@@ -410,15 +402,6 @@
   "companionsBad": "Bad neighbours",
   "@companionsBad": {
     "description": "Plant card: plants that should not grow next to this one"
-  },
-  "sourceLicence": "Licence: {licence}",
-  "@sourceLicence": {
-    "description": "Plant card: licence of a source",
-    "placeholders": {
-      "licence": {
-        "type": "String"
-      }
-    }
   },
   "plantNoInformation": "No information yet.",
   "@plantNoInformation": {

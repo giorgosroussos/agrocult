@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/routes.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../catalogue_providers.dart';
 import '../catalogue_routes.dart';
@@ -237,7 +236,7 @@ class _PlantCardView extends StatelessWidget {
                           ),
                           label: Text(companion.name.text),
                           onPressed: () => Navigator.of(context).pushNamed(
-                            AppRoutes.plant,
+                            CatalogueRoutes.plant,
                             arguments: PlantCardArgs(
                               companion.plantId,
                               climateZoneId: climateZoneId,
@@ -249,26 +248,6 @@ class _PlantCardView extends StatelessWidget {
                 ],
             ],
           ),
-
-          if (plant.sources.isNotEmpty)
-            _Section(
-              'sources',
-              l10n.plantSectionSources,
-              children: [
-                for (final source in plant.sources)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      [
-                        source.name,
-                        l10n.sourceLicence(source.licence),
-                        ?source.url,
-                      ].join(' · '),
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ),
-              ],
-            ),
         ],
       ),
     );

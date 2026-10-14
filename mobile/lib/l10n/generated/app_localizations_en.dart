@@ -168,10 +168,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get catalogueNoResults => 'No plants found';
 
   @override
-  String get catalogueNoResultsHint =>
-      'Try another spelling. Identifying a plant from a photo is coming soon.';
-
-  @override
   String get catalogueLoadError => 'The plant catalogue could not be opened.';
 
   @override
@@ -209,9 +205,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plantSectionCompanions => 'Companions';
-
-  @override
-  String get plantSectionSources => 'Sources';
 
   @override
   String get plantTempMin => 'Minimum temperature';
@@ -327,11 +320,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get companionsBad => 'Bad neighbours';
-
-  @override
-  String sourceLicence(String licence) {
-    return 'Licence: $licence';
-  }
 
   @override
   String get plantNoInformation => 'No information yet.';

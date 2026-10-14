@@ -157,21 +157,6 @@ class CompanionItem {
   final bool isGood;
 }
 
-/// Provenance of a catalogue fact or photo (SCOPE-001).
-class SourceItem {
-  const SourceItem({
-    required this.name,
-    required this.licence,
-    this.field,
-    this.url,
-  });
-
-  final String name;
-  final String licence;
-  final String? field;
-  final String? url;
-}
-
 /// Everything the plant card shows.
 class PlantCardData {
   const PlantCardData({
@@ -203,7 +188,6 @@ class PlantCardData {
     this.careIntervals = const [],
     this.plantTips = const [],
     this.companions = const [],
-    this.sources = const [],
   });
 
   final String id;
@@ -246,5 +230,4 @@ class PlantCardData {
   /// Published tips tied to this plant, in the UI language.
   final List<String> plantTips;
   final List<CompanionItem> companions;
-  final List<SourceItem> sources;
 }

@@ -1,8 +1,18 @@
 import 'package:flutter/widgets.dart';
 
-import '../../app/routes.dart';
 import 'ui/catalogue_search_screen.dart';
 import 'ui/plant_card_screen.dart';
+
+/// Route names of the catalogue's screens. How the app shell registers them
+/// and links to the search is open (CR-P2-T6-1).
+abstract final class CatalogueRoutes {
+  /// Catalogue search (UC-003); no account needed.
+  static const search = '/catalogue';
+
+  /// Plant card (UC-004); no account needed. Argument: the plant id (String)
+  /// or [PlantCardArgs].
+  static const plant = '/plant';
+}
 
 /// Opens a plant card; [climateZoneId] is the climate zone of the garden it
 /// is opened from, whose calendar is then shown first (UC-004).
@@ -18,9 +28,9 @@ class PlantCardArgs {
 WidgetBuilder? catalogueRoutes(RouteSettings settings) {
   final args = settings.arguments;
   switch (settings.name) {
-    case AppRoutes.catalogue:
+    case CatalogueRoutes.search:
       return (_) => const CatalogueSearchScreen();
-    case AppRoutes.plant:
+    case CatalogueRoutes.plant:
       if (args is PlantCardArgs) {
         return (_) => PlantCardScreen(
           plantId: args.plantId,

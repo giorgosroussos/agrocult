@@ -1,0 +1,44 @@
+id: CR-P2-T6-1
+raised_by: implementation-agent
+task: P2-T6
+problem: >
+  P2-T6 (search and plant card) leaves four points open that change behaviour, copy
+  or component boundaries:
+  (1) Routes and entry point. P2-T6 may write CMP-AppCatalogue and the router.dart
+  hotspot, but CMP-AppCore (lib/app, lib/core, lib/l10n) may depend on no other
+  component. So router.dart cannot import the catalogue screens. Registering the
+  routes needs a change outside the task: lib/app/app.dart, which composes
+  MaterialApp, and lib/main.dart. The search also needs an entry point a visitor can
+  reach, e.g. a button on lib/app/start_screen.dart, and no home screen exists until
+  CMP-AppHome. None of these files is in the task's touches.
+  (2) 'In season now' without a garden zone. AC UC-003 defines the filter for a
+  garden in a climate zone. The filter must also work for a visitor, who has no
+  garden ("Given a visitor without an account, Then search and filters work"), and
+  for a gardener without a garden. The "all zones" exception in UC-004 covers only
+  the calendar. Which plants are in season when there is no zone?
+  (3) Which calendar activities count as 'in season now'. The AC speaks of "sowing
+  months". Does the filter mean sow_indoors and sow_outdoors only, or also
+  transplant, or also harvest?
+  (4) No results. UC-003 says "the app suggests photo identification", but photo
+  identification arrives only in PHASE-5. What should the empty-result state say
+  before then?
+affects:
+  - P2-T6 (touches; UC-003 'in season now' and empty-result behaviour)
+  - CMP-AppCore (lib/app/app.dart, lib/app/start_screen.dart, lib/main.dart)
+  - design/model/use-cases.yaml (UC-003 exceptions / acceptance criteria)
+  - CMP-AppGardens (PHASE-3 supplies the garden zones and opens the card with a zone)
+proposal: >
+  (1) Add to P2-T6 touches the hotspots mobile/lib/app/app.dart and mobile/lib/main.dart,
+  plus mobile/lib/app/start_screen.dart (or name another entry point). Features
+  register their routes through a FeatureRoutes list that main.dart passes to
+  AgrocultApp; router.dart already accepts `features` in this branch. Route names stay
+  in the feature (CatalogueRoutes.search '/catalogue', CatalogueRoutes.plant '/plant'
+  with a plant id or PlantCardArgs(plantId, climateZoneId)).
+  (2) Without a garden zone, a plant counts as in season when it is in season in any
+  zone. This mirrors the calendar's "all zones" rule and is provisional in the
+  branch. Alternative: hide or disable the filter when there is no zone.
+  (3) Only sow_indoors and sow_outdoors count, as in the AC wording. This is
+  provisional in the branch.
+  (4) Until PHASE-5, show only "No plants found". PHASE-5 adds the photo
+  identification suggestion with an action that opens it.
+status: open

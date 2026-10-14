@@ -89,7 +89,7 @@ final catalogueRepositoryProvider = FutureProvider<CatalogueRepository>(
 /// Climate zones of the user's gardens, for 'in season now' (SCOPE-003: the
 /// garden's location, never the device's position). Empty for a visitor or
 /// a gardener without a garden: then a plant is in season when it is in
-/// season in any zone. The gardens feature provides the real value by
+/// season in any zone (provisional, CR-P2-T6-1). The gardens feature provides the real value by
 /// overriding this provider where the app is composed.
 final seasonClimateZonesProvider = Provider<Set<String>>((ref) => const {});
 

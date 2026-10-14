@@ -49,7 +49,6 @@
   "catalogueInSeasonFilter": "Της εποχής τώρα",
   "catalogueAllCategories": "Όλα",
   "catalogueNoResults": "Δεν βρέθηκαν φυτά",
-  "catalogueNoResultsHint": "Δοκιμάστε άλλη γραφή. Η αναγνώριση φυτού από φωτογραφία έρχεται σύντομα.",
   "catalogueLoadError": "Ο κατάλογος φυτών δεν άνοιξε.",
   "plantNotFound": "Αυτό το φυτό δεν υπάρχει στον κατάλογο.",
   "notTranslated": "Δεν έχει μεταφραστεί",
@@ -63,7 +62,6 @@
   "plantSectionSeedSaving": "Συλλογή σπόρων",
   "plantSectionTips": "Συμβουλές",
   "plantSectionCompanions": "Συγκαλλιέργεια",
-  "plantSectionSources": "Πηγές",
   "plantTempMin": "Ελάχιστη θερμοκρασία",
   "plantTempOpt": "Ιδανική θερμοκρασία",
   "plantTempMax": "Μέγιστη θερμοκρασία",
@@ -99,6 +97,5 @@
   "careEvery": "{days, plural, =1{κάθε μέρα} other{κάθε {days} μέρες}}",
   "companionsGood": "Καλοί γείτονες",
   "companionsBad": "Κακοί γείτονες",
-  "sourceLicence": "Άδεια: {licence}",
   "plantNoInformation": "Δεν υπάρχουν ακόμη πληροφορίες."
 }
