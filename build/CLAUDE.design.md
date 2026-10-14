@@ -1,5 +1,5 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
-# Design rules — Agrocult (design v1.2.0 · 567a799fd2d1)
+# Design rules — Agrocult (design v1.3.0 · cd829a248c19)
 
 Mobile app (Android/iOS) that tells amateur gardeners in Greece what to do today for their own plants, based on the local weather at each of their gardens. It combines a plant catalogue with practical growing instructions for the Mediterranean climate and a personal garden with smart, weather-driven notifications.
 
@@ -47,7 +47,7 @@ Mobile app (Android/iOS) that tells amateur gardeners in Greece what to do today
 - MUST NOT add runtime dependencies outside the approved list: laravel/framework@^13.8, laravel/sanctum@^4.0, filament/filament@^5.7, kreait/laravel-firebase@^7.0, intervention/image@^3.0, flutter_riverpod@^3.0.0, drift@^2.28.0, dio@^5.9.0, intl@^0.20.0, flutter_map@^8.0.0, vector_map_tiles@9.0.0-beta.13, firebase_messaging@^16.0.0, image_picker@^1.2.0, flutter_image_compress@^2.4.0, geolocator@^14.0.0, flutter_secure_storage@^9.2.0. New ones need a change request.
 - MUST read every external endpoint and credential from configuration; never hardcode them
 - MUST NOT perform live payments, send real emails or call live external systems outside production
-- Shared hotspot files (touch only when your task lists them): `backend/composer.json`, `backend/bootstrap/providers.php`, `backend/routes/console.php`, `mobile/pubspec.yaml`, `mobile/lib/l10n/app_el.arb`, `mobile/lib/l10n/app_en.arb`, `mobile/lib/app/router.dart`, `backend/database/seeders/DatabaseSeeder.php`
+- Shared hotspot files (touch only when your task lists them): `backend/composer.json`, `backend/bootstrap/providers.php`, `backend/routes/console.php`, `mobile/pubspec.yaml`, `mobile/lib/l10n/app_el.arb`, `mobile/lib/l10n/app_en.arb`, `mobile/lib/app/router.dart`, `backend/database/seeders/DatabaseSeeder.php`, `mobile/lib/main.dart`
 
 ## Conventions
 - One repository: backend/ (Laravel) and mobile/ (Flutter); design/, build/, progress/, tools/ at the root
@@ -61,3 +61,5 @@ Mobile app (Android/iOS) that tells amateur gardeners in Greece what to do today
 - External services only behind interfaces: WeatherProvider, PlantIdentifier, PushSender; tests always use fakes
 - All dependencies are installed in the foundation phase; a new runtime dependency needs a change request
 - The map is used only through one app widget (GardenLocationMap) in CMP-AppGardens; no other code imports flutter_map or vector_map_tiles
+- mobile/lib/main.dart is the composition root: the only file that may import both lib/app (CMP-AppCore) and lib/features; it passes each feature's FeatureRoutes to AgrocultApp
+- Route names live in AppRoutes (mobile/lib/app/routes.dart, CMP-AppCore) so the shell can navigate by name; features register the screen builders for their routes

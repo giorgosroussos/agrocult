@@ -1,5 +1,9 @@
 # Design changelog
 
+## v1.3.0 — 2026-10-14
+
+- CR-P2-T6-1: main.dart composition root and hotspot, route names in AppRoutes, catalogue entry on start screen; 'in season now' = sowing + transplant, any zone without a garden; empty search shows 'No plants found' until PHASE-5 (CR-P2-T6-1)
+
 ## v1.2.0 — 2026-10-14
 
 - Add P2-T7 demo catalogue seeder (development only); DatabaseSeeder.php declared a shared hotspot (CR-P2-T7-1)

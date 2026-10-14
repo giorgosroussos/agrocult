@@ -22,7 +22,7 @@ tasks:
     description: "Garden list, create and edit with settlement search, map point (OpenFreeMap) or current position, delete with confirmation"
     depends_on: [P3-T2]
     use_cases: [UC-001]
-    touches: {writes: [CMP-AppGardens], reads: [CMP-Gardens], hotspots: [mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
+    touches: {writes: [CMP-AppGardens], reads: [CMP-Gardens], hotspots: [mobile/lib/main.dart, mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
   - id: P3-T4
     title: Add, edit and remove garden plants
     description: "Add-plant flow from search or card in a few taps, edit and archive"

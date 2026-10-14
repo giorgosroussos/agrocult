@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Architecture and stack
 
-_Generated document · design v1.2.0 · source 567a799fd2d1_
+_Generated document · design v1.3.0 · source cd829a248c19_
 
 
 **Style:** modular-monolith · **database:** postgresql
@@ -162,6 +162,8 @@ flowchart TB
 - External services only behind interfaces: WeatherProvider, PlantIdentifier, PushSender; tests always use fakes
 - All dependencies are installed in the foundation phase; a new runtime dependency needs a change request
 - The map is used only through one app widget (GardenLocationMap) in CMP-AppGardens; no other code imports flutter_map or vector_map_tiles
+- mobile/lib/main.dart is the composition root: the only file that may import both lib/app (CMP-AppCore) and lib/features; it passes each feature's FeatureRoutes to AgrocultApp
+- Route names live in AppRoutes (mobile/lib/app/routes.dart, CMP-AppCore) so the shell can navigate by name; features register the screen builders for their routes
 
 ## Hotspots (shared files)
 
@@ -173,6 +175,7 @@ flowchart TB
 - `mobile/lib/l10n/app_en.arb`
 - `mobile/lib/app/router.dart`
 - `backend/database/seeders/DatabaseSeeder.php`
+- `mobile/lib/main.dart`
 
 ## Decisions
 

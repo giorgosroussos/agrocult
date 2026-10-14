@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Actors and use cases
 
-_Generated document · design v1.2.0 · source 567a799fd2d1_
+_Generated document · design v1.3.0 · source cd829a248c19_
 
 
 ## Actors
@@ -119,7 +119,7 @@ Main flow:
 3. User filters by category or 'in season now' and opens a plant card
 
 Exceptions:
-- No results: the app suggests photo identification
+- No results: the app suggests photo identification (from PHASE-5; until then it shows only 'No plants found')
 - No network: search works the same from the local catalogue
 
 Acceptance criteria:
@@ -130,6 +130,10 @@ Acceptance criteria:
 - Given the device is offline, When the user searches 'σκόρδο', Then results appear without any network request
 - Given a visitor without an account, Then search and filters work
 - Given a garden in a climate zone where garlic sowing months include the current month, When the user filters 'in season now', Then garlic is listed
+- 'In season now' counts sow_indoors, sow_outdoors and transplant months, never harvest months
+- Given a user with no garden climate zone (a visitor, or a gardener without a garden), When they filter 'in season now', Then a plant is listed if it is in season in any climate zone
+- Given tomato's transplant months include the current month in a garden's zone and its sowing months do not, When the user filters 'in season now', Then tomato is listed
+- Given a plant whose only current-month activity is harvest, When the user filters 'in season now', Then it is not listed
 
 #### UC-004 — View plant card (must)
 

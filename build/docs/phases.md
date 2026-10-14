@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Implementation phases
 
-_Generated document · design v1.2.0 · source 567a799fd2d1_
+_Generated document · design v1.3.0 · source cd829a248c19_
 
 
 ## Phase map
@@ -51,7 +51,7 @@ flowchart LR
   W5 --> W6
 ```
 
-- PHASE-5 serialised after PHASE-4 (hotspot mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb)
+- PHASE-5 serialised after PHASE-4 (hotspot mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb, mobile/lib/main.dart)
 
 ## Use case coverage
 
@@ -123,7 +123,7 @@ Depends on: PHASE-1 · use cases: UC-003, UC-004, UC-010 · environment: develop
 | P2-T3 | Import commands | P2-T2 | CMP-Catalogue |  |
 | P2-T4 | Catalogue snapshot and sync API | P2-T3 | CMP-Catalogue |  |
 | P2-T5 | Local catalogue in the app | P2-T4 | CMP-AppCatalogue |  |
-| P2-T6 | Search and plant card | P2-T5 | CMP-AppCatalogue |  |
+| P2-T6 | Search and plant card | P2-T5 | CMP-AppCatalogue, CMP-AppCore |  |
 | P2-T7 | Demo seeder | P2-T4 | CMP-Catalogue |  |
 
 Task waves:
