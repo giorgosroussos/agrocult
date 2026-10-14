@@ -2,6 +2,7 @@
 
 namespace App\Modules\Catalogue\Import;
 
+use App\Modules\Catalogue\Jobs\BuildCatalogueSnapshot;
 use App\Modules\Catalogue\Models\Settlement;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -81,6 +82,9 @@ class SettlementImporter
                 ));
             }
         });
+
+        // Settlements are bundled in the device snapshot (INT-005: area search works offline).
+        BuildCatalogueSnapshot::dispatch();
 
         return count($settlements);
     }

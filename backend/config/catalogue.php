@@ -13,6 +13,15 @@ return [
         'mime_types' => ['image/jpeg', 'image/png', 'image/webp'],
     ],
 
+    // Catalogue snapshot shipped to devices (ARCH-003): a SQLite file per version, rebuilt by a
+    // queued job after every publish. Stored through the Laravel filesystem (OPS-002); the
+    // last `keep` versions stay downloadable so a device that saw an older version can finish.
+    'snapshot' => [
+        'disk' => env('CATALOGUE_SNAPSHOT_DISK', 'local'),
+        'directory' => 'catalogue/snapshots',
+        'keep' => 3,
+    ],
+
     // EXT-006 / INT-006: open plant data sources used by `php artisan catalogue:import-plant`.
     // Endpoints and credentials come from the environment (OPS-002); every call is
     // limited to `timeout` seconds and a failure is retried by re-running the command.
