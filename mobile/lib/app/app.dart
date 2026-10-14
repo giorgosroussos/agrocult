@@ -6,10 +6,13 @@ import 'router.dart';
 import 'theme.dart';
 
 class AgrocultApp extends StatelessWidget {
-  const AgrocultApp({super.key, this.locale});
+  const AgrocultApp({super.key, this.locale, this.features = const []});
 
   /// Forces a UI language; when null the device language decides.
   final Locale? locale;
+
+  /// The features' screens, handed over by the composition root (main.dart).
+  final List<FeatureRoutes> features;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,8 @@ class AgrocultApp extends StatelessWidget {
       localeListResolutionCallback: (deviceLocales, _) =>
           resolveAppLocale(deviceLocales),
       initialRoute: AppRouter.initialRoute,
-      onGenerateRoute: AppRouter.onGenerateRoute,
+      onGenerateRoute: (settings) =>
+          AppRouter.onGenerateRoute(settings, features: features),
     );
   }
 }
