@@ -1,7 +1,7 @@
 <!-- GENERATED — do not edit -->
 # Pack PHASE-2 — Offline catalogue - curators publish plants in the panel, the app searches them offline in Greek, English and Greeklish
 
-_design v1.2.0 · 567a799fd2d1_
+_design v1.3.0 · cd829a248c19_
 
 Depends on: PHASE-1 · environment: development · components: CMP-Catalogue, CMP-AppCatalogue
 
@@ -14,7 +14,7 @@ Depends on: PHASE-1 · environment: development · components: CMP-Catalogue, CM
 | P2-T3 | Import commands | P2-T2 | CMP-Catalogue |
 | P2-T4 | Catalogue snapshot and sync API | P2-T3 | CMP-Catalogue |
 | P2-T5 | Local catalogue in the app | P2-T4 | CMP-AppCatalogue |
-| P2-T6 | Search and plant card | P2-T5 | CMP-AppCatalogue |
+| P2-T6 | Search and plant card | P2-T5 | CMP-AppCatalogue, CMP-AppCore |
 | P2-T7 | Demo seeder | P2-T4 | CMP-Catalogue |
 
 Execution waves: [P2-T1] → [P2-T2] → [P2-T3] → [P2-T4] → [P2-T5, P2-T7] → [P2-T6]
@@ -37,7 +37,7 @@ Main flow:
 3. User filters by category or 'in season now' and opens a plant card
 
 Exceptions:
-- No results: the app suggests photo identification
+- No results: the app suggests photo identification (from PHASE-5; until then it shows only 'No plants found')
 - No network: search works the same from the local catalogue
 
 #### UC-004 — View plant card (must)
@@ -310,6 +310,10 @@ Standing constraints from deferred decisions (apply now):
 - [UC-003] Given the device is offline, When the user searches 'σκόρδο', Then results appear without any network request
 - [UC-003] Given a visitor without an account, Then search and filters work
 - [UC-003] Given a garden in a climate zone where garlic sowing months include the current month, When the user filters 'in season now', Then garlic is listed
+- [UC-003] 'In season now' counts sow_indoors, sow_outdoors and transplant months, never harvest months
+- [UC-003] Given a user with no garden climate zone (a visitor, or a gardener without a garden), When they filter 'in season now', Then a plant is listed if it is in season in any climate zone
+- [UC-003] Given tomato's transplant months include the current month in a garden's zone and its sowing months do not, When the user filters 'in season now', Then tomato is listed
+- [UC-003] Given a plant whose only current-month activity is harvest, When the user filters 'in season now', Then it is not listed
 - [UC-004] Given a visitor without an account and no network, When they open a plant card, Then all text sections are shown from the local catalogue
 - [UC-004] Given a signed-in gardener whose garden is in a climate zone, When they open a plant card from that garden, Then the calendar shows that zone first
 - [UC-004] Given a plant with only Greek text and the UI in English, Then the Greek text is shown with a 'not translated' label

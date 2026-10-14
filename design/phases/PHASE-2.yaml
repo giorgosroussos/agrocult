@@ -38,10 +38,14 @@ tasks:
     touches: {writes: [CMP-AppCatalogue], reads: [CMP-Catalogue], hotspots: [mobile/pubspec.yaml]}
   - id: P2-T6
     title: Search and plant card
-    description: "FTS search across languages with Greeklish and aliases, category and 'in season now' filters, plant card with all sections and language fallback, no sign-in needed"
+    description: "FTS search across languages with Greeklish and aliases, category and 'in season now' filters, plant card with all sections and language fallback, no sign-in needed. Route names /catalogue and /plant in AppRoutes; the catalogue registers its screens through FeatureRoutes wired in main.dart; a 'Search plants' button on the start screen for visitors and signed-in users (replaced by the home screen in PHASE-4). Empty result shows only 'No plants found' until PHASE-5."
     depends_on: [P2-T5]
     use_cases: [UC-003, UC-004]
-    touches: {writes: [CMP-AppCatalogue], hotspots: [mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
+    acceptance_criteria:
+      - "Given the start screen, for a visitor or a signed-in user, When the user taps 'Search plants', Then the catalogue search opens"
+      - "No file under mobile/lib/app imports mobile/lib/features; only mobile/lib/main.dart imports both"
+      - "Given a search with no matches, Then the screen shows 'No plants found' and no photo identification action"
+    touches: {writes: [CMP-AppCatalogue, CMP-AppCore], hotspots: [mobile/lib/main.dart, mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
   - id: P2-T7
     title: Demo seeder
     description: "Development-only catalogue demo seeder run from DatabaseSeeder (php artisan db:seed): plant categories; 4-5 climate zones with placeholder thresholds; 10 common Greek garden plants (tomato, basil, pepper, olive, lemon, lettuce, courgette, rosemary, fig, garlic) with el/en translations, aliases incl. Greeklish, calendars per zone, care intervals, companions and tips; a handful of settlements. 8 plants published through PlantWorkflow (passing the required-field checks and triggering a snapshot build), fig in_review, garlic draft. Every demo zone and plant is marked 'demo - not expert-reviewed' in a description or tip field; plant names stay unmarked. No photos, no external calls, no removal command (migrate:fresh clears dev data)."

@@ -1,7 +1,7 @@
 <!-- GENERATED — do not edit -->
 # Pack PHASE-3 — My gardens - gardens with location and climate zone, plants in them, care log and next action
 
-_design v1.2.0 · 567a799fd2d1_
+_design v1.3.0 · cd829a248c19_
 
 Depends on: PHASE-2 · environment: development · components: CMP-Weather, CMP-Gardens, CMP-AppGardens
 

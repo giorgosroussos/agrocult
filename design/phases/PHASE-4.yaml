@@ -33,5 +33,5 @@ tasks:
     description: "Home screen with offline fallback, notification list, push handling into the garden, settings for language, notification types and gardens"
     depends_on: [P4-T3, P4-T4]
     use_cases: [UC-006, UC-009]
-    touches: {writes: [CMP-AppHome], reads: [CMP-Notifications, CMP-Identity], hotspots: [mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
+    touches: {writes: [CMP-AppHome], reads: [CMP-Notifications, CMP-Identity], hotspots: [mobile/lib/main.dart, mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
 out_of_scope: ["Spraying alerts and vacation mode (SCOPE-007)", "Home-screen widget (SCOPE-007)"]

@@ -58,7 +58,7 @@ use_cases:
       - "Results update from the local catalogue on the device"
       - "User filters by category or 'in season now' and opens a plant card"
     exceptions:
-      - "No results: the app suggests photo identification"
+      - "No results: the app suggests photo identification (from PHASE-5; until then it shows only 'No plants found')"
       - "No network: search works the same from the local catalogue"
     acceptance_criteria:
       - "Given the catalogue contains 'Ντομάτα', When the user searches 'τοματα', Then 'Ντομάτα' is in the results"
@@ -68,6 +68,10 @@ use_cases:
       - "Given the device is offline, When the user searches 'σκόρδο', Then results appear without any network request"
       - "Given a visitor without an account, Then search and filters work"
       - "Given a garden in a climate zone where garlic sowing months include the current month, When the user filters 'in season now', Then garlic is listed"
+      - "'In season now' counts sow_indoors, sow_outdoors and transplant months, never harvest months"
+      - "Given a user with no garden climate zone (a visitor, or a gardener without a garden), When they filter 'in season now', Then a plant is listed if it is in season in any climate zone"
+      - "Given tomato's transplant months include the current month in a garden's zone and its sowing months do not, When the user filters 'in season now', Then tomato is listed"
+      - "Given a plant whose only current-month activity is harvest, When the user filters 'in season now', Then it is not listed"
 
   - id: UC-004
     title: View plant card

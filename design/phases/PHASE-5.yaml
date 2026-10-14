@@ -14,8 +14,8 @@ tasks:
     touches: {writes: [CMP-Identification], reads: [CMP-Catalogue, CMP-Gardens, CMP-Identity], migrations: true}
   - id: P5-T2
     title: Identification screens
-    description: "Take or pick a photo, resize to 1024 px, show up to 3 candidates with confidence and Pl@ntNet attribution, confirm to open the card or add to a garden"
+    description: "Take or pick a photo, resize to 1024 px, show up to 3 candidates with confidence and Pl@ntNet attribution, confirm to open the card or add to a garden; an empty catalogue search result suggests photo identification with an action that opens it (UC-003)"
     depends_on: [P5-T1]
     use_cases: [UC-005]
-    touches: {writes: [CMP-AppCatalogue], reads: [CMP-Identification, CMP-AppGardens], hotspots: [mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
+    touches: {writes: [CMP-AppCatalogue], reads: [CMP-Identification, CMP-AppGardens], hotspots: [mobile/lib/main.dart, mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
 out_of_scope: ["Disease diagnosis (non-goal)"]
