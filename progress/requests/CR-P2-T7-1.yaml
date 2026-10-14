@@ -1,0 +1,31 @@
+id: CR-P2-T7-1
+raised_by: engineer
+task: P2-T7
+problem: >
+  The dev database has no catalogue content (0 plants, categories, climate zones, settlements,
+  tips). Content entry is out of scope for tasks (curation by the owner), the import commands
+  only produce drafts without Greek texts and need an existing category, and P2-T5 (bundled
+  initial snapshot) and P2-T6 (search, plant card) cannot be previewed with an empty catalogue.
+affects:
+  - design/phases/PHASE-2.yaml (new task P2-T7 Demo seeder, development only)
+  - CMP-Catalogue
+  - backend/database/seeders/DatabaseSeeder.php (possibly a hotspot to declare)
+proposal: >
+  Add task P2-T7 "Demo seeder" (development only) to PHASE-2: writes CMP-Catalogue,
+  depends_on P2-T4 (merged), may run in parallel with P2-T5.
+  A catalogue demo seeder run from DatabaseSeeder (`php artisan db:seed`):
+  plant categories; climate zones; ~10 common Greek garden plants (e.g. tomato, basil, pepper,
+  olive, lemon, lettuce, courgette, rosemary, fig, garlic) with el/en translations, aliases
+  incl. Greeklish, calendars per zone, care intervals, companions, tips; a handful of
+  settlements; a mix of draft / in_review / published plants (published ones pass the
+  required-field checks and trigger a snapshot build).
+  Content clearly marked as demo (not expert-reviewed; does not count toward the 30-50
+  reviewed plants). Refuses to run in production; idempotent (safe to run twice).
+  No photos, no external calls.
+  Suggested acceptance criteria: after seeding, the snapshot contains exactly the published
+  demo plants; running the seeder twice creates no duplicates; with APP_ENV=production the
+  seeder exits without writing.
+  Open questions for the design session: whether hotspot
+  backend/database/seeders/DatabaseSeeder.php needs declaring; which plants and which
+  statuses; whether demo content should later be removable by a command.
+status: open
