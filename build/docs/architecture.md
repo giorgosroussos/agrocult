@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Architecture and stack
 
-_Generated document · design v1.1.0 · source 26e0c15630c0_
+_Generated document · design v1.2.0 · source 567a799fd2d1_
 
 
 **Style:** modular-monolith · **database:** postgresql
@@ -172,6 +172,7 @@ flowchart TB
 - `mobile/lib/l10n/app_el.arb`
 - `mobile/lib/l10n/app_en.arb`
 - `mobile/lib/app/router.dart`
+- `backend/database/seeders/DatabaseSeeder.php`
 
 ## Decisions
 

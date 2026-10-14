@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Security and compliance
 
-_Generated document · design v1.1.0 · source 26e0c15630c0_
+_Generated document · design v1.2.0 · source 567a799fd2d1_
 
 
 ## Trust boundaries

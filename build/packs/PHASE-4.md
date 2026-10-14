@@ -1,7 +1,7 @@
 <!-- GENERATED — do not edit -->
 # Pack PHASE-4 — What to do today - forecasts, weather x plant rules, morning summaries, urgent alerts and the home screen
 
-_design v1.1.0 · 26e0c15630c0_
+_design v1.2.0 · 567a799fd2d1_
 
 Depends on: PHASE-3 · environment: development · components: CMP-Weather, CMP-Notifications, CMP-AppHome
 
