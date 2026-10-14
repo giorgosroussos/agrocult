@@ -13,6 +13,7 @@ use App\Modules\Catalogue\Models\Settlement;
 use App\Modules\Catalogue\Models\Tip;
 use BackedEnum;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Queues a snapshot build (after the transaction commits) whenever a change reaches what
@@ -35,7 +36,10 @@ class CatalogueSnapshotTrigger
     private function trigger(Model $model): void
     {
         if ($this->affectsSnapshot($model)) {
-            BuildCatalogueSnapshot::dispatch()->afterCommit();
+            // The whole dispatch waits for the commit, including the job's unique lock: with
+            // the database cache store a lock already held makes its INSERT fail, which would
+            // abort an open PostgreSQL transaction (e.g. a second publish while a build is queued).
+            DB::afterCommit(fn () => BuildCatalogueSnapshot::dispatch());
         }
     }
 

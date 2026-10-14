@@ -1,0 +1,9 @@
+id: P2-T7
+status: ready_to_merge
+commit: 00bc601ae6840ff5dd66a3e3248e0e7c6e0675c4
+handoff: |
+  Catalogue/Database/Seeders/CatalogueDemoSeeder (called from database/seeders/DatabaseSeeder; `php artisan db:seed`): 3 categories, 5 zones (placeholder rules), 8 settlements, 10 plants with el/en texts, Greeklish aliases, calendars per zone, care intervals, companions, 5 tips.
+  8 plants published via PlantWorkflow (snapshot build queued), Ficus carica in_review, Allium sativum draft; CatalogueDemoSeeder::DEMO_MARKER in zone/plant descriptions and tips.
+  Idempotent (natural keys; existing plants left untouched); no-op with APP_ENV=production; no photos, no HTTP; migrate:fresh removes it.
+  Fix: Observers/CatalogueSnapshotTrigger dispatches via DB::afterCommit so the unique-job lock (database cache) never aborts an open PostgreSQL transaction.
+  Tests: tests/Feature/Catalogue/CatalogueDemoSeederTest.php, CatalogueDemoSeederDevSetupTest.php (database cache + queue).
