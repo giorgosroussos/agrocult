@@ -276,3 +276,22 @@ it('rate-limits panel sign-in attempts (SEC-005)', function () {
 
     $this->assertGuest();
 });
+
+it('keeps panel sessions in files by default, so no sessions table is needed (DATA-006)', function () {
+    // phpunit.xml sets SESSION_DRIVER=array; read the shipped default without it.
+    $testDriver = getenv('SESSION_DRIVER');
+    putenv('SESSION_DRIVER');
+    unset($_ENV['SESSION_DRIVER'], $_SERVER['SESSION_DRIVER']);
+
+    try {
+        $sessionConfig = require config_path('session.php');
+    } finally {
+        putenv('SESSION_DRIVER='.$testDriver);
+        $_ENV['SESSION_DRIVER'] = $_SERVER['SESSION_DRIVER'] = $testDriver;
+    }
+
+    expect($sessionConfig['driver'])->toBe('file');
+
+    config(['session.driver' => $sessionConfig['driver']]);
+    $this->get('/admin/login')->assertOk();
+});
