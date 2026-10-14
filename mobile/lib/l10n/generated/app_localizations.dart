@@ -361,6 +361,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You must be at least 15 years old to create an account.'**
   String get validationAgeRequired;
+
+  /// Title of the catalogue search screen and the button that opens it
+  ///
+  /// In en, this message translates to:
+  /// **'Plant catalogue'**
+  String get catalogueTitle;
+
+  /// Hint in the catalogue search box
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, in Greek or English'**
+  String get catalogueSearchHint;
+
+  /// Filter chip: plants whose sowing months include the current month
+  ///
+  /// In en, this message translates to:
+  /// **'In season now'**
+  String get catalogueInSeasonFilter;
+
+  /// Category filter chip that shows every category
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get catalogueAllCategories;
+
+  /// Shown when a catalogue search has no results
+  ///
+  /// In en, this message translates to:
+  /// **'No plants found'**
+  String get catalogueNoResults;
+
+  /// Suggestion under an empty search result (UC-003: suggests photo identification)
+  ///
+  /// In en, this message translates to:
+  /// **'Try another spelling. Identifying a plant from a photo is coming soon.'**
+  String get catalogueNoResultsHint;
+
+  /// Shown when the local catalogue cannot be read
+  ///
+  /// In en, this message translates to:
+  /// **'The plant catalogue could not be opened.'**
+  String get catalogueLoadError;
+
+  /// Shown when a plant card is opened for a plant that is not in the local catalogue
+  ///
+  /// In en, this message translates to:
+  /// **'This plant is not in the catalogue.'**
+  String get plantNotFound;
+
+  /// Label on a catalogue text shown in the other language because it has no translation
+  ///
+  /// In en, this message translates to:
+  /// **'Not translated'**
+  String get notTranslated;
+
+  /// Plant card: aliases and names in other languages
+  ///
+  /// In en, this message translates to:
+  /// **'Also known as'**
+  String get plantOtherNames;
+
+  /// Plant card: the plant's category
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get plantCategory;
+
+  /// Plant card section heading
+  ///
+  /// In en, this message translates to:
+  /// **'Growing conditions'**
+  String get plantSectionConditions;
+
+  /// Plant card section heading
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get plantSectionCalendar;
+
+  /// Plant card section heading
+  ///
+  /// In en, this message translates to:
+  /// **'Planting'**
+  String get plantSectionPlanting;
+
+  /// Plant card section heading
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get plantSectionDescription;
+
+  /// Plant card section heading
+  ///
+  /// In en, this message translates to:
+  /// **'Care'**
+  String get plantSectionCare;
+
+  /// Plant card section heading
+  ///
+  /// In en, this message translates to:
+  /// **'Seed saving'**
+  String get plantSectionSeedSaving;
+
+  /// Plant card section heading
+  ///
+  /// In en, this message translates to:
+  /// **'Tips'**
+  String get plantSectionTips;
+
+  /// Plant card section heading: good and bad neighbours
+  ///
+  /// In en, this message translates to:
+  /// **'Companions'**
+  String get plantSectionCompanions;
+
+  /// Plant card section heading: sources and licences of the facts
+  ///
+  /// In en, this message translates to:
+  /// **'Sources'**
+  String get plantSectionSources;
+
+  /// Plant card: growing condition label
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum temperature'**
+  String get plantTempMin;
+
+  /// Plant card: growing condition label
+  ///
+  /// In en, this message translates to:
+  /// **'Ideal temperature'**
+  String get plantTempOpt;
+
+  /// Plant card: growing condition label
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum temperature'**
+  String get plantTempMax;
+
+  /// Plant card: growing condition label
+  ///
+  /// In en, this message translates to:
+  /// **'Water need'**
+  String get plantWaterNeed;
+
+  /// Plant card: water need on a scale of 1 to 5
+  ///
+  /// In en, this message translates to:
+  /// **'{value} of 5'**
+  String plantWaterNeedValue(int value);
+
+  /// Plant card: growing condition label
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get plantSun;
+
+  /// Sun requirement value
+  ///
+  /// In en, this message translates to:
+  /// **'Full sun'**
+  String get sunFullSun;
+
+  /// Sun requirement value
+  ///
+  /// In en, this message translates to:
+  /// **'Partial shade'**
+  String get sunPartialShade;
+
+  /// Sun requirement value
+  ///
+  /// In en, this message translates to:
+  /// **'Shade'**
+  String get sunShade;
+
+  /// Plant card: growing condition label (soil types)
+  ///
+  /// In en, this message translates to:
+  /// **'Soil'**
+  String get plantSoil;
+
+  /// Plant card: growing condition label
+  ///
+  /// In en, this message translates to:
+  /// **'Soil pH'**
+  String get plantPh;
+
+  /// Plant card: growing condition label
+  ///
+  /// In en, this message translates to:
+  /// **'Frost hardiness'**
+  String get plantFrost;
+
+  /// Frost hardiness value
+  ///
+  /// In en, this message translates to:
+  /// **'Tender'**
+  String get frostTender;
+
+  /// Frost hardiness value
+  ///
+  /// In en, this message translates to:
+  /// **'Half hardy'**
+  String get frostHalfHardy;
+
+  /// Frost hardiness value
+  ///
+  /// In en, this message translates to:
+  /// **'Hardy'**
+  String get frostHardy;
+
+  /// Plant card: planting label
+  ///
+  /// In en, this message translates to:
+  /// **'Propagation'**
+  String get plantPropagation;
+
+  /// Plant card: planting label
+  ///
+  /// In en, this message translates to:
+  /// **'Sowing depth'**
+  String get plantSowDepth;
+
+  /// Plant card: planting label
+  ///
+  /// In en, this message translates to:
+  /// **'Spacing between plants'**
+  String get plantSpacing;
+
+  /// Plant card: planting label
+  ///
+  /// In en, this message translates to:
+  /// **'Spacing between rows'**
+  String get plantRowSpacing;
+
+  /// Plant card: planting label
+  ///
+  /// In en, this message translates to:
+  /// **'Days to harvest'**
+  String get plantDaysToHarvest;
+
+  /// Calendar activity
+  ///
+  /// In en, this message translates to:
+  /// **'Sow in trays'**
+  String get activitySowIndoors;
+
+  /// Calendar activity
+  ///
+  /// In en, this message translates to:
+  /// **'Sow in the garden'**
+  String get activitySowOutdoors;
+
+  /// Calendar activity
+  ///
+  /// In en, this message translates to:
+  /// **'Transplant'**
+  String get activityTransplant;
+
+  /// Calendar activity
+  ///
+  /// In en, this message translates to:
+  /// **'Harvest'**
+  String get activityHarvest;
+
+  /// Plant card: marks the calendar of the climate zone of the garden the card was opened from
+  ///
+  /// In en, this message translates to:
+  /// **'Your garden\'s zone'**
+  String get calendarYourZone;
+
+  /// Plant card: the plant has no calendar
+  ///
+  /// In en, this message translates to:
+  /// **'No calendar yet.'**
+  String get calendarEmpty;
+
+  /// Care action
+  ///
+  /// In en, this message translates to:
+  /// **'Watering'**
+  String get careWater;
+
+  /// Care action
+  ///
+  /// In en, this message translates to:
+  /// **'Fertilising'**
+  String get careFertilise;
+
+  /// Care action
+  ///
+  /// In en, this message translates to:
+  /// **'Pruning'**
+  String get carePrune;
+
+  /// Care action
+  ///
+  /// In en, this message translates to:
+  /// **'Weeding'**
+  String get careWeed;
+
+  /// Care action
+  ///
+  /// In en, this message translates to:
+  /// **'Spraying'**
+  String get careSpray;
+
+  /// Care action
+  ///
+  /// In en, this message translates to:
+  /// **'Other care'**
+  String get careOther;
+
+  /// Plant card: how often a care action is due
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{every day} other{every {days} days}}'**
+  String careEvery(int days);
+
+  /// Plant card: plants that grow well next to this one
+  ///
+  /// In en, this message translates to:
+  /// **'Good neighbours'**
+  String get companionsGood;
+
+  /// Plant card: plants that should not grow next to this one
+  ///
+  /// In en, this message translates to:
+  /// **'Bad neighbours'**
+  String get companionsBad;
+
+  /// Plant card: licence of a source
+  ///
+  /// In en, this message translates to:
+  /// **'Licence: {licence}'**
+  String sourceLicence(String licence);
+
+  /// Plant card: a section without content
+  ///
+  /// In en, this message translates to:
+  /// **'No information yet.'**
+  String get plantNoInformation;
 }
 
 class _AppLocalizationsDelegate

@@ -151,4 +151,188 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get validationAgeRequired =>
       'You must be at least 15 years old to create an account.';
+
+  @override
+  String get catalogueTitle => 'Plant catalogue';
+
+  @override
+  String get catalogueSearchHint => 'Search by name, in Greek or English';
+
+  @override
+  String get catalogueInSeasonFilter => 'In season now';
+
+  @override
+  String get catalogueAllCategories => 'All';
+
+  @override
+  String get catalogueNoResults => 'No plants found';
+
+  @override
+  String get catalogueNoResultsHint =>
+      'Try another spelling. Identifying a plant from a photo is coming soon.';
+
+  @override
+  String get catalogueLoadError => 'The plant catalogue could not be opened.';
+
+  @override
+  String get plantNotFound => 'This plant is not in the catalogue.';
+
+  @override
+  String get notTranslated => 'Not translated';
+
+  @override
+  String get plantOtherNames => 'Also known as';
+
+  @override
+  String get plantCategory => 'Category';
+
+  @override
+  String get plantSectionConditions => 'Growing conditions';
+
+  @override
+  String get plantSectionCalendar => 'Calendar';
+
+  @override
+  String get plantSectionPlanting => 'Planting';
+
+  @override
+  String get plantSectionDescription => 'Description';
+
+  @override
+  String get plantSectionCare => 'Care';
+
+  @override
+  String get plantSectionSeedSaving => 'Seed saving';
+
+  @override
+  String get plantSectionTips => 'Tips';
+
+  @override
+  String get plantSectionCompanions => 'Companions';
+
+  @override
+  String get plantSectionSources => 'Sources';
+
+  @override
+  String get plantTempMin => 'Minimum temperature';
+
+  @override
+  String get plantTempOpt => 'Ideal temperature';
+
+  @override
+  String get plantTempMax => 'Maximum temperature';
+
+  @override
+  String get plantWaterNeed => 'Water need';
+
+  @override
+  String plantWaterNeedValue(int value) {
+    return '$value of 5';
+  }
+
+  @override
+  String get plantSun => 'Sun';
+
+  @override
+  String get sunFullSun => 'Full sun';
+
+  @override
+  String get sunPartialShade => 'Partial shade';
+
+  @override
+  String get sunShade => 'Shade';
+
+  @override
+  String get plantSoil => 'Soil';
+
+  @override
+  String get plantPh => 'Soil pH';
+
+  @override
+  String get plantFrost => 'Frost hardiness';
+
+  @override
+  String get frostTender => 'Tender';
+
+  @override
+  String get frostHalfHardy => 'Half hardy';
+
+  @override
+  String get frostHardy => 'Hardy';
+
+  @override
+  String get plantPropagation => 'Propagation';
+
+  @override
+  String get plantSowDepth => 'Sowing depth';
+
+  @override
+  String get plantSpacing => 'Spacing between plants';
+
+  @override
+  String get plantRowSpacing => 'Spacing between rows';
+
+  @override
+  String get plantDaysToHarvest => 'Days to harvest';
+
+  @override
+  String get activitySowIndoors => 'Sow in trays';
+
+  @override
+  String get activitySowOutdoors => 'Sow in the garden';
+
+  @override
+  String get activityTransplant => 'Transplant';
+
+  @override
+  String get activityHarvest => 'Harvest';
+
+  @override
+  String get calendarYourZone => 'Your garden\'s zone';
+
+  @override
+  String get calendarEmpty => 'No calendar yet.';
+
+  @override
+  String get careWater => 'Watering';
+
+  @override
+  String get careFertilise => 'Fertilising';
+
+  @override
+  String get carePrune => 'Pruning';
+
+  @override
+  String get careWeed => 'Weeding';
+
+  @override
+  String get careSpray => 'Spraying';
+
+  @override
+  String get careOther => 'Other care';
+
+  @override
+  String careEvery(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'every $days days',
+      one: 'every day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get companionsGood => 'Good neighbours';
+
+  @override
+  String get companionsBad => 'Bad neighbours';
+
+  @override
+  String sourceLicence(String licence) {
+    return 'Licence: $licence';
+  }
+
+  @override
+  String get plantNoInformation => 'No information yet.';
 }

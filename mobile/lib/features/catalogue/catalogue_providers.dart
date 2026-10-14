@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/db/database_location.dart';
 import '../../core/providers.dart';
 import 'data/catalogue_database.dart';
+import 'data/catalogue_models.dart';
+import 'data/catalogue_repository.dart';
 import 'sync/catalogue_remote.dart';
 import 'sync/catalogue_store.dart';
 import 'sync/catalogue_sync.dart';
@@ -77,3 +79,50 @@ class LocalCatalogue extends AsyncNotifier<CatalogueDatabase> {
     return result;
   }
 }
+
+/// Search and plant cards over the local catalogue (UC-003, UC-004).
+final catalogueRepositoryProvider = FutureProvider<CatalogueRepository>(
+  (ref) async =>
+      CatalogueRepository(await ref.watch(localCatalogueProvider.future)),
+);
+
+/// Climate zones of the user's gardens, for 'in season now' (SCOPE-003: the
+/// garden's location, never the device's position). Empty for a visitor or
+/// a gardener without a garden: then a plant is in season when it is in
+/// season in any zone. The gardens feature provides the real value by
+/// overriding this provider where the app is composed.
+final seasonClimateZonesProvider = Provider<Set<String>>((ref) => const {});
+
+/// Today's date for 'in season now' (replaced in tests).
+final catalogueTodayProvider = Provider<DateTime Function()>(
+  (ref) => DateTime.now,
+);
+
+/// Categories named in a UI language.
+final catalogueCategoriesProvider = FutureProvider.autoDispose
+    .family<List<CategoryItem>, String>(
+      (ref, lang) async => (await ref.watch(
+        catalogueRepositoryProvider.future,
+      )).categories(lang),
+    );
+
+/// Search results for a query.
+final plantSearchProvider = FutureProvider.autoDispose
+    .family<List<PlantListItem>, PlantQuery>(
+      (ref, query) async =>
+          (await ref.watch(catalogueRepositoryProvider.future)).search(query),
+    );
+
+/// Which plant card to show, in which language, with which zone first.
+typedef PlantCardRequest = ({String plantId, String lang, String? zoneId});
+
+/// The plant card; null when the plant is not in the local catalogue.
+final plantCardProvider = FutureProvider.autoDispose
+    .family<PlantCardData?, PlantCardRequest>(
+      (ref, request) async =>
+          (await ref.watch(catalogueRepositoryProvider.future)).plantCard(
+            request.plantId,
+            lang: request.lang,
+            preferredZoneId: request.zoneId,
+          ),
+    );
