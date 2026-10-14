@@ -1,6 +1,6 @@
 id: P2-T6
 status: blocked
-commit: e9a7bfb
+commit: 4fc21ed
 handoff: |
   Blocked on CR-P2-T6-1: route registration and entry point in CMP-AppCore, 'in season now' with no zone and which activities count, and the empty-result copy.
   mobile/lib/features/catalogue/: data/catalogue_repository.dart (FTS prefix search, category incl. subcategories, 'in season now', card with per-section language fallback), search/search_text.dart, ui/ (search screen, plant card), catalogue_routes.dart (CatalogueRoutes, PlantCardArgs, catalogueRoutes).
