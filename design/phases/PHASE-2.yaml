@@ -42,4 +42,14 @@ tasks:
     depends_on: [P2-T5]
     use_cases: [UC-003, UC-004]
     touches: {writes: [CMP-AppCatalogue], hotspots: [mobile/lib/app/router.dart, mobile/lib/l10n/app_el.arb, mobile/lib/l10n/app_en.arb]}
-out_of_scope: ["Entering the 42 plants' content (curation work by the owner, not a task)", "Photo identification (PHASE-5)", "Gardens (PHASE-3)"]
+  - id: P2-T7
+    title: Demo seeder
+    description: "Development-only catalogue demo seeder run from DatabaseSeeder (php artisan db:seed): plant categories; 4-5 climate zones with placeholder thresholds; 10 common Greek garden plants (tomato, basil, pepper, olive, lemon, lettuce, courgette, rosemary, fig, garlic) with el/en translations, aliases incl. Greeklish, calendars per zone, care intervals, companions and tips; a handful of settlements. 8 plants published through PlantWorkflow (passing the required-field checks and triggering a snapshot build), fig in_review, garlic draft. Every demo zone and plant is marked 'demo - not expert-reviewed' in a description or tip field; plant names stay unmarked. No photos, no external calls, no removal command (migrate:fresh clears dev data)."
+    depends_on: [P2-T4]
+    acceptance_criteria:
+      - "Given an empty catalogue, When the demo seeder runs, Then the latest snapshot contains exactly the 8 published demo plants"
+      - "Given the demo seeder has run, When it runs again, Then no rows are duplicated"
+      - "Given APP_ENV=production, When the demo seeder runs, Then it exits without writing any row"
+      - "Every seeded climate zone and plant carries the 'demo - not expert-reviewed' marker"
+    touches: {writes: [CMP-Catalogue], hotspots: [backend/database/seeders/DatabaseSeeder.php]}
+out_of_scope: ["Entering the 42 plants' content (curation work by the owner, not a task; P2-T7 demo content does not count toward it)", "Photo identification (PHASE-5)", "Gardens (PHASE-3)"]

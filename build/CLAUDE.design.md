@@ -1,5 +1,5 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
-# Design rules — Agrocult (design v1.1.0 · 26e0c15630c0)
+# Design rules — Agrocult (design v1.2.0 · 567a799fd2d1)
 
 Mobile app (Android/iOS) that tells amateur gardeners in Greece what to do today for their own plants, based on the local weather at each of their gardens. It combines a plant catalogue with practical growing instructions for the Mediterranean climate and a personal garden with smart, weather-driven notifications.
 
@@ -47,7 +47,7 @@ Mobile app (Android/iOS) that tells amateur gardeners in Greece what to do today
 - MUST NOT add runtime dependencies outside the approved list: laravel/framework@^13.8, laravel/sanctum@^4.0, filament/filament@^5.7, kreait/laravel-firebase@^7.0, intervention/image@^3.0, flutter_riverpod@^3.0.0, drift@^2.28.0, dio@^5.9.0, intl@^0.20.0, flutter_map@^8.0.0, vector_map_tiles@9.0.0-beta.13, firebase_messaging@^16.0.0, image_picker@^1.2.0, flutter_image_compress@^2.4.0, geolocator@^14.0.0, flutter_secure_storage@^9.2.0. New ones need a change request.
 - MUST read every external endpoint and credential from configuration; never hardcode them
 - MUST NOT perform live payments, send real emails or call live external systems outside production
-- Shared hotspot files (touch only when your task lists them): `backend/composer.json`, `backend/bootstrap/providers.php`, `backend/routes/console.php`, `mobile/pubspec.yaml`, `mobile/lib/l10n/app_el.arb`, `mobile/lib/l10n/app_en.arb`, `mobile/lib/app/router.dart`
+- Shared hotspot files (touch only when your task lists them): `backend/composer.json`, `backend/bootstrap/providers.php`, `backend/routes/console.php`, `mobile/pubspec.yaml`, `mobile/lib/l10n/app_el.arb`, `mobile/lib/l10n/app_en.arb`, `mobile/lib/app/router.dart`, `backend/database/seeders/DatabaseSeeder.php`
 
 ## Conventions
 - One repository: backend/ (Laravel) and mobile/ (Flutter); design/, build/, progress/, tools/ at the root

@@ -116,3 +116,4 @@ hotspots:
   - mobile/lib/l10n/app_el.arb
   - mobile/lib/l10n/app_en.arb
   - mobile/lib/app/router.dart
+  - backend/database/seeders/DatabaseSeeder.php

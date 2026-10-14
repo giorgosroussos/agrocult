@@ -1,7 +1,7 @@
 <!-- GENERATED — do not edit -->
 # Pack PHASE-2 — Offline catalogue - curators publish plants in the panel, the app searches them offline in Greek, English and Greeklish
 
-_design v1.1.0 · 26e0c15630c0_
+_design v1.2.0 · 567a799fd2d1_
 
 Depends on: PHASE-1 · environment: development · components: CMP-Catalogue, CMP-AppCatalogue
 
@@ -15,12 +15,13 @@ Depends on: PHASE-1 · environment: development · components: CMP-Catalogue, CM
 | P2-T4 | Catalogue snapshot and sync API | P2-T3 | CMP-Catalogue |
 | P2-T5 | Local catalogue in the app | P2-T4 | CMP-AppCatalogue |
 | P2-T6 | Search and plant card | P2-T5 | CMP-AppCatalogue |
+| P2-T7 | Demo seeder | P2-T4 | CMP-Catalogue |
 
-Execution waves: [P2-T1] → [P2-T2] → [P2-T3] → [P2-T4] → [P2-T5] → [P2-T6]
+Execution waves: [P2-T1] → [P2-T2] → [P2-T3] → [P2-T4] → [P2-T5, P2-T7] → [P2-T6]
 
 ## Out of scope (do not build)
 
-- Entering the 42 plants' content (curation work by the owner, not a task)
+- Entering the 42 plants' content (curation work by the owner, not a task; P2-T7 demo content does not count toward it)
 - Photo identification (PHASE-5)
 - Gardens (PHASE-3)
 

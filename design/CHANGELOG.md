@@ -1,5 +1,9 @@
 # Design changelog
 
+## v1.2.0 — 2026-10-14
+
+- Add P2-T7 demo catalogue seeder (development only); DatabaseSeeder.php declared a shared hotspot (CR-P2-T7-1)
+
 ## v1.1.0 — 2026-10-14
 
 - TOTP secret and recovery codes stored on ENT-User; SEC-005 supersedes SEC-001; P1-T5 adds a migration (CR-P1-T5-1)
