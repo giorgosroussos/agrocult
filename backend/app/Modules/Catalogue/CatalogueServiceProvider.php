@@ -2,6 +2,10 @@
 
 namespace App\Modules\Catalogue;
 
+use App\Modules\Catalogue\Console\ImportPlantCommand;
+use App\Modules\Catalogue\Console\ImportSettlementsCommand;
+use App\Modules\Catalogue\Import\HttpPlantSourceImporter;
+use App\Modules\Catalogue\Import\PlantSourceImporter;
 use App\Modules\Catalogue\Models\CareInterval;
 use App\Modules\Catalogue\Models\ClimateZone;
 use App\Modules\Catalogue\Models\Companion;
@@ -29,6 +33,9 @@ class CatalogueServiceProvider extends ModuleServiceProvider
     public function register(): void
     {
         $this->app->scoped(CataloguePhotoStore::class);
+
+        // INT-006: the open plant data sources (EXT-006) are reached only through this interface.
+        $this->app->bind(PlantSourceImporter::class, HttpPlantSourceImporter::class);
     }
 
     public function boot(): void
@@ -36,6 +43,10 @@ class CatalogueServiceProvider extends ModuleServiceProvider
         parent::boot();
 
         $this->loadTranslationsFrom($this->modulePath().'/resources/lang', 'catalogue');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([ImportPlantCommand::class, ImportSettlementsCommand::class]);
+        }
 
         // UC-010: only accounts that may use the admin panel curate the catalogue.
         foreach ([Plant::class, PlantTranslation::class, PlantAlias::class, PlantCalendar::class, Companion::class,
