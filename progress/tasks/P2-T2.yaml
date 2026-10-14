@@ -1,0 +1,9 @@
+id: P2-T2
+status: ready_to_merge
+commit: b532b7b42975b0caaa4baf519805a1cc1a359ddb
+handoff: |
+  Filament resources in backend/app/Modules/Catalogue/Filament/Resources: Plants (tabs for structured fields, texts, aliases, calendar per zone, companions, care intervals, photos, sources), PlantCategories, ClimateZones (rules as JSON object), Tips; labels in Catalogue/resources/lang/{en,el}/panel.php (catalogue::panel).
+  Status changes only via EditPlant header actions (submitForReview/publish/returnToDraft/archive) -> PlantWorkflow; only state-model transitions are offered; publish records the reviewer; missing required fields are shown and block publishing.
+  Policies/CataloguePolicy (+ PlantCategoryPolicy, ClimateZonePolicy: no delete while in use) allow only panel accounts (FilamentUser::canAccessPanel); registered in CatalogueServiceProvider.
+  Services/CataloguePhotoStore stores catalogue photos (JPEG/PNG/WebP, max 5 MB, EXIF stripped by GD re-encode) on config('catalogue.photos.disk') (CATALOGUE_PHOTO_DISK, default private "local") under catalogue/photos.
+  Tests: backend/tests/Feature/Catalogue/CurationPanelTest.php. Device sync / offline search ACs belong to P2-T4/P2-T5, the EXT-006 failure AC to P2-T3.
