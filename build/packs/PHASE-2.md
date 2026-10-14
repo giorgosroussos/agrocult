@@ -1,7 +1,7 @@
 <!-- GENERATED — do not edit -->
 # Pack PHASE-2 — Offline catalogue - curators publish plants in the panel, the app searches them offline in Greek, English and Greeklish
 
-_design v1.0.1 · 684d51011856_
+_design v1.1.0 · 26e0c15630c0_
 
 Depends on: PHASE-1 · environment: development · components: CMP-Catalogue, CMP-AppCatalogue
 

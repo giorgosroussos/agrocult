@@ -4,7 +4,7 @@ depends_on: []
 use_cases: [UC-012, UC-013]
 entities: [ENT-User, ENT-PushToken]
 components: [CMP-Identity, CMP-AppCore]
-decisions: [SCOPE-002, SCOPE-009, SEC-001, SEC-002, SEC-003, SEC-004, ARCH-001, ARCH-002, ARCH-004, OPS-003, OPS-004, DATA-006, DEC-004]
+decisions: [SCOPE-002, SCOPE-009, SEC-005, SEC-002, SEC-003, SEC-004, ARCH-001, ARCH-002, ARCH-004, OPS-003, OPS-004, DATA-006, DEC-004]
 environment: development
 acceptance_criteria:
   - "Given a fresh clone, When the engineer runs Sail up, Then the API, PostgreSQL 18, the queue worker and the scheduler start"
@@ -36,7 +36,7 @@ tasks:
     title: Admin panel with MFA
     description: "Filament panel for admin and curator roles with required TOTP; gardener accounts denied"
     depends_on: [P1-T4]
-    touches: {writes: [CMP-Identity], hotspots: [backend/bootstrap/providers.php]}
+    touches: {writes: [CMP-Identity], migrations: true, hotspots: [backend/bootstrap/providers.php]}
   - id: P1-T6
     title: Auth screens in the app
     description: "Sign-up (with age confirmation), verify email notice, sign-in, password reset, sign-out"

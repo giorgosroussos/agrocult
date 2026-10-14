@@ -1,0 +1,33 @@
+id: CR-P1-T5-1
+raised_by: implementation-agent
+task: P1-T5
+problem: >
+  SEC-001 requires TOTP MFA for every admin panel account (curators and admins). TOTP needs a
+  per-user shared secret that persists between sign-ins (and, with Filament's built-in app
+  authentication, optionally recovery codes). The design has nowhere to store it: ENT-User
+  (id, email, password_hash, email_verified_at, role, language, notification_prefs, created_at)
+  has no MFA attribute, no other entity holds it, and P1-T5 is declared with migrations: no.
+  Storing the secret without a schema change would mean hiding it in an unrelated column
+  (e.g. notification_prefs) or in non-persistent storage, which is a data and security
+  decision the task may not make. It is also unspecified whether recovery codes exist, so a
+  curator who loses the authenticator device has no defined way back in other than the admin
+  resetting MFA.
+affects:
+  - design/model/data.yaml (ENT-User attributes, or a new MFA credential entity owned by CMP-Identity)
+  - design/phases/PHASE-1.yaml (P1-T5 touches.migrations)
+  - SEC-001 (TOTP MFA for admin panel accounts; recovery path)
+proposal: >
+  Add to ENT-User two nullable attributes owned by CMP-Identity:
+  totp_secret (string, text storage, sensitive, encrypted at rest, never logged) and
+  totp_recovery_codes (json, text storage, sensitive, stored hashed/encrypted, never logged),
+  and set P1-T5 touches.migrations: true so the task adds them with a new Identity migration.
+  Filament 5's built-in app authentication (required, with recovery codes) then stores the
+  secret on the user; a curator or admin without a confirmed secret is forced to set up TOTP on
+  first panel sign-in, and the admin can clear a user's secret to reset MFA.
+  Alternative if recovery codes are not wanted: only totp_secret, and lost devices are handled
+  by the admin clearing the secret.
+status: accepted
+resolution: >
+  Accepted in design v1.1.0 (SEC-005 supersedes SEC-001): ENT-User gets app_authentication_secret and
+  app_authentication_recovery_codes (encrypted, sensitive); recovery codes on; admin can reset MFA;
+  P1-T5 touches.migrations: true.

@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Architecture and stack
 
-_Generated document · design v1.0.1 · source 684d51011856_
+_Generated document · design v1.1.0 · source 26e0c15630c0_
 
 
 **Style:** modular-monolith · **database:** postgresql
@@ -53,7 +53,7 @@ flowchart LR
 | database | PostgreSQL | 18 | JSONB for forecasts and candidates, partial unique indexes (one summary per garden per day); from the draft |
 | queue | Laravel queue (database driver) | 13.8 | No extra service to pay for (ORG-001); switch to Redis when load requires it |
 | worker | Laravel scheduler + queue worker | 13.8 | Runs the notification worker every few hours and the morning summaries (UC-008) |
-| other | Filament | 5.7 | Admin panel for catalogue curation inside Laravel (SCOPE-010) with built-in MFA (SEC-001) |
+| other | Filament | 5.7 | Admin panel for catalogue curation inside Laravel (SCOPE-010) with built-in MFA (SEC-005) |
 | frontend | Riverpod | 3.0 | State management for the Flutter app; widely used and testable (ARCH-004) |
 | frontend | Flutter | 3.44 | Mobile app for Android now and iOS later from one codebase (DEC-005); from the draft. 3.44 is the newest verified available (ARCH-005) |
 | storage | Laravel filesystem (local in development | 13.8 | Private photo storage with temporary URLs (SEC-002) |
