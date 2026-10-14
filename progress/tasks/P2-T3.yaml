@@ -1,0 +1,9 @@
+id: P2-T3
+status: ready_to_merge
+commit: fa63afff9d873008f66c86c7c5602a39f64acacb
+handoff: |
+  `php artisan catalogue:import-plant "<scientific name>" [--source=gbif|wikidata|openfarm|trefle]* [--category=<code>]` (Catalogue/Console/ImportPlantCommand) asks every configured source (Trefle only with TREFLE_TOKEN) first, then writes in one transaction via Import/DraftPlantWriter.
+  EXT-006 is reached only through Import/PlantSourceImporter (bound to HttpPlantSourceImporter; returns DraftFacts of Fact{field,value}); endpoints, licences, 30 s timeout in config('catalogue.import'); failures throw Exceptions/PlantSourceUnavailable -> import stops, nothing written.
+  Imports only create/fill draft plants (never publish, never touch non-draft plants), keep curator values and report conflicts, add translations/aliases/good companions, and upsert one FactSource (source, licence, url, imported_at) per field and source.
+  `php artisan catalogue:import-settlements <overpass.json>` (Import/SettlementImporter) replaces the ENT-Settlement list atomically from an OSM Overpass export (query in the command help); no network call.
+  Tests: backend/tests/Feature/Catalogue/ImportPlantTest.php (incl. INT-006 failure AC), ImportSettlementsTest.php.
