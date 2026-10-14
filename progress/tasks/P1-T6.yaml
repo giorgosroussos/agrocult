@@ -1,0 +1,9 @@
+id: P1-T6
+status: ready_to_merge
+commit: a5e39d4
+handoff: |
+  Auth screens in mobile/lib/app/auth/ (sign-up with age checkbox, verify email notice, sign-in, forgot/reset password); routes in lib/app/routes.dart, wired in router.dart.
+  lib/core/auth/: AuthRepository (auth/* endpoints -> AuthError), AuthSession (authSessionProvider, signed-in bool), SecureDeviceIdStorage (device_id for one token per device); ApiProblem.code added.
+  Reset link agrocult://reset-password?token=&email= opens ResetPasswordScreen (Android intent filter, iOS CFBundleURLTypes); AppRouter.resetLinkFrom parses it.
+  Start screen offers sign-in/sign-up or sign-out; push registration on sign-in is left to CMP-AppHome (signOut accepts pushToken).
+  Tests: test/core/auth_repository_test.dart, test/app/auth_screens_test.dart with FakeIdentityServer (test/core/fake_identity_server.dart).
