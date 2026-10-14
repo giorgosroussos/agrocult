@@ -69,6 +69,35 @@ it('rejects a dependency that may_depend_on does not allow', function () {
         ->and($process->getOutput())->toContain('App\\Modules\\Identity\\Account');
 });
 
+it('lets CMP-Weather read climate zones through the CMP-Catalogue ClimateZones service and its event (DATA-009)', function () {
+    $dir = fixtureSource([
+        'Weather/Zones.php' => "<?php\nnamespace App\\Modules\\Weather;\nclass Zones { public function __construct(public \\App\\Modules\\Catalogue\\Services\\ClimateZones \$zones, public ?\\App\\Modules\\Catalogue\\Events\\ClimateZoneRulesChanged \$event = null) {} }\n",
+        'Catalogue/Services/ClimateZones.php' => "<?php\nnamespace App\\Modules\\Catalogue\\Services;\nclass ClimateZones { public function __construct(public ?\\App\\Modules\\Catalogue\\Models\\ClimateZone \$m = null) {} }\n",
+        'Catalogue/Events/ClimateZoneRulesChanged.php' => "<?php\nnamespace App\\Modules\\Catalogue\\Events;\nclass ClimateZoneRulesChanged {}\n",
+        'Catalogue/Models/ClimateZone.php' => "<?php\nnamespace App\\Modules\\Catalogue\\Models;\nclass ClimateZone { public function __construct(public ?\\App\\Modules\\Catalogue\\Services\\ClimateZones \$s = null) {} }\n",
+    ]);
+
+    $process = runDeptrac($dir);
+
+    expect($process->getExitCode())->toBe(0, $process->getOutput());
+});
+
+it('rejects CMP-Weather using CMP-Catalogue models or other classes instead of the ClimateZones service (DATA-009)', function (string $class) {
+    $dir = fixtureSource([
+        'Weather/Zones.php' => "<?php\nnamespace App\\Modules\\Weather;\nclass Zones { public function __construct(public \\{$class} \$zone) {} }\n",
+        'Catalogue/'.str_replace(['App\\Modules\\Catalogue\\', '\\'], ['', '/'], $class).'.php' => '<?php
+namespace '.substr($class, 0, (int) strrpos($class, '\\')).";\nclass ".substr($class, (int) strrpos($class, '\\') + 1)." {}\n",
+    ]);
+
+    $process = runDeptrac($dir);
+
+    expect($process->getExitCode())->not->toBe(0)
+        ->and($process->getOutput())->toContain('App\\Modules\\Weather\\Zones');
+})->with([
+    'model' => 'App\\Modules\\Catalogue\\Models\\ClimateZone',
+    'other service' => 'App\\Modules\\Catalogue\\Services\\CatalogueSnapshots',
+]);
+
 it('rejects shared code that depends on a module', function () {
     $dir = fixtureSource([
         'Support/Helper.php' => "<?php\nnamespace App\\Support;\nclass Helper { public function __construct(public \\App\\Modules\\Identity\\Account \$a) {} }\n",
