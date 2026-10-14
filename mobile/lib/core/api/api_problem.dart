@@ -7,6 +7,7 @@ class ApiProblem implements Exception {
     this.type,
     this.title,
     this.detail,
+    this.code,
     this.errors = const {},
   });
 
@@ -31,6 +32,7 @@ class ApiProblem implements Exception {
         type: _string(body['type']),
         title: _string(body['title']),
         detail: _string(body['detail']),
+        code: _string(body['code']),
         errors: errors,
       );
     }
@@ -42,6 +44,9 @@ class ApiProblem implements Exception {
   final String? type;
   final String? title;
   final String? detail;
+
+  /// Machine-readable extension member `code` (e.g. `email_not_verified`).
+  final String? code;
 
   /// Field validation errors (`errors` member), keyed by field name.
   final Map<String, List<String>> errors;
