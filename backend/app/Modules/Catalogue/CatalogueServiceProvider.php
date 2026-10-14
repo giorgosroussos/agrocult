@@ -2,6 +2,7 @@
 
 namespace App\Modules\Catalogue;
 
+use App\Modules\Catalogue\Console\BuildSnapshotCommand;
 use App\Modules\Catalogue\Console\ImportPlantCommand;
 use App\Modules\Catalogue\Console\ImportSettlementsCommand;
 use App\Modules\Catalogue\Import\HttpPlantSourceImporter;
@@ -16,7 +17,9 @@ use App\Modules\Catalogue\Models\PlantCalendar;
 use App\Modules\Catalogue\Models\PlantCategory;
 use App\Modules\Catalogue\Models\PlantPhoto;
 use App\Modules\Catalogue\Models\PlantTranslation;
+use App\Modules\Catalogue\Models\Settlement;
 use App\Modules\Catalogue\Models\Tip;
+use App\Modules\Catalogue\Observers\CatalogueSnapshotTrigger;
 use App\Modules\Catalogue\Policies\CataloguePolicy;
 use App\Modules\Catalogue\Policies\ClimateZonePolicy;
 use App\Modules\Catalogue\Policies\PlantCategoryPolicy;
@@ -45,7 +48,7 @@ class CatalogueServiceProvider extends ModuleServiceProvider
         $this->loadTranslationsFrom($this->modulePath().'/resources/lang', 'catalogue');
 
         if ($this->app->runningInConsole()) {
-            $this->commands([ImportPlantCommand::class, ImportSettlementsCommand::class]);
+            $this->commands([ImportPlantCommand::class, ImportSettlementsCommand::class, BuildSnapshotCommand::class]);
         }
 
         // UC-010: only accounts that may use the admin panel curate the catalogue.
@@ -56,5 +59,12 @@ class CatalogueServiceProvider extends ModuleServiceProvider
 
         Gate::policy(PlantCategory::class, PlantCategoryPolicy::class);
         Gate::policy(ClimateZone::class, ClimateZonePolicy::class);
+
+        // ARCH-003: publishing (and editing published content) rebuilds the device snapshot.
+        foreach ([Plant::class, PlantTranslation::class, PlantAlias::class, PlantCalendar::class, Companion::class,
+            CareInterval::class, PlantPhoto::class, FactSource::class, Tip::class, PlantCategory::class,
+            ClimateZone::class, Settlement::class] as $model) {
+            $model::observe(CatalogueSnapshotTrigger::class);
+        }
     }
 }
