@@ -1,0 +1,58 @@
+id: CR-P3-T1-1
+raised_by: implementation-agent
+task: P3-T1
+problem: >
+  P3-T1 (weather cells and climate zones) leaves open points that change behaviour, data or
+  component boundaries:
+  (1) Acceptance criterion vs out of scope. The only AC of P3-T1 is the INT-002 failure policy:
+  "the last forecast of the cell is used if it is less than 12 hours old; otherwise weather rules
+  are skipped and the home screen shows 'weather currently unavailable'". Testing it needs the
+  forecast cache (ENT-WeatherForecast), weather rules and the home screen, but ENT-WeatherForecast
+  is a PHASE-4 entity, the forecast cache with 12 h validity is P4-T1, weather rules P4-T2 and the
+  home endpoint P4-T4, and P3-T1 lists "Forecasts and notifications (PHASE-4)" as out of scope.
+  What must P3-T1 prove for INT-002 when the provider fails during elevation/history calls
+  (the only calls P3-T1 makes)?
+  (2) Zone rules format and matching. ENT-ClimateZone.rules is "thresholds on cell climate
+  metrics" with no defined schema. The demo seeder (P2-T7) uses
+  {"placeholder": true, "winter_min_c": {"min": x, "max": y}, "elevation_m": {"min": x, "max": y}}:
+  the key winter_min_c does not match the cell attribute winter_min_mean_c, frost dates are not
+  used, and the five demo zones leave gaps (e.g. winter minimum 6 °C at 500 m matches no zone)
+  and could overlap. Undefined: the JSON schema (metric keys, inclusive/exclusive bounds, null =
+  open), what happens when no zone matches or several match (order? fallback zone? no zone?), and
+  whether a curator's change of rules re-assigns existing cells and their gardens.
+  (3) Climate metric computation. DATA-001 says "mean winter minimum, mean last spring frost and
+  first autumn frost dates" from the Open-Meteo archive, but not: the history window (how many
+  years, which years), the frost definition (daily minimum <= 0 °C?), what "winter" /
+  "coldest month minimum" means (mean of daily minima of the coldest calendar month, averaged
+  over the years?), and what to store when some or all years have no frost (e.g. coastal Crete:
+  null doy, or count only frost years?). The window size also decides the request volume per
+  cell against the free tier (ORG-001).
+  (4) Reading zones from CMP-Catalogue. Conventions forbid using another module's models;
+  CMP-Catalogue has no public service that returns climate zones and their rules, and P3-T1 may
+  write only CMP-Weather.
+affects:
+  - P3-T1 (acceptance criteria, touches)
+  - ENT-ClimateZone.rules schema and ENT-WeatherCell metric definitions (data model)
+  - DATA-001 (history window, frost definition, no-match behaviour)
+  - CMP-Catalogue (public zone read service), P2-T7 demo seeder rules
+  - P3-T2 (garden gets the zone of its cell; cell metrics computed asynchronously)
+proposal: >
+  (1) Replace the P3-T1 AC with what P3-T1 owns: "Given EXT-002 is unavailable or times out
+  while a new cell's elevation/history is fetched, Then the job retries 3 times (30 s, 2 m, 10 m),
+  the cell keeps no metrics and no zone, and its gardens are saved without a zone (SCOPE-004) until
+  a later run succeeds"; plus "every EXT-002 call uses a 10 s timeout". Keep the forecast-fallback
+  AC on P4-T1/P4-T4.
+  (2) rules = {"<metric>": {"min": number|null, "max": number|null}} with metric keys equal to the
+  cell attributes (elevation_m, winter_min_mean_c, last_frost_doy, first_frost_doy), min
+  inclusive, max exclusive, null = unbounded, extra keys (e.g. placeholder) ignored. A cell gets
+  the first matching zone ordered by code; if none matches, the zone whose bounds are nearest
+  (sum of distances outside the bounds) is used, so every cell with metrics has a zone. A change
+  of zone rules re-assigns all cells (queued) and emits an event the Gardens module uses to
+  update its gardens. Fix the demo seeder key to winter_min_mean_c.
+  (3) Window: the last 10 full calendar years from the archive in one history call per cell;
+  frost = daily minimum <= 0 °C; winter_min_mean_c = mean over the years of the mean daily minimum
+  of the coldest calendar month; last/first frost doy = mean over the years that had frost before
+  / after 1 July; null when fewer than half the years had frost.
+  (4) Add a small public service to CMP-Catalogue (e.g. Catalogue/Services/ClimateZones::all()
+  returning zone id, code and rules as plain data) in P3-T1's touches, or let P3-T1 write it.
+status: open

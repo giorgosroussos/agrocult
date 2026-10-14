@@ -1,0 +1,6 @@
+id: P3-T1
+status: blocked
+commit: ""
+handoff: |
+  Blocked on progress/requests/CR-P3-T1-1.yaml (INT-002 AC vs PHASE-4 scope, zone rules schema,
+  climate metric definitions, public zone service in CMP-Catalogue). No code written yet.
