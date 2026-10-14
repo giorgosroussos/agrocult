@@ -1,0 +1,9 @@
+id: P2-T5
+status: ready_to_merge
+commit: 2ac700f
+handoff: |
+  mobile/lib/features/catalogue/data/: catalogue.drift mirrors SnapshotWriter schema v1 (tables + FTS5 plant_search/settlement_search); CatalogueDatabase opens a snapshot file read-only (query_only), info() reads meta.
+  sync/: CatalogueStore (catalogue.sqlite next to the app DB; bundled assets/catalogue/catalogue.sqlite installed when missing/unusable; downloads checked for size, sha256, integrity, tables, version, then renamed over atomically; failures keep the old file), CatalogueRemote/HttpCatalogueRemote (GET catalogue/version, 404 -> null; download from configured API base), CatalogueSync, Sha256.
+  catalogue_providers.dart: localCatalogueProvider (AsyncNotifier<CatalogueDatabase>, reopened after an update) for P2-T6 search/cards; catalogueStartupSyncProvider runs once via CatalogueSyncOnStart wrapped around the app in lib/main.dart.
+  Bundled snapshot is v1 from an empty dev catalogue; refresh before release with `php artisan catalogue:build-snapshot --output=mobile/assets/catalogue/catalogue.sqlite`.
+  Tests: mobile/test/features/catalogue/ (schema vs backend-built fixtures in test/fixtures/catalogue/, offline first launch, update, all failed-download cases, providers, architecture).
