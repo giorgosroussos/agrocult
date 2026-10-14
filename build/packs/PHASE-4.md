@@ -1,7 +1,7 @@
 <!-- GENERATED — do not edit -->
 # Pack PHASE-4 — What to do today - forecasts, weather x plant rules, morning summaries, urgent alerts and the home screen
 
-_design v1.3.0 · cd829a248c19_
+_design v1.4.0 · b5cc50419329_
 
 Depends on: PHASE-3 · environment: development · components: CMP-Weather, CMP-Notifications, CMP-AppHome
 
@@ -118,7 +118,7 @@ Operations:
 - `history(lat, lon, from, to) -> DailyWeather[]`
 - `elevation(lat, lon) -> integer`
 
-Failure policy: timeout 10s, retries 3, exponential backoff via queue (30s, 2m, 10m), idempotency key —; when unavailable: The last forecast of the cell is used if it is less than 12 hours old; otherwise weather rules are skipped for that run and the home screen shows 'weather currently unavailable' while care and season messages still work (UC-006, UC-008)
+Failure policy: timeout 10s, retries 3, exponential backoff via queue (30s, 2m, 10m), idempotency key —; when unavailable: Cell metrics (elevation, history): after the last retry the cell keeps no metrics and no zone, and its gardens are saved without a zone (SCOPE-004) until a later run succeeds. Forecast: the last forecast of the cell is used if it is less than 12 hours old; otherwise weather rules are skipped for that run and the home screen shows 'weather currently unavailable' while care and season messages still work (UC-006, UC-008)
 
 #### PushSender (INT-003: CMP-Notifications ↔ EXT-003)
 
@@ -201,5 +201,5 @@ Standing constraints from deferred decisions (apply now):
 - [UC-009] Given the gardener turned off care reminders, Then no care messages are included in their summaries
 - [OWN-004] Given a ROLE-Gardener user, When they read or modify an ENT-Notification record the rule does not grant them (A gardener reads only notifications where user_id is their own id), Then access is denied and nothing changes
 - [ENT-Notification] Given any state, When a transition not in the state model is attempted, Then it is rejected and the state is unchanged
-- [INT-002] Given EXT-002 is unavailable or times out, Then: The last forecast of the cell is used if it is less than 12 hours old; otherwise weather rules are skipped for that run and the home screen shows 'weather currently unavailable' while care and season messages still work (UC-006, UC-008)
+- [INT-002] Given EXT-002 is unavailable or times out, Then: Cell metrics (elevation, history): after the last retry the cell keeps no metrics and no zone, and its gardens are saved without a zone (SCOPE-004) until a later run succeeds. Forecast: the last forecast of the cell is used if it is less than 12 hours old; otherwise weather rules are skipped for that run and the home screen shows 'weather currently unavailable' while care and season messages still work (UC-006, UC-008)
 - [INT-003] Given EXT-003 is unavailable or times out, Then: Notifications stay in the app's notification list; pushes are retried; a summary push not sent by 10:00 Europe/Athens is dropped and stays in-app only; an urgent alert that cannot be sent before 22:00 waits for 07:00

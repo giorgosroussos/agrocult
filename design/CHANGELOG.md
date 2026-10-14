@@ -1,5 +1,9 @@
 # Design changelog
 
+## v1.4.0 — 2026-10-14
+
+- CR-P3-T1-1: climate metrics (10 years, frost <= 0 °C), zone rules schema with nearest-zone matching and event-driven re-assignment (DATA-009); INT-002 cell-metrics failure clause; P3-T1 writes CMP-Catalogue ClimateZones service (CR-P3-T1-1)
+
 ## v1.3.0 — 2026-10-14
 
 - CR-P2-T6-1: main.dart composition root and hotspot, route names in AppRoutes, catalogue entry on start screen; 'in season now' = sowing + transplant, any zone without a garden; empty search shows 'No plants found' until PHASE-5 (CR-P2-T6-1)

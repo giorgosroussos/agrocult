@@ -1,7 +1,7 @@
 <!-- GENERATED — do not edit -->
 # Pack PHASE-1 — Walking skeleton - backend and app run, CI enforces every check, accounts and admin panel work
 
-_design v1.3.0 · cd829a248c19_
+_design v1.4.0 · b5cc50419329_
 
 Depends on: none · environment: development · components: CMP-Identity, CMP-AppCore
 

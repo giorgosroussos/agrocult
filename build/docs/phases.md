@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Implementation phases
 
-_Generated document · design v1.3.0 · source cd829a248c19_
+_Generated document · design v1.4.0 · source b5cc50419329_
 
 
 ## Phase map
@@ -167,7 +167,7 @@ Depends on: PHASE-2 · use cases: UC-001, UC-002, UC-007, UC-011, UC-015 · envi
 
 | task | title | depends on | writes | migrations |
 |---|---|---|---|---|
-| P3-T1 | Weather cells and climate zones | — | CMP-Weather | yes |
+| P3-T1 | Weather cells and climate zones | — | CMP-Weather, CMP-Catalogue | yes |
 | P3-T2 | Gardens API | P3-T1 | CMP-Gardens | yes |
 | P3-T3 | Gardens screens | P3-T2 | CMP-AppGardens |  |
 | P3-T4 | Add, edit and remove garden plants | P3-T3 | CMP-AppGardens |  |
