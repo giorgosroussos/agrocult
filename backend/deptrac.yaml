@@ -15,8 +15,18 @@ deptrac:
                 value: '^App\\Modules\\Identity\\.*'
         - name: Catalogue
           collectors:
+              - type: bool
+                must:
+                    - type: classLike
+                      value: '^App\\Modules\\Catalogue\\.*'
+                must_not:
+                    - type: classLike
+                      value: '^App\\Modules\\Catalogue\\(Services\\ClimateZones|Events\\ClimateZoneRulesChanged)$'
+        # DATA-009: the public climate-zone API of CMP-Catalogue, the only part CMP-Weather may use.
+        - name: CatalogueClimateZones
+          collectors:
               - type: classLike
-                value: '^App\\Modules\\Catalogue\\.*'
+                value: '^App\\Modules\\Catalogue\\(Services\\ClimateZones|Events\\ClimateZoneRulesChanged)$'
         - name: Weather
           collectors:
               - type: classLike
@@ -40,9 +50,10 @@ deptrac:
     ruleset:
         Shared: ~
         Identity: [Shared]
-        Catalogue: [Shared, Identity]
-        Weather: [Shared, Catalogue]
-        Gardens: [Shared, Identity, Catalogue, Weather]
-        Identification: [Shared, Identity, Catalogue, Gardens]
-        Notifications: [Shared, Identity, Catalogue, Weather, Gardens]
+        Catalogue: [Shared, Identity, CatalogueClimateZones]
+        CatalogueClimateZones: [Shared, Catalogue]
+        Weather: [Shared, CatalogueClimateZones]
+        Gardens: [Shared, Identity, Catalogue, CatalogueClimateZones, Weather]
+        Identification: [Shared, Identity, Catalogue, CatalogueClimateZones, Gardens]
+        Notifications: [Shared, Identity, Catalogue, CatalogueClimateZones, Weather, Gardens]
         Privacy: [Shared, Identity, Gardens, Identification, Notifications]

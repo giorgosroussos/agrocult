@@ -1,6 +1,8 @@
 <?php
 
+use App\Modules\Catalogue\Jobs\BuildCatalogueSnapshot;
 use App\Modules\Catalogue\Services\CatalogueSnapshots;
+use App\Modules\Weather\Jobs\ReassignCellZones;
 use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -30,7 +32,10 @@ afterEach(function () {
 it('seeds the demo catalogue with the database cache and queue, and the queued build ships the 8 published plants', function () {
     $this->seed();
 
-    expect(DB::table('jobs')->count())->toBe(1)
+    // One snapshot build, and one re-assignment of weather cells for the new zones (DATA-009).
+    $jobs = DB::table('jobs')->pluck('payload')->map(fn (string $payload) => json_decode($payload, true)['displayName'])->sort()->values()->all();
+
+    expect($jobs)->toBe([BuildCatalogueSnapshot::class, ReassignCellZones::class])
         ->and(app(CatalogueSnapshots::class)->current())->toBeNull();
 
     $this->artisan('queue:work', ['--stop-when-empty' => true])->assertSuccessful();

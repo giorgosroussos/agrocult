@@ -1,0 +1,9 @@
+id: P3-T1
+status: ready_to_merge
+commit: 4079af2
+handoff: |
+  Weather/Provider: WeatherProvider (forecast, history, elevation) -> OpenMeteoWeatherProvider (10 s timeout, config/weather.php, OPEN_METEO_BASE_URL / OPEN_METEO_ARCHIVE_URL) or FakeWeatherProvider (tests; fail(), calls); WeatherUnavailable.
+  Weather/Services/WeatherCells (public, for P3-T2): cellFor(lat, lon) -> cell id on the 0.1 degree grid (queues ComputeCellClimate when the cell has no metrics), climateZoneId(cellId) -> ?string.
+  Weather/Jobs/ComputeCellClimate (4 tries, 30/120/600 s; metrics+zone stored only on success), ReassignCellZones (on Catalogue ClimateZoneRulesChanged); Climate/ClimateMetrics, ZoneMatcher, CellZones; Events/CellZoneChanged(cellId, previous, zone); `weather:compute-cells` re-queues cells without metrics.
+  Catalogue: Services/ClimateZones::all() (id, code, rules), Events/ClimateZoneRulesChanged (Observers/ClimateZoneRulesObserver), demo seeder key winter_min_mean_c; deptrac layer CatalogueClimateZones is all Weather may use from Catalogue.
+  Tests: tests/Feature/Weather/*, tests/Feature/Catalogue/ClimateZonesServiceTest.php, tests/Architecture/DeptracTest.php.

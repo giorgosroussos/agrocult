@@ -20,10 +20,12 @@ use App\Modules\Catalogue\Models\PlantTranslation;
 use App\Modules\Catalogue\Models\Settlement;
 use App\Modules\Catalogue\Models\Tip;
 use App\Modules\Catalogue\Observers\CatalogueSnapshotTrigger;
+use App\Modules\Catalogue\Observers\ClimateZoneRulesObserver;
 use App\Modules\Catalogue\Policies\CataloguePolicy;
 use App\Modules\Catalogue\Policies\ClimateZonePolicy;
 use App\Modules\Catalogue\Policies\PlantCategoryPolicy;
 use App\Modules\Catalogue\Services\CataloguePhotoStore;
+use App\Modules\Catalogue\Services\ClimateZones;
 use App\Support\Modules\ModuleServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -36,6 +38,7 @@ class CatalogueServiceProvider extends ModuleServiceProvider
     public function register(): void
     {
         $this->app->scoped(CataloguePhotoStore::class);
+        $this->app->singleton(ClimateZones::class);
 
         // INT-006: the open plant data sources (EXT-006) are reached only through this interface.
         $this->app->bind(PlantSourceImporter::class, HttpPlantSourceImporter::class);
@@ -66,5 +69,8 @@ class CatalogueServiceProvider extends ModuleServiceProvider
             ClimateZone::class, Settlement::class] as $model) {
             $model::observe(CatalogueSnapshotTrigger::class);
         }
+
+        // DATA-009: a change of zone rules re-assigns the zones of all weather cells (CMP-Weather).
+        ClimateZone::observe(ClimateZoneRulesObserver::class);
     }
 }
