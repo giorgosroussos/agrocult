@@ -1,0 +1,9 @@
+id: P2-T6
+status: ready_to_merge
+commit: 23c6f85e657828dc0f94de7a344b5d0955a4890e
+handoff: |
+  mobile/lib/features/catalogue/: data/catalogue_repository.dart (FTS search, category incl. subcategories, 'in season now' = sow_indoors/sow_outdoors/transplant, any zone without a garden zone; card with per-section language fallback), search/search_text.dart, ui/ (search screen, plant card), catalogue_routes.dart (catalogueRoutes FeatureRoutes).
+  AppCore: AppRoutes.catalogue '/catalogue', AppRoutes.plant '/plant' (arg plant id or PlantCardArgs(plantId, climateZoneId)) in lib/app/routes.dart; AgrocultApp(features:) passes FeatureRoutes to AppRouter; main.dart wires catalogueRoutes; 'Search plants' button (start.searchPlants) on the start screen.
+  Providers: catalogueRepositoryProvider, plantSearchProvider, plantCardProvider, catalogueCategoriesProvider, seasonClimateZonesProvider (AppGardens overrides with garden zones), catalogueTodayProvider.
+  Empty search shows only 'No plants found'; P5-T2 adds the photo identification suggestion in catalogue_search_screen.dart.
+  Tests: mobile/test/features/catalogue/catalogue_search_test.dart, catalogue_screens_test.dart, search_text_test.dart, test/architecture_test.dart (composition root); fixture via test/fixtures/catalogue/build_search_fixture.php.
