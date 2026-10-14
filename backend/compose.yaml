@@ -38,7 +38,7 @@ services:
     laravel.test:
         <<: *app
         ports:
-            - '${APP_PORT:-80}:80'
+            - '${APP_PORT:-8000}:80'
 
     # Queue worker (database driver)
     queue:
