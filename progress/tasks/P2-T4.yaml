@@ -1,0 +1,9 @@
+id: P2-T4
+status: ready_to_merge
+commit: e49f21de8475ca9f7da4deebb70d83e04ae8e083
+handoff: |
+  Public API (no auth): GET /api/v1/catalogue/version -> {version, schema_version, built_at, size, sha256, download_url} (404 problem+json until a first build); GET /api/v1/catalogue/snapshots/{version} -> application/vnd.sqlite3 (last 3 versions kept).
+  Catalogue/Services/CatalogueSnapshots::rebuild() exports only published plants/tips (+ categories, climate zones, settlements) via Snapshot/SnapshotExporter into a SQLite file (Snapshot/SnapshotWriter, schema = contract for P2-T5, PRAGMA user_version = 1); new version only when content changed; current.json switched last, a failed build keeps the old one.
+  Builds are queued (Jobs/BuildCatalogueSnapshot) after commit by Observers/CatalogueSnapshotTrigger on publish/unpublish and edits of published content, and after settlement import; `php artisan catalogue:build-snapshot [--output=file]` builds now and copies the file for the app bundle.
+  Search keys (Snapshot/SearchKeys): lower case, no diacritics, ς->σ, Greeklish variants, ντ/μπ/γκ- without nasal; in plants.search_keys + FTS5 plant_search / settlement_search. App must normalise the query the same way (meta.search_query_rules) and prefix-match each word.
+  Tests: backend/tests/Feature/Catalogue/CatalogueSnapshotTest.php (all P2-T4 ACs incl. in-season, ENT-Plant, INT-006).
