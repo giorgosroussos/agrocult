@@ -1,0 +1,9 @@
+id: P2-T6
+status: ready_to_merge
+commit: e9a7bfb
+handoff: |
+  mobile/lib/features/catalogue/: data/catalogue_repository.dart (FTS prefix search over server search keys, category incl. subcategories, 'in season now' = sowing months, plant card with per-section language fallback), search/search_text.dart (query normalisation), ui/ (CatalogueSearchScreen, PlantCardScreen).
+  Providers in catalogue_providers.dart: catalogueRepositoryProvider, plantSearchProvider, plantCardProvider, catalogueCategoriesProvider; seasonClimateZonesProvider (empty = any zone) is for CMP-AppGardens to override with its gardens' zones; catalogueTodayProvider.
+  Routes: AppRoutes.catalogue / AppRoutes.plant (arg plant id or PlantCardArgs(plantId, climateZoneId) - gardens pass the zone so it is shown first); features register via AgrocultApp(featureRoutes: [catalogueRoutes]) in main.dart; start screen links to the catalogue.
+  Tests: mobile/test/features/catalogue/catalogue_search_test.dart, catalogue_screens_test.dart, search_text_test.dart; fixture search_fixture.sqlite built by test/fixtures/catalogue/build_search_fixture.php with the backend's SnapshotWriter/SearchKeys.
+  No 'Add to garden' button yet (UC-002, PHASE-3).
