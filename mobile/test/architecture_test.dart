@@ -127,6 +127,37 @@ void main() {
     expect(offenders, isEmpty);
   });
 
+  test('No file under lib/app imports lib/features; only lib/main.dart '
+      'imports both', () {
+    bool importsApp(String uri) =>
+        uri.startsWith('package:agrocult/app/') || uri.startsWith('app/');
+    bool importsFeature(String uri) =>
+        uri.startsWith('package:agrocult/features/') ||
+        uri.startsWith('features/') ||
+        uri.contains('/features/');
+
+    final appOffenders = <String>[];
+    for (final file in _dartFiles('lib/app')) {
+      appOffenders.addAll(
+        _imports(file).where(importsFeature).map((u) => '${_rel(file)}: $u'),
+      );
+    }
+    expect(appOffenders, isEmpty);
+
+    // Outside lib/features, only the composition root reaches a feature.
+    final composers = <String>[];
+    for (final file in _dartFiles('lib')) {
+      final path = _rel(file);
+      if (path.startsWith('lib/features/')) continue;
+      if (_imports(file).any(importsFeature)) composers.add(path);
+    }
+    expect(composers, ['lib/main.dart']);
+
+    final main = _imports(File('lib/main.dart')).toList();
+    expect(main.any(importsApp), isTrue);
+    expect(main.any(importsFeature), isTrue);
+  });
+
   test('the import scanner sees imports (self-check)', () {
     final own = _imports(File('test/architecture_test.dart')).toList();
     expect(own, contains('package:flutter_test/flutter_test.dart'));

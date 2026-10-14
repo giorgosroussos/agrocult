@@ -6,7 +6,8 @@ import '../l10n/generated/app_localizations.dart';
 import 'routes.dart';
 
 /// First screen of the app skeleton; replaced by the real home screen later.
-/// Offers sign-in and sign-up, or sign-out when this device is signed in.
+/// Offers the plant search to everyone, and sign-in and sign-up, or sign-out
+/// when this device is signed in.
 class StartScreen extends ConsumerWidget {
   const StartScreen({super.key});
 
@@ -25,6 +26,15 @@ class StartScreen extends ConsumerWidget {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 24),
+            // The catalogue needs no account (SCOPE-002).
+            FilledButton.icon(
+              key: const Key('start.searchPlants'),
+              icon: const Icon(Icons.search),
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.catalogue),
+              label: Text(l10n.searchPlantsButton),
+            ),
+            const SizedBox(height: 16),
             if (signedIn == true)
               OutlinedButton(
                 key: const Key('start.signOut'),

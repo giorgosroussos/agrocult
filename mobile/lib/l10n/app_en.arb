@@ -180,5 +180,235 @@
   "validationAgeRequired": "You must be at least 15 years old to create an account.",
   "@validationAgeRequired": {
     "description": "Form validation: age confirmation not ticked (SEC-004)"
+  },
+  "searchPlantsButton": "Search plants",
+  "@searchPlantsButton": {
+    "description": "Start screen button that opens the plant catalogue search; shown to visitors and signed-in users."
+  },
+  "catalogueTitle": "Plant catalogue",
+  "@catalogueTitle": {
+    "description": "Title of the catalogue search screen and the button that opens it"
+  },
+  "catalogueSearchHint": "Search by name, in Greek or English",
+  "@catalogueSearchHint": {
+    "description": "Hint in the catalogue search box"
+  },
+  "catalogueInSeasonFilter": "In season now",
+  "@catalogueInSeasonFilter": {
+    "description": "Filter chip: plants whose sowing months include the current month"
+  },
+  "catalogueAllCategories": "All",
+  "@catalogueAllCategories": {
+    "description": "Category filter chip that shows every category"
+  },
+  "catalogueNoResults": "No plants found",
+  "@catalogueNoResults": {
+    "description": "Shown when a catalogue search has no results"
+  },
+  "catalogueLoadError": "The plant catalogue could not be opened.",
+  "@catalogueLoadError": {
+    "description": "Shown when the local catalogue cannot be read"
+  },
+  "plantNotFound": "This plant is not in the catalogue.",
+  "@plantNotFound": {
+    "description": "Shown when a plant card is opened for a plant that is not in the local catalogue"
+  },
+  "notTranslated": "Not translated",
+  "@notTranslated": {
+    "description": "Label on a catalogue text shown in the other language because it has no translation"
+  },
+  "plantOtherNames": "Also known as",
+  "@plantOtherNames": {
+    "description": "Plant card: aliases and names in other languages"
+  },
+  "plantCategory": "Category",
+  "@plantCategory": {
+    "description": "Plant card: the plant's category"
+  },
+  "plantSectionConditions": "Growing conditions",
+  "@plantSectionConditions": {
+    "description": "Plant card section heading"
+  },
+  "plantSectionCalendar": "Calendar",
+  "@plantSectionCalendar": {
+    "description": "Plant card section heading"
+  },
+  "plantSectionPlanting": "Planting",
+  "@plantSectionPlanting": {
+    "description": "Plant card section heading"
+  },
+  "plantSectionDescription": "Description",
+  "@plantSectionDescription": {
+    "description": "Plant card section heading"
+  },
+  "plantSectionCare": "Care",
+  "@plantSectionCare": {
+    "description": "Plant card section heading"
+  },
+  "plantSectionSeedSaving": "Seed saving",
+  "@plantSectionSeedSaving": {
+    "description": "Plant card section heading"
+  },
+  "plantSectionTips": "Tips",
+  "@plantSectionTips": {
+    "description": "Plant card section heading"
+  },
+  "plantSectionCompanions": "Companions",
+  "@plantSectionCompanions": {
+    "description": "Plant card section heading: good and bad neighbours"
+  },
+  "plantTempMin": "Minimum temperature",
+  "@plantTempMin": {
+    "description": "Plant card: growing condition label"
+  },
+  "plantTempOpt": "Ideal temperature",
+  "@plantTempOpt": {
+    "description": "Plant card: growing condition label"
+  },
+  "plantTempMax": "Maximum temperature",
+  "@plantTempMax": {
+    "description": "Plant card: growing condition label"
+  },
+  "plantWaterNeed": "Water need",
+  "@plantWaterNeed": {
+    "description": "Plant card: growing condition label"
+  },
+  "plantWaterNeedValue": "{value} of 5",
+  "@plantWaterNeedValue": {
+    "description": "Plant card: water need on a scale of 1 to 5",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "plantSun": "Sun",
+  "@plantSun": {
+    "description": "Plant card: growing condition label"
+  },
+  "sunFullSun": "Full sun",
+  "@sunFullSun": {
+    "description": "Sun requirement value"
+  },
+  "sunPartialShade": "Partial shade",
+  "@sunPartialShade": {
+    "description": "Sun requirement value"
+  },
+  "sunShade": "Shade",
+  "@sunShade": {
+    "description": "Sun requirement value"
+  },
+  "plantSoil": "Soil",
+  "@plantSoil": {
+    "description": "Plant card: growing condition label (soil types)"
+  },
+  "plantPh": "Soil pH",
+  "@plantPh": {
+    "description": "Plant card: growing condition label"
+  },
+  "plantFrost": "Frost hardiness",
+  "@plantFrost": {
+    "description": "Plant card: growing condition label"
+  },
+  "frostTender": "Tender",
+  "@frostTender": {
+    "description": "Frost hardiness value"
+  },
+  "frostHalfHardy": "Half hardy",
+  "@frostHalfHardy": {
+    "description": "Frost hardiness value"
+  },
+  "frostHardy": "Hardy",
+  "@frostHardy": {
+    "description": "Frost hardiness value"
+  },
+  "plantPropagation": "Propagation",
+  "@plantPropagation": {
+    "description": "Plant card: planting label"
+  },
+  "plantSowDepth": "Sowing depth",
+  "@plantSowDepth": {
+    "description": "Plant card: planting label"
+  },
+  "plantSpacing": "Spacing between plants",
+  "@plantSpacing": {
+    "description": "Plant card: planting label"
+  },
+  "plantRowSpacing": "Spacing between rows",
+  "@plantRowSpacing": {
+    "description": "Plant card: planting label"
+  },
+  "plantDaysToHarvest": "Days to harvest",
+  "@plantDaysToHarvest": {
+    "description": "Plant card: planting label"
+  },
+  "activitySowIndoors": "Sow in trays",
+  "@activitySowIndoors": {
+    "description": "Calendar activity"
+  },
+  "activitySowOutdoors": "Sow in the garden",
+  "@activitySowOutdoors": {
+    "description": "Calendar activity"
+  },
+  "activityTransplant": "Transplant",
+  "@activityTransplant": {
+    "description": "Calendar activity"
+  },
+  "activityHarvest": "Harvest",
+  "@activityHarvest": {
+    "description": "Calendar activity"
+  },
+  "calendarYourZone": "Your garden's zone",
+  "@calendarYourZone": {
+    "description": "Plant card: marks the calendar of the climate zone of the garden the card was opened from"
+  },
+  "calendarEmpty": "No calendar yet.",
+  "@calendarEmpty": {
+    "description": "Plant card: the plant has no calendar"
+  },
+  "careWater": "Watering",
+  "@careWater": {
+    "description": "Care action"
+  },
+  "careFertilise": "Fertilising",
+  "@careFertilise": {
+    "description": "Care action"
+  },
+  "carePrune": "Pruning",
+  "@carePrune": {
+    "description": "Care action"
+  },
+  "careWeed": "Weeding",
+  "@careWeed": {
+    "description": "Care action"
+  },
+  "careSpray": "Spraying",
+  "@careSpray": {
+    "description": "Care action"
+  },
+  "careOther": "Other care",
+  "@careOther": {
+    "description": "Care action"
+  },
+  "careEvery": "{days, plural, =1{every day} other{every {days} days}}",
+  "@careEvery": {
+    "description": "Plant card: how often a care action is due",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "companionsGood": "Good neighbours",
+  "@companionsGood": {
+    "description": "Plant card: plants that grow well next to this one"
+  },
+  "companionsBad": "Bad neighbours",
+  "@companionsBad": {
+    "description": "Plant card: plants that should not grow next to this one"
+  },
+  "plantNoInformation": "No information yet.",
+  "@plantNoInformation": {
+    "description": "Plant card: a section without content"
   }
 }

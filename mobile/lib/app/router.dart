@@ -11,14 +11,36 @@ import 'start_screen.dart';
 
 export 'routes.dart';
 
-/// Maps route names to screens (Navigator 2.0 is not needed yet; features
-/// add their routes here).
+/// The screens of one feature: a builder for each route name the feature
+/// handles, null for any other route. CMP-AppCore never imports a feature,
+/// so features hand their routes to the app where it is composed (main.dart).
+typedef FeatureRoutes = WidgetBuilder? Function(RouteSettings settings);
+
+/// Maps route names to screens (Navigator 2.0 is not needed yet). The app
+/// shell's own routes are here; features add theirs as [FeatureRoutes].
 abstract final class AppRouter {
   static const initialRoute = AppRoutes.start;
 
-  static Route<Object?> onGenerateRoute(RouteSettings settings) {
-    final builder = _builderFor(settings) ?? (_) => const NotFoundScreen();
+  static Route<Object?> onGenerateRoute(
+    RouteSettings settings, {
+    List<FeatureRoutes> features = const [],
+  }) {
+    final builder =
+        _builderFor(settings) ??
+        _featureBuilderFor(settings, features) ??
+        (_) => const NotFoundScreen();
     return MaterialPageRoute<Object?>(builder: builder, settings: settings);
+  }
+
+  static WidgetBuilder? _featureBuilderFor(
+    RouteSettings settings,
+    List<FeatureRoutes> features,
+  ) {
+    for (final routes in features) {
+      final builder = routes(settings);
+      if (builder != null) return builder;
+    }
+    return null;
   }
 
   static WidgetBuilder? _builderFor(RouteSettings settings) {
