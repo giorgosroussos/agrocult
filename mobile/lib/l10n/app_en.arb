@@ -1,9 +1,184 @@
 {
   "@@locale": "en",
   "appTitle": "Agrocult",
-  "@appTitle": {"description": "App name shown in the title bar and task switcher"},
+  "@appTitle": {
+    "description": "App name shown in the title bar and task switcher"
+  },
   "welcome": "Welcome",
-  "@welcome": {"description": "Greeting on the start screen of the app skeleton"},
+  "@welcome": {
+    "description": "Greeting on the start screen of the app skeleton"
+  },
   "pageNotFound": "Page not found",
-  "@pageNotFound": {"description": "Shown when the app is asked to open a screen that does not exist"}
+  "@pageNotFound": {
+    "description": "Shown when the app is asked to open a screen that does not exist"
+  },
+  "signInTitle": "Sign in",
+  "@signInTitle": {
+    "description": "Title of the sign-in screen"
+  },
+  "signUpTitle": "Create account",
+  "@signUpTitle": {
+    "description": "Title of the sign-up screen"
+  },
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Label of the email address field"
+  },
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Label of the password field"
+  },
+  "newPasswordLabel": "New password",
+  "@newPasswordLabel": {
+    "description": "Label of the new password field on the reset screen"
+  },
+  "repeatPasswordLabel": "Repeat new password",
+  "@repeatPasswordLabel": {
+    "description": "Label of the field that repeats the new password"
+  },
+  "passwordHint": "At least 8 characters",
+  "@passwordHint": {
+    "description": "Helper text under a new password field"
+  },
+  "ageConfirmation": "I confirm that I am at least 15 years old",
+  "@ageConfirmation": {
+    "description": "Checkbox on the sign-up screen (SEC-004)"
+  },
+  "signUpButton": "Create account",
+  "@signUpButton": {
+    "description": "Button that submits the sign-up form"
+  },
+  "signInButton": "Sign in",
+  "@signInButton": {
+    "description": "Button that submits the sign-in form, also used as a link to the sign-in screen"
+  },
+  "signOutButton": "Sign out",
+  "@signOutButton": {
+    "description": "Button that signs this device out"
+  },
+  "forgotPasswordLink": "Forgot your password?",
+  "@forgotPasswordLink": {
+    "description": "Link to the password reset request screen"
+  },
+  "noAccountLink": "No account yet? Create one",
+  "@noAccountLink": {
+    "description": "Link from sign-in to sign-up"
+  },
+  "haveAccountLink": "Already have an account? Sign in",
+  "@haveAccountLink": {
+    "description": "Link from sign-up to sign-in"
+  },
+  "verifyEmailTitle": "Confirm your email",
+  "@verifyEmailTitle": {
+    "description": "Title of the notice shown after sign-up"
+  },
+  "verifyEmailBody": "If {email} can be used for a new account, we have sent a confirmation link to it. Open the link, then sign in.",
+  "@verifyEmailBody": {
+    "description": "Notice after sign-up; must not reveal whether the email is registered",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyEmailAlreadyRegistered": "Already have an account with this email? Sign in, or reset your password if you have forgotten it.",
+  "@verifyEmailAlreadyRegistered": {
+    "description": "Offer for visitors who sign up with an email that already has an account (UC-012)"
+  },
+  "resendVerificationButton": "Send the link again",
+  "@resendVerificationButton": {
+    "description": "Button that requests a new email confirmation link"
+  },
+  "verificationResent": "If this email address needs confirmation, a new link has been sent to it.",
+  "@verificationResent": {
+    "description": "Shown after a new confirmation link was requested"
+  },
+  "forgotPasswordTitle": "Reset password",
+  "@forgotPasswordTitle": {
+    "description": "Title of the password reset request screen"
+  },
+  "forgotPasswordIntro": "Enter the email address of your account. We will send you a link to set a new password.",
+  "@forgotPasswordIntro": {
+    "description": "Explanation on the password reset request screen"
+  },
+  "sendResetLinkButton": "Send reset link",
+  "@sendResetLinkButton": {
+    "description": "Button that requests a password reset link"
+  },
+  "resetLinkSent": "If an account exists for this email address, we have sent a reset link to it. The link works only once.",
+  "@resetLinkSent": {
+    "description": "Shown after a reset request; identical for known and unknown emails"
+  },
+  "backToSignIn": "Back to sign in",
+  "@backToSignIn": {
+    "description": "Link back to the sign-in screen"
+  },
+  "resetPasswordTitle": "Set a new password",
+  "@resetPasswordTitle": {
+    "description": "Title of the screen opened from the reset link"
+  },
+  "resetPasswordButton": "Save new password",
+  "@resetPasswordButton": {
+    "description": "Button that sets the new password"
+  },
+  "passwordChanged": "Your password has been changed. Sign in again on your devices.",
+  "@passwordChanged": {
+    "description": "Shown after a successful password reset"
+  },
+  "requestNewResetLink": "Request a new link",
+  "@requestNewResetLink": {
+    "description": "Button shown when a reset link is invalid or used"
+  },
+  "signedOut": "You have signed out.",
+  "@signedOut": {
+    "description": "Shown after signing out"
+  },
+  "errorInvalidCredentials": "The email or password is not correct.",
+  "@errorInvalidCredentials": {
+    "description": "Sign-in failure; same text for an unknown email and a wrong password"
+  },
+  "errorEmailNotVerified": "Confirm your email address before signing in.",
+  "@errorEmailNotVerified": {
+    "description": "Sign-in refused because the email is not confirmed yet"
+  },
+  "errorInvalidResetLink": "This reset link is not valid or has already been used.",
+  "@errorInvalidResetLink": {
+    "description": "The reset link is unknown, expired or used"
+  },
+  "errorInvalidInput": "Check the details you entered.",
+  "@errorInvalidInput": {
+    "description": "The server rejected the form"
+  },
+  "errorRateLimited": "Too many attempts. Wait a minute and try again.",
+  "@errorRateLimited": {
+    "description": "The server limited the number of attempts"
+  },
+  "errorNetwork": "Could not reach the server. Check your connection and try again.",
+  "@errorNetwork": {
+    "description": "The server could not be reached"
+  },
+  "errorServer": "Something went wrong. Try again later.",
+  "@errorServer": {
+    "description": "Any other server failure"
+  },
+  "validationEmail": "Enter a valid email address.",
+  "@validationEmail": {
+    "description": "Form validation: email address"
+  },
+  "validationPasswordRequired": "Enter your password.",
+  "@validationPasswordRequired": {
+    "description": "Form validation: empty password on sign-in"
+  },
+  "validationPasswordLength": "Use at least 8 characters.",
+  "@validationPasswordLength": {
+    "description": "Form validation: new password too short"
+  },
+  "validationPasswordsDiffer": "The passwords do not match.",
+  "@validationPasswordsDiffer": {
+    "description": "Form validation: the repeated password differs"
+  },
+  "validationAgeRequired": "You must be at least 15 years old to create an account.",
+  "@validationAgeRequired": {
+    "description": "Form validation: age confirmation not ticked (SEC-004)"
+  }
 }

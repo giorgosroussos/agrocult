@@ -3,9 +3,17 @@ import 'dart:async';
 import 'package:agrocult/app/app.dart';
 import 'package:agrocult/app/locale.dart';
 import 'package:agrocult/app/router.dart';
+import 'package:agrocult/core/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../core/fakes.dart';
+
+Widget _app({Locale? locale}) => ProviderScope(
+  overrides: [tokenStorageProvider.overrideWithValue(InMemoryTokenStorage())],
+  child: AgrocultApp(locale: locale),
+);
 
 void main() {
   group('resolveAppLocale', () {
@@ -34,7 +42,7 @@ void main() {
     tester.platformDispatcher.localesTestValue = [const Locale('el', 'GR')];
     addTearDown(tester.platformDispatcher.clearLocalesTestValue);
 
-    await tester.pumpWidget(const ProviderScope(child: AgrocultApp()));
+    await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
 
     expect(find.text('Καλώς ήρθατε'), findsOneWidget);
@@ -45,16 +53,14 @@ void main() {
     tester.platformDispatcher.localesTestValue = [const Locale('it', 'IT')];
     addTearDown(tester.platformDispatcher.clearLocalesTestValue);
 
-    await tester.pumpWidget(const ProviderScope(child: AgrocultApp()));
+    await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
 
     expect(find.text('Welcome'), findsOneWidget);
   });
 
   testWidgets('an unknown route shows the not-found screen', (tester) async {
-    await tester.pumpWidget(
-      const ProviderScope(child: AgrocultApp(locale: Locale('en'))),
-    );
+    await tester.pumpWidget(_app(locale: const Locale('en')));
     await tester.pumpAndSettle();
 
     final navigator = tester.state<NavigatorState>(find.byType(Navigator));
