@@ -42,4 +42,17 @@ class UserFactory extends Factory
     {
         return $this->state(fn () => ['role' => $role]);
     }
+
+    /**
+     * A confirmed TOTP secret and the hashes of the given recovery codes.
+     *
+     * @param  list<string>  $recoveryCodes  plain recovery codes; stored hashed
+     */
+    public function withAppAuthentication(string $secret, array $recoveryCodes = []): static
+    {
+        return $this->afterCreating(function (User $user) use ($secret, $recoveryCodes) {
+            $user->saveAppAuthenticationSecret($secret);
+            $user->saveAppAuthenticationRecoveryCodes(array_map(fn (string $code) => Hash::make($code), $recoveryCodes));
+        });
+    }
 }

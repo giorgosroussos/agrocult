@@ -2,6 +2,7 @@
 
 namespace App\Modules\Identity;
 
+use App\Modules\Identity\Console\CreatePanelAccount;
 use App\Modules\Identity\Models\PersonalAccessToken;
 use App\Modules\Identity\Models\PushToken;
 use App\Modules\Identity\Models\User;
@@ -26,6 +27,10 @@ class IdentityServiceProvider extends ModuleServiceProvider
 
         $this->loadViewsFrom($this->modulePath().'/resources/views', 'identity');
         $this->loadTranslationsFrom($this->modulePath().'/resources/lang', 'identity');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([CreatePanelAccount::class]);
+        }
 
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 

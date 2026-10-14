@@ -1,0 +1,9 @@
+id: P1-T5
+status: ready_to_merge
+commit: 84d61011d872098115df088ee7f99890ae3c8986
+handoff: |
+  Filament panel at /admin (backend/app/Modules/Identity/Filament/AdminPanelProvider.php, registered in bootstrap/providers.php); discovers app/Modules/*/Filament/{Resources,Pages}.
+  Only curator/admin (User::canAccessPanel); TOTP required via Filament AppAuthentication with recovery codes; users without a secret are sent to /admin/multi-factor-authentication/set-up.
+  Migration adds users.app_authentication_secret (text, encrypted cast) and app_authentication_recovery_codes (jsonb, EncryptedJsonList cast, hashed codes); both hidden.
+  Admin-only Accounts resource (Filament/Resources/Users) with "Reset MFA" action (UserPolicy::resetMultiFactorAuthentication, not for curators or self).
+  Bootstrap accounts: artisan identity:create-panel-account {email} --role=curator|admin; Filament assets published in public/; tests in tests/Feature/Identity/AdminPanelTest.php.
