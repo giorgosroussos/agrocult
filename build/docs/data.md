@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Data
 
-_Generated document · design v1.0.1 · source 684d51011856_
+_Generated document · design v1.1.0 · source 26e0c15630c0_
 
 
 ## Entity–relationship diagram
@@ -132,6 +132,8 @@ erDiagram
     enum role
     enum language
     json notification_prefs
+    text app_authentication_secret
+    json app_authentication_recovery_codes
     timestamp created_at
   }
   Garden {
@@ -447,6 +449,8 @@ Owned by CMP-Identity · retention: Until account deletion (immediate hard delet
 | role | enum | string | required |
 | language | enum | string | required |
 | notification_prefs | json | jsonb |  |
+| app_authentication_secret | text | text | sensitive |
+| app_authentication_recovery_codes | json | jsonb | sensitive |
 | created_at | timestamp | timestamptz |  |
 
 Relations: one-to-many → ENT-GardenMember (on delete cascade); one-to-many → ENT-PushToken (on delete cascade); one-to-many → ENT-Notification (on delete cascade); one-to-many → ENT-Identification (on delete cascade)

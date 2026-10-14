@@ -1,7 +1,7 @@
 <!-- GENERATED — do not edit -->
 # Pack PHASE-1 — Walking skeleton - backend and app run, CI enforces every check, accounts and admin panel work
 
-_design v1.0.1 · 684d51011856_
+_design v1.1.0 · 26e0c15630c0_
 
 Depends on: none · environment: development · components: CMP-Identity, CMP-AppCore
 
@@ -63,6 +63,8 @@ Owned by CMP-Identity · retention: Until account deletion (immediate hard delet
 | role | enum | string | required |
 | language | enum | string | required |
 | notification_prefs | json | jsonb |  |
+| app_authentication_secret | text | text | sensitive |
+| app_authentication_recovery_codes | json | jsonb | sensitive |
 | created_at | timestamp | timestamptz |  |
 
 Relations: one-to-many → ENT-GardenMember (on delete cascade); one-to-many → ENT-PushToken (on delete cascade); one-to-many → ENT-Notification (on delete cascade); one-to-many → ENT-Identification (on delete cascade)
@@ -99,12 +101,16 @@ Failure policy: timeout 15s, retries 5, exponential backoff via queue, idempoten
 
 ## Constraints
 
-- MUST hash passwords with argon2id  (SEC-001)
-- MUST issue one API token per device and revoke it on sign-out  (SEC-001)
-- MUST revoke all API tokens of a user when the password changes  (SEC-001)
-- MUST require TOTP MFA for every admin panel account  (SEC-001)
-- MUST rate-limit sign-in to 5 attempts per minute per email and IP  (SEC-001)
-- MUST NOT allow gardener accounts to sign in to the admin panel  (SEC-001)
+- MUST hash passwords with argon2id  (SEC-005)
+- MUST issue one API token per device and revoke it on sign-out  (SEC-005)
+- MUST revoke all API tokens of a user when the password changes  (SEC-005)
+- MUST require TOTP MFA for every admin panel account  (SEC-005)
+- MUST rate-limit sign-in to 5 attempts per minute per email and IP  (SEC-005)
+- MUST NOT allow gardener accounts to sign in to the admin panel  (SEC-005)
+- MUST store the TOTP secret and recovery codes encrypted at rest and never expose them in API responses or logs  (SEC-005)
+- MUST force a curator or admin without a confirmed TOTP secret to set it up before any other panel page  (SEC-005)
+- MUST make each recovery code usable only once  (SEC-005)
+- MUST let the admin reset another account's MFA, and MUST NOT let a curator do so  (SEC-005)
 - MUST require the user to confirm they are at least 15 years old at sign-up  (SEC-004)
 - MUST pass every CI stage before a branch is merged  (OPS-003)
 - MUST run backend commands (artisan, composer, tests) inside the Sail containers  (OPS-004)
@@ -112,8 +118,8 @@ Failure policy: timeout 15s, retries 5, exponential backoff via queue, idempoten
 - MUST read weather rule thresholds from configuration  (DEC-004)
 - MUST NOT use a cached forecast older than 12 hours for weather rules  (DEC-004)
 - MUST NOT reveal in any auth response whether an email is registered  (DEC-004)
-- MUST NOT write ENT-User fields email, password_hash to logs or error messages
-- MUST encrypt ENT-User fields password_hash at rest
+- MUST NOT write ENT-User fields email, password_hash, app_authentication_secret, app_authentication_recovery_codes to logs or error messages
+- MUST encrypt ENT-User fields password_hash, app_authentication_secret, app_authentication_recovery_codes at rest
 - MUST NOT write ENT-PushToken fields token to logs or error messages
 - Emails are validated and compared case-insensitively.  (type email)
 - Timestamps are stored in UTC.  (type timestamp)

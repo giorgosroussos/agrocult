@@ -3,7 +3,7 @@ decisions:
     area: security
     topic: authentication
     title: Authentication of the mobile app and the admin panel
-    status: decided
+    status: superseded
     source: inferred
     confirmed: true
     user_statement: "οκ"
@@ -58,3 +58,28 @@ decisions:
     constraints:
       - "MUST require the user to confirm they are at least 15 years old at sign-up"
     affects: [UC-012]
+
+  - id: SEC-005
+    area: security
+    topic: authentication
+    title: Authentication of the mobile app and the admin panel, with TOTP storage and recovery
+    status: decided
+    source: user
+    user_statement: "2a, agreed"
+    supersedes: SEC-001
+    since: 1.1.0
+    decision: "As SEC-001: mobile app with email and password and a Laravel Sanctum API token per device without automatic expiry, revoked on sign-out and on password change; the owner is the only admin in the MVP and has no access to users' gardens through the panel; admin panel with web session login and TOTP MFA required for curators and admins. Added: the TOTP secret and one-time recovery codes are stored on the user (Filament built-in app authentication). A curator or admin without a confirmed secret must set up TOTP at the first panel sign-in. A lost device is recovered with a recovery code, or by the admin clearing the user's MFA."
+    rationale: "CR-P1-T5-1: the design had no storage for the TOTP secret. Recovery codes keep the single admin able to regain access without server-side intervention."
+    alternatives_rejected: ["No recovery codes: the only admin could regain access only through the server (artisan or SQL)"]
+    constraints:
+      - "MUST hash passwords with argon2id"
+      - "MUST issue one API token per device and revoke it on sign-out"
+      - "MUST revoke all API tokens of a user when the password changes"
+      - "MUST require TOTP MFA for every admin panel account"
+      - "MUST rate-limit sign-in to 5 attempts per minute per email and IP"
+      - "MUST NOT allow gardener accounts to sign in to the admin panel"
+      - "MUST store the TOTP secret and recovery codes encrypted at rest and never expose them in API responses or logs"
+      - "MUST force a curator or admin without a confirmed TOTP secret to set it up before any other panel page"
+      - "MUST make each recovery code usable only once"
+      - "MUST let the admin reset another account's MFA, and MUST NOT let a curator do so"
+    affects: [ROLE-Gardener, ROLE-Curator]

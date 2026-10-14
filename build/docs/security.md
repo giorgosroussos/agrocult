@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Security and compliance
 
-_Generated document · design v1.0.1 · source 684d51011856_
+_Generated document · design v1.1.0 · source 26e0c15630c0_
 
 
 ## Trust boundaries
@@ -78,6 +78,8 @@ flowchart LR
 |---|---|---|---|
 | ENT-User | email | personal | Until account deletion (immediate hard delete, DEC-004) |
 | ENT-User | password_hash | sensitive | Until account deletion (immediate hard delete, DEC-004) |
+| ENT-User | app_authentication_secret | sensitive | Until account deletion (immediate hard delete, DEC-004) |
+| ENT-User | app_authentication_recovery_codes | sensitive | Until account deletion (immediate hard delete, DEC-004) |
 | ENT-Garden | lat | personal | Until the garden or the account is deleted (immediate hard delete) |
 | ENT-Garden | lon | personal | Until the garden or the account is deleted (immediate hard delete) |
 | ENT-GardenPlant | notes | personal | Until the garden or the account is deleted |
@@ -89,7 +91,8 @@ flowchart LR
 
 | id | title | status | decision |
 |---|---|---|---|
-| SEC-001 | Authentication of the mobile app and the admin panel | decided (inferred) | Mobile app: email and password, Laravel Sanctum API token per device without automatic expiry, revoked on sign-out and on password change. The owner is the only admin in the MVP: manages curator and user accounts but has no access to users' gardens through the panel. Admin panel: session login on the web with TOTP MFA required for curators and admins. |
+| SEC-001 | Authentication of the mobile app and the admin panel | superseded (inferred) | Mobile app: email and password, Laravel Sanctum API token per device without automatic expiry, revoked on sign-out and on password change. The owner is the only admin in the MVP: manages curator and user accounts but has no access to users' gardens through the panel. Admin panel: session login on the web with TOTP MFA required for curators and admins. |
 | SEC-002 | GDPR scope | decided (inferred) | Personal data: email, approximate garden locations (~1 km), notes, care log photos, push tokens. Lawful basis: contract (providing the service). Export and erasure through UC-014. Privacy policy before release (EXT-007). Hosting in the EU (area 8). |
 | SEC-003 | Security baseline | decided (default) | OWASP Top 10 baseline, TLS everywhere, security headers on the admin panel, dependency vulnerability scanning in CI, secrets only in environment variables, no personal data in logs, uploaded images validated by type and size and stripped of EXIF metadata. |
 | SEC-004 | Minimum age 15 | decided (inferred) | Accounts require a minimum age of 15 (GDPR art. 8 as set by Greek law); sign-up asks the user to confirm it. |
+| SEC-005 | Authentication of the mobile app and the admin panel, with TOTP storage and recovery | decided | As SEC-001: mobile app with email and password and a Laravel Sanctum API token per device without automatic expiry, revoked on sign-out and on password change; the owner is the only admin in the MVP and has no access to users' gardens through the panel; admin panel with web session login and TOTP MFA required for curators and admins. Added: the TOTP secret and one-time recovery codes are stored on the user (Filament built-in app authentication). A curator or admin without a confirmed secret must set up TOTP at the first panel sign-in. A lost device is recovered with a recovery code, or by the admin clearing the user's MFA. |

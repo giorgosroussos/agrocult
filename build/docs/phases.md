@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Implementation phases
 
-_Generated document · design v1.0.1 · source 684d51011856_
+_Generated document · design v1.1.0 · source 26e0c15630c0_
 
 
 ## Phase map
@@ -83,7 +83,7 @@ Depends on: none · use cases: UC-012, UC-013 · environment: development
 | P1-T2 | Mobile app skeleton | — | CMP-AppCore |  |
 | P1-T3 | CI pipeline | P1-T1, P1-T2 | — |  |
 | P1-T4 | Accounts API | P1-T1 | CMP-Identity | yes |
-| P1-T5 | Admin panel with MFA | P1-T4 | CMP-Identity |  |
+| P1-T5 | Admin panel with MFA | P1-T4 | CMP-Identity | yes |
 | P1-T6 | Auth screens in the app | P1-T2, P1-T4 | CMP-AppCore |  |
 
 Task waves:

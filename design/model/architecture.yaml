@@ -7,7 +7,7 @@ stack:
     - {role: database, name: PostgreSQL, version: "18", why: "JSONB for forecasts and candidates, partial unique indexes (one summary per garden per day); from the draft", source: user}
     - {role: queue, name: Laravel queue (database driver), version: "13.8", why: "No extra service to pay for (ORG-001); switch to Redis when load requires it", source: inferred, confirmed: true}
     - {role: worker, name: Laravel scheduler + queue worker, version: "13.8", why: "Runs the notification worker every few hours and the morning summaries (UC-008)", source: inferred, confirmed: true}
-    - {role: other, name: Filament, version: "5.7", why: "Admin panel for catalogue curation inside Laravel (SCOPE-010) with built-in MFA (SEC-001)", source: inferred, confirmed: true}
+    - {role: other, name: Filament, version: "5.7", why: "Admin panel for catalogue curation inside Laravel (SCOPE-010) with built-in MFA (SEC-005)", source: inferred, confirmed: true}
     - {role: frontend, name: Riverpod, version: "3.0", why: "State management for the Flutter app; widely used and testable (ARCH-004)", source: inferred, confirmed: true}
     - {role: frontend, name: Flutter, version: "3.44", why: "Mobile app for Android now and iOS later from one codebase (DEC-005); from the draft. 3.44 is the newest verified available (ARCH-005)", source: user}
     - {role: storage, name: Laravel filesystem (local in development, S3-compatible later), version: "13.8", why: "Private photo storage with temporary URLs (SEC-002)", source: inferred, confirmed: true}

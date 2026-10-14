@@ -1,7 +1,7 @@
 <!-- GENERATED — do not edit -->
 # Pack PHASE-5 — Photo identification through our server
 
-_design v1.0.1 · 684d51011856_
+_design v1.1.0 · 26e0c15630c0_
 
 Depends on: PHASE-3 · environment: development · components: CMP-Identification, CMP-AppCatalogue
 

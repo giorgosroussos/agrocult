@@ -183,6 +183,8 @@ entities:
       - {name: role, type: enum, required: true, values: [gardener, curator, admin]}
       - {name: language, type: enum, required: true, values: [el, en]}
       - {name: notification_prefs, type: json, description: "on/off per notification type"}
+      - {name: app_authentication_secret, type: text, sensitivity: sensitive, description: "TOTP secret for the admin panel (SEC-005), encrypted at rest; null until set up"}
+      - {name: app_authentication_recovery_codes, type: json, sensitivity: sensitive, description: "one-time TOTP recovery codes (SEC-005), hashed and encrypted at rest; null until set up"}
       - {name: created_at, type: timestamp}
     relations:
       - {to: ENT-GardenMember, type: one-to-many, on_delete: cascade, label: "member of"}
