@@ -1,0 +1,9 @@
+id: P2-T1
+status: ready_to_merge
+commit: 45f7967a183b0ec750f3430a19daf9a1c2e474a7
+handoff: |
+  Catalogue module (backend/app/Modules/Catalogue): one migration for all catalogue entities + plant_audits; Eloquent models in Models/ (Plant, PlantCategory, PlantTranslation, PlantAlias, ClimateZone, PlantCalendar, Companion, CareInterval, PlantPhoto, FactSource, Tip, Settlement, PlantAudit); enums in Enums/.
+  Plant status: PlantStatus enum holds the state model; Plant::guardStatus runs on every save (new plants must be draft, unlisted transitions throw InvalidPlantTransition, publishing without scientific_name/category throws PlantNotPublishable; status left unchanged).
+  Change status via Services/PlantWorkflow (transition/submitForReview/publish/archive/returnToDraft); publish sets published_at, reviewed_at and reviewed_by (reviewer id).
+  Snapshot filters: Plant::published() and Tip::published() scopes. Audit trail: Observers/PlantAuditObserver writes PlantAudit (event, {field:{old,new}}, acting user) on create/update/delete; entries are append-only and survive plant deletion.
+  Factories: Plant (inReview/published/archived states), PlantCategory, ClimateZone; tests in backend/tests/Feature/Catalogue.
