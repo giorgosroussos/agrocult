@@ -38,3 +38,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    # Catalogue snapshot bundled so that search works offline on first launch
+    # (ARCH-003). Refresh before a release:
+    #   php artisan catalogue:build-snapshot --output=<this file>
+    - assets/catalogue/catalogue.sqlite

@@ -1,0 +1,11 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          sql:
+            dialect: sqlite
+            options:
+              # The catalogue snapshot searches with FTS5 tables.
+              modules:
+                - fts5
