@@ -1,7 +1,7 @@
 <!-- GENERATED — do not edit -->
 # Pack PHASE-6 — Privacy and release readiness for Google Play
 
-_design v1.3.0 · cd829a248c19_
+_design v1.4.0 · b5cc50419329_
 
 Depends on: PHASE-4, PHASE-5 · environment: development · components: CMP-Privacy, CMP-AppHome
 

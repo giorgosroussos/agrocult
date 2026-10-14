@@ -88,7 +88,7 @@ entities:
       - {name: name_el, type: string, required: true}
       - {name: name_en, type: string, required: true}
       - {name: description, type: text}
-      - {name: rules, type: json, required: true, description: "thresholds on cell climate metrics (DATA-001)"}
+      - {name: rules, type: json, required: true, description: "{\"<metric>\": {\"min\": number|null, \"max\": number|null}} on elevation_m, winter_min_mean_c, last_frost_doy, first_frost_doy; min inclusive, max exclusive, null unbounded, other keys ignored (DATA-009)"}
     used_by: [UC-001, UC-003, UC-004, UC-008]
 
   - id: ENT-PlantCalendar
@@ -310,10 +310,10 @@ entities:
       - {name: lat, type: decimal, required: true, description: "cell centre"}
       - {name: lon, type: decimal, required: true, description: "cell centre"}
       - {name: elevation_m, type: integer}
-      - {name: winter_min_mean_c, type: decimal, description: "historical mean of the coldest month minimum"}
-      - {name: last_frost_doy, type: integer, description: "mean day of year of the last spring frost"}
-      - {name: first_frost_doy, type: integer, description: "mean day of year of the first autumn frost"}
-      - {name: climate_zone_id, type: uuid, ref: ENT-ClimateZone}
+      - {name: winter_min_mean_c, type: decimal, description: "mean over the last 10 full years of the mean daily minimum of the coldest calendar month (DATA-009); null until computed"}
+      - {name: last_frost_doy, type: integer, description: "mean day of year of the last frost (min <= 0 °C) before 1 July over frost years; null when fewer than half the years had one (DATA-009)"}
+      - {name: first_frost_doy, type: integer, description: "mean day of year of the first frost (min <= 0 °C) after 1 July over frost years; null when fewer than half the years had one (DATA-009)"}
+      - {name: climate_zone_id, type: uuid, ref: ENT-ClimateZone, description: "nearest zone by DATA-009; null until metrics exist"}
     relations:
       - {to: ENT-WeatherForecast, type: one-to-many, on_delete: cascade, label: "has forecasts"}
       - {to: ENT-WeatherDaily, type: one-to-many, on_delete: cascade, label: "has daily history"}

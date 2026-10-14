@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Integrations
 
-_Generated document · design v1.3.0 · source cd829a248c19_
+_Generated document · design v1.4.0 · source b5cc50419329_
 
 
 #### PlantIdentifier (INT-001: CMP-Identification ↔ EXT-001)
@@ -22,7 +22,7 @@ Operations:
 - `history(lat, lon, from, to) -> DailyWeather[]`
 - `elevation(lat, lon) -> integer`
 
-Failure policy: timeout 10s, retries 3, exponential backoff via queue (30s, 2m, 10m), idempotency key —; when unavailable: The last forecast of the cell is used if it is less than 12 hours old; otherwise weather rules are skipped for that run and the home screen shows 'weather currently unavailable' while care and season messages still work (UC-006, UC-008)
+Failure policy: timeout 10s, retries 3, exponential backoff via queue (30s, 2m, 10m), idempotency key —; when unavailable: Cell metrics (elevation, history): after the last retry the cell keeps no metrics and no zone, and its gardens are saved without a zone (SCOPE-004) until a later run succeeds. Forecast: the last forecast of the cell is used if it is less than 12 hours old; otherwise weather rules are skipped for that run and the home screen shows 'weather currently unavailable' while care and season messages still work (UC-006, UC-008)
 
 #### PushSender (INT-003: CMP-Notifications ↔ EXT-003)
 

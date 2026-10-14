@@ -101,3 +101,24 @@ decisions:
     requirements: ["Anonymisation", "Minimum number of users per area before showing any figure", "Disclosure in the privacy policy"]
     prepare_now:
       - "MUST NOT show or export any data of one user to another user"
+
+  - id: DATA-009
+    area: data
+    topic: climate_zones
+    title: Climate metric computation and zone matching
+    status: decided
+    source: inferred
+    confirmed: true
+    user_statement: "Nearest zone (Recommended); Accept as proposed (Recommended); Event-driven (Recommended)"
+    decision: "Refines DATA-001 (CR-P3-T1-1). Cell metrics come from one Open-Meteo archive call per cell covering the last 10 full calendar years. Frost is a daily minimum <= 0 °C. winter_min_mean_c is the mean over the years of the mean daily minimum of that year's coldest calendar month. last_frost_doy / first_frost_doy are the mean day of year of the last frost before 1 July / first frost after 1 July over the years that had such a frost, and null when fewer than half of the years had one. Zone rules are JSON {\"<metric>\": {\"min\": number|null, \"max\": number|null}} with metric keys elevation_m, winter_min_mean_c, last_frost_doy, first_frost_doy; min inclusive, max exclusive, null unbounded, other keys ignored. A cell gets the zone with the smallest distance, the sum over its rule metrics of how far the cell value lies outside the bounds (0 = match); ties go to the lowest code. For matching only, a null last_frost_doy counts as 0 and a null first_frost_doy as 366. When a curator changes zone rules, CMP-Catalogue emits ClimateZoneRulesChanged; CMP-Weather re-assigns all cells in a queued job and emits CellZoneChanged for every cell whose zone changed; CMP-Gardens updates the zone of that cell's gardens. CMP-Weather reads zones only through a public CMP-Catalogue service (ClimateZones) that returns id, code and rules as plain data."
+    rationale: "Every cell with metrics always gets a zone, even when curator thresholds leave gaps or overlap; 10 years in one call keeps the archive volume to ~1,500 calls once for all of Greece (ORG-001); events keep module boundaries."
+    alternatives_rejected: ["first matching zone, else no zone: gardens lose their calendar on a curator gap", "30-year normal: more data per call for little gain", "no re-assignment on rule change: existing gardens keep stale zones"]
+    constraints:
+      - "MUST compute cell climate metrics from the last 10 full calendar years of the Open-Meteo archive in one history call per cell"
+      - "MUST treat a daily minimum <= 0 °C as frost"
+      - "MUST store last_frost_doy / first_frost_doy as null when fewer than half of the years had such a frost"
+      - "MUST match zone rules with min inclusive, max exclusive and null as unbounded, ignoring unknown keys"
+      - "MUST assign every cell with metrics the zone with the smallest distance, ties by lowest code"
+      - "MUST re-assign all cells in a queued job when zone rules change, and update the zone of the affected gardens"
+      - "MUST read climate zones in CMP-Weather only through the CMP-Catalogue ClimateZones service, never its models"
+    affects: [ENT-ClimateZone, ENT-WeatherCell, ENT-Garden]

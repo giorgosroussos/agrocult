@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Actors and use cases
 
-_Generated document · design v1.3.0 · source cd829a248c19_
+_Generated document · design v1.4.0 · source b5cc50419329_
 
 
 ## Actors

@@ -1,7 +1,7 @@
 <!-- GENERATED — do not edit -->
 # Pack PHASE-3 — My gardens - gardens with location and climate zone, plants in them, care log and next action
 
-_design v1.3.0 · cd829a248c19_
+_design v1.4.0 · b5cc50419329_
 
 Depends on: PHASE-2 · environment: development · components: CMP-Weather, CMP-Gardens, CMP-AppGardens
 
@@ -9,7 +9,7 @@ Depends on: PHASE-2 · environment: development · components: CMP-Weather, CMP-
 
 | task | title | depends on | writes |
 |---|---|---|---|
-| P3-T1 | Weather cells and climate zones | — | CMP-Weather |
+| P3-T1 | Weather cells and climate zones | — | CMP-Weather, CMP-Catalogue |
 | P3-T2 | Gardens API | P3-T1 | CMP-Gardens |
 | P3-T3 | Gardens screens | P3-T2 | CMP-AppGardens |
 | P3-T4 | Add, edit and remove garden plants | P3-T3 | CMP-AppGardens |
@@ -172,7 +172,7 @@ Operations:
 - `history(lat, lon, from, to) -> DailyWeather[]`
 - `elevation(lat, lon) -> integer`
 
-Failure policy: timeout 10s, retries 3, exponential backoff via queue (30s, 2m, 10m), idempotency key —; when unavailable: The last forecast of the cell is used if it is less than 12 hours old; otherwise weather rules are skipped for that run and the home screen shows 'weather currently unavailable' while care and season messages still work (UC-006, UC-008)
+Failure policy: timeout 10s, retries 3, exponential backoff via queue (30s, 2m, 10m), idempotency key —; when unavailable: Cell metrics (elevation, history): after the last retry the cell keeps no metrics and no zone, and its gardens are saved without a zone (SCOPE-004) until a later run succeeds. Forecast: the last forecast of the cell is used if it is less than 12 hours old; otherwise weather rules are skipped for that run and the home screen shows 'weather currently unavailable' while care and season messages still work (UC-006, UC-008)
 
 #### Map tiles (INT-005: CMP-Gardens ↔ EXT-005)
 
@@ -196,6 +196,13 @@ Failure policy: timeout 10s, retries none (the map library retries tiles), idemp
 - MUST store zone thresholds as data, not in code  (DATA-001)
 - MUST compute cell climate metrics once per cell and reuse them  (DATA-001)
 - MUST exclude archived garden plants from garden lists and from notification rules  (DATA-005)
+- MUST compute cell climate metrics from the last 10 full calendar years of the Open-Meteo archive in one history call per cell  (DATA-009)
+- MUST treat a daily minimum <= 0 °C as frost  (DATA-009)
+- MUST store last_frost_doy / first_frost_doy as null when fewer than half of the years had such a frost  (DATA-009)
+- MUST match zone rules with min inclusive, max exclusive and null as unbounded, ignoring unknown keys  (DATA-009)
+- MUST assign every cell with metrics the zone with the smallest distance, ties by lowest code  (DATA-009)
+- MUST re-assign all cells in a queued job when zone rules change, and update the zone of the affected gardens  (DATA-009)
+- MUST read climate zones in CMP-Weather only through the CMP-Catalogue ClimateZones service, never its models  (DATA-009)
 - MUST NOT write ENT-Garden fields lat, lon to logs or error messages
 - MUST NOT write ENT-GardenPlant fields notes to logs or error messages
 - MUST NOT write ENT-CareLog fields note, photo_path to logs or error messages
@@ -251,5 +258,5 @@ Standing constraints from deferred decisions (apply now):
 - [OWN-003] Given a ROLE-Gardener user, When they read or modify an ENT-CareLog record the rule does not grant them (A gardener reads and changes only care log entries of plants in gardens they are a member of), Then access is denied and nothing changes
 - [OWN-008] Given a ROLE-Gardener user, When they read or modify an ENT-GardenMember record the rule does not grant them (A gardener sees only memberships of gardens they are a member of), Then access is denied and nothing changes
 - [OWN-009] Given a ROLE-Curator user, When they read or modify an ENT-Garden record the rule does not grant them (A curator has no access to gardens, garden plants, care log or notifications of users), Then access is denied and nothing changes
-- [INT-002] Given EXT-002 is unavailable or times out, Then: The last forecast of the cell is used if it is less than 12 hours old; otherwise weather rules are skipped for that run and the home screen shows 'weather currently unavailable' while care and season messages still work (UC-006, UC-008)
+- [INT-002] Given EXT-002 is unavailable or times out, Then: Cell metrics (elevation, history): after the last retry the cell keeps no metrics and no zone, and its gardens are saved without a zone (SCOPE-004) until a later run succeeds. Forecast: the last forecast of the cell is used if it is less than 12 hours old; otherwise weather rules are skipped for that run and the home screen shows 'weather currently unavailable' while care and season messages still work (UC-006, UC-008)
 - [INT-005] Given EXT-005 is unavailable or times out, Then: The map shows an offline message; area search from the settlement list still works

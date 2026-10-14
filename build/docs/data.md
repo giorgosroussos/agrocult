@@ -1,7 +1,7 @@
 <!-- GENERATED from design/ — do not edit. Rebuild with tools/design/build.py -->
 # Data
 
-_Generated document · design v1.3.0 · source cd829a248c19_
+_Generated document · design v1.4.0 · source b5cc50419329_
 
 
 ## Entity–relationship diagram
@@ -622,3 +622,4 @@ Owned by CMP-Weather · retention: Permanent (not personal data) · audit: no
 | DATA-006 | Data model defaults | decided (default) | UUID keys; UTC timestamps; ISO language codes; identification photos not stored, results kept 30 days; forecasts kept 7 days, notifications 90 days; user data until account deletion; owners may edit or delete their care log entries; tips in Greek and English; audit trail on catalogue plant changes. |
 | DATA-007 | Personal season insights | deferred (inferred) | A 'My season' view with the user's own statistics (planting dates year over year, care actions per month and plant, watering vs rain, harvest per plant and season) comes after the MVP; the MVP stores what it needs. |
 | DATA-008 | Anonymous regional insights from all users | deferred | Aggregated, anonymised activity by area (e.g. 'gardeners near you are sowing garlic now') is a post-MVP idea. |
+| DATA-009 | Climate metric computation and zone matching | decided (inferred) | Refines DATA-001 (CR-P3-T1-1). Cell metrics come from one Open-Meteo archive call per cell covering the last 10 full calendar years. Frost is a daily minimum <= 0 °C. winter_min_mean_c is the mean over the years of the mean daily minimum of that year's coldest calendar month. last_frost_doy / first_frost_doy are the mean day of year of the last frost before 1 July / first frost after 1 July over the years that had such a frost, and null when fewer than half of the years had one. Zone rules are JSON {"<metric>": {"min": number\|null, "max": number\|null}} with metric keys elevation_m, winter_min_mean_c, last_frost_doy, first_frost_doy; min inclusive, max exclusive, null unbounded, other keys ignored. A cell gets the zone with the smallest distance, the sum over its rule metrics of how far the cell value lies outside the bounds (0 = match); ties go to the lowest code. For matching only, a null last_frost_doy counts as 0 and a null first_frost_doy as 366. When a curator changes zone rules, CMP-Catalogue emits ClimateZoneRulesChanged; CMP-Weather re-assigns all cells in a queued job and emits CellZoneChanged for every cell whose zone changed; CMP-Gardens updates the zone of that cell's gardens. CMP-Weather reads zones only through a public CMP-Catalogue service (ClimateZones) that returns id, code and rules as plain data. |

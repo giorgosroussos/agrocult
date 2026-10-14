@@ -4,18 +4,28 @@ depends_on: [PHASE-2]
 use_cases: [UC-001, UC-002, UC-007, UC-011, UC-015]
 entities: [ENT-WeatherCell, ENT-Garden, ENT-GardenMember, ENT-GardenPlant, ENT-CareLog]
 components: [CMP-Weather, CMP-Gardens, CMP-AppGardens]
-decisions: [SCOPE-003, SCOPE-004, SCOPE-007, DATA-001, DATA-005, DATA-007, DEC-001]
+decisions: [SCOPE-003, SCOPE-004, SCOPE-007, DATA-001, DATA-005, DATA-007, DATA-009, DEC-001]
 environment: development
 tasks:
   - id: P3-T1
     title: Weather cells and climate zones
-    description: "WeatherProvider interface, Open-Meteo adapter and fake with failure simulation (elevation, history, forecast), ~10 km grid, cell climate metrics computed once, zone assignment from zone rules"
-    touches: {writes: [CMP-Weather], reads: [CMP-Catalogue], migrations: true}
+    description: "WeatherProvider interface, Open-Meteo adapter and fake with failure simulation (elevation, history, forecast), ~10 km grid, cell climate metrics computed once in a queued job (DATA-009), nearest-zone assignment from zone rules, CellZoneChanged event. In CMP-Catalogue: public ClimateZones service (id, code, rules as plain data), ClimateZoneRulesChanged event on rule edits, demo seeder rule key winter_min_c renamed to winter_min_mean_c. Of INT-002, P3-T1 tests the cell-metrics clause; the forecast clause is tested in P4-T1 and P4-T4."
+    acceptance_criteria:
+      - "Given EXT-002 is unavailable or times out while a new cell's elevation or history is fetched, Then the job is retried 3 times (30 s, 2 m, 10 m) and afterwards the cell has no metrics and no zone"
+      - "Every EXT-002 call uses a 10 s timeout"
+      - "Given 10 years of history in which 3 years had a frost before 1 July, Then last_frost_doy is null"
+      - "Given zones A (winter_min_mean_c min 8) and B (winter_min_mean_c min 4, max 8), When a cell has winter_min_mean_c 8, Then it gets zone A"
+      - "Given no zone matches a cell, Then the cell gets the zone with the smallest distance outside the bounds, ties by lowest code"
+      - "Given a curator changes a zone's rules, Then all cells are re-assigned in a queued job and CellZoneChanged is emitted only for cells whose zone changed"
+      - "CMP-Weather reads climate zones only through the CMP-Catalogue ClimateZones service (deptrac)"
+    touches: {writes: [CMP-Weather, CMP-Catalogue], migrations: true}
   - id: P3-T2
     title: Gardens API
-    description: "Gardens with rounded location, weather cell and zone; membership with one owner; garden plants with archive; care log with optional harvest quantity; next action from care intervals; journal"
+    description: "Gardens with rounded location, weather cell and zone (zone set when the cell gets one and updated on CellZoneChanged, DATA-009); membership with one owner; garden plants with archive; care log with optional harvest quantity; next action from care intervals; journal"
     depends_on: [P3-T1]
     use_cases: [UC-001, UC-002, UC-007, UC-011, UC-015]
+    acceptance_criteria:
+      - "Given a garden whose weather cell has no metrics yet, Then the garden is saved without a zone, and When CellZoneChanged is emitted for its cell, Then the garden gets that zone"
     touches: {writes: [CMP-Gardens], reads: [CMP-Weather, CMP-Catalogue, CMP-Identity], migrations: true}
   - id: P3-T3
     title: Gardens screens
